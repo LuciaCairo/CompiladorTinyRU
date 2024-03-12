@@ -9,72 +9,65 @@ import java.io.BufferedWriter;
 public class Executor {
     public static void main(String[] args) {
 
-        // LEER UN ARCHIVO CON RUTA (HAY QUE MODIFICAR PARA QUE SEA POR PARAMETRO)
-        String rutaArchivo = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
+       // AnalizadorLexico aL = new AnalizadorLexico(args[0]);
 
-        try {
+        /* Variable para decidir si los tokens seran impresos por consola o por un archivo de salida
+        - si se proporciona un 3er argumento: sera el nombre del archivo de salida .txt
+        - si no hay 3er argumento, la salida sera impresa por pantalla */
+        boolean printToFile = (args.length == 2);
 
-            // Crea un objeto File para el archivo.
-            File archivo = new File(rutaArchivo);
+        String title= "| TOKEN | LEXEMA | NUMERO DE LINEA (NUMERO DE COLUMNA)|\n";
 
-            // Crea un objeto FileReader para el archivo.
-            FileReader lectorArchivo = new FileReader(archivo);
+        // Salida: archivo.txt
+        if(!printToFile) {
 
-            // Crea un objeto BufferedReader para el archivo.
-            BufferedReader lectorBuffer = new BufferedReader(lectorArchivo);
+            String rutaDirectorio = System.getProperty("user.dir");
+            String rutaArchivo = rutaDirectorio + File.separator + "\\src\\main\\java\\org\\com\\etapa1\\salida.txt";
 
-            // Lee cada línea del archivo y la imprime en la consola.
-            String linea;
-            int numLinea = 1;
-            while ((linea = lectorBuffer.readLine()) != null) {
-                System.out.print("Linea " + numLinea + "\n");
-                numLinea++;
-                System.out.println(linea);
+            try {
+                System.out.print(rutaArchivo);
+                File archivo = new File(rutaArchivo);
+                FileWriter escritorArchivo = new FileWriter(archivo);
+                BufferedWriter escritorBuffer = new BufferedWriter(escritorArchivo);
+                escritorBuffer.write("CORRECTO: ANALISIS LEXICO\n");
+                escritorBuffer.write(title);
+                escritorBuffer.close(); // ESTO NOSE SI ESTA BIEN QUE CIERRE
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            // Cierra el lector de archivos.
-            lectorBuffer.close();
+        }else { // Salida: impresion por pantalla
 
-        } catch (IOException e) {
-
-            // Maneja la excepción de E/S.
-            e.printStackTrace();
-
+            System.out.print("CORRECTO: ANALISIS LEXICO\n");
+            System.out.print(title);
         }
 
-        // SALIDA: UN ARCHIVO ,txt (HAY QUE MODIFICAR PARA QUE LA SALIDA SEAN LOS TOKENS)
-        // Ruta al archivo que deseas crear.
-        String ruta = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\salida.txt";
+        /*try {
+            while(aL.hasNextToken()) {
+                Token actualToken = aL.nextToken();
+                linea = "| "+ actualToken.getpReservada() +
+                        " | "+ actualToken.getValor()+
+                        " | "+ actualToken.getFila() + " |\n";
+                if(!printToFile) {
+                    System.out.print(linea);
 
-        // Contenido que deseas escribir en el archivo.
-        String contenido = "Este es el contenido del archivo.";
-
-        try {
-
-            // Crea un objeto File para el archivo.
-            File archivo = new File(ruta);
-
-            // Crea un objeto FileWriter para el archivo.
-            FileWriter escritorArchivo = new FileWriter(archivo);
-
-            // Crea un objeto BufferedWriter para el archivo.
-            BufferedWriter escritorBuffer = new BufferedWriter(escritorArchivo);
-
-            // Escribe el contenido en el archivo.
-            escritorBuffer.write(contenido);
-
-            // Cierra el escritor de archivos.
-            escritorBuffer.close();
-
-        } catch (IOException e) {
-
-            // Maneja la excepción de E/S.
+                }else {
+                    impresora.write(linea);
+                }
+            }
+        }catch (Exception e) {
             e.printStackTrace();
 
-        }
-
-
-
+        }finally {
+            if(printToFile) {
+                try {
+                    impresora.close();
+                }catch(Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }*/
     }
 }
 
