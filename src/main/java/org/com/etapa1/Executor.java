@@ -9,8 +9,7 @@ import java.io.BufferedWriter;
 public class Executor {
     public static void main(String[] args) {
 
-       // AnalizadorLexico aL = new AnalizadorLexico(args[0]);
-
+        AnalizadorLexico aL = new AnalizadorLexico();
         /* Variable para decidir si los tokens seran impresos por consola o por un archivo de salida
         - si se proporciona un 3er argumento: sera el nombre del archivo de salida .txt
         - si no hay 3er argumento, la salida sera impresa por pantalla */
@@ -31,7 +30,7 @@ public class Executor {
                 BufferedWriter escritorBuffer = new BufferedWriter(escritorArchivo);
                 escritorBuffer.write("CORRECTO: ANALISIS LEXICO\n");
                 escritorBuffer.write(title);
-                escritorBuffer.close(); // ESTO NOSE SI ESTA BIEN QUE CIERRE
+                //escritorBuffer.close(); // ESTO NOSE SI ESTA BIEN QUE CIERRE
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -42,7 +41,16 @@ public class Executor {
             System.out.print("CORRECTO: ANALISIS LEXICO\n");
             System.out.print(title);
         }
+        try {
+            aL.analizarArchivo("C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru");
 
+            Token t = aL.nextToken();
+            System.out.println(t.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
         /*try {
             while(aL.hasNextToken()) {
                 Token actualToken = aL.nextToken();
