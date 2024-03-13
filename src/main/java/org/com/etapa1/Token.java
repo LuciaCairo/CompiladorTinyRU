@@ -4,9 +4,9 @@ public class Token {
     private final int line; // Numero de fila donde comienza el lexema
     private final int col; // Numero de columna donde comienza el lexema
     private final String name; // Nombre del token
-    private final String lexema; // Lexema del token
+    private final char lexema; // Lexema del token
 
-    public Token(int line, int col, String name, String lexema) {
+    public Token(int line, int col, String name, char lexema) {
         this.line = line;
         this.col = col;
         this.name = name;
@@ -29,7 +29,7 @@ public class Token {
     }
 
     // Obtener el lexema del token
-    public String getLexema() {
+    public char getLexema() {
         return lexema;
     }
 }
