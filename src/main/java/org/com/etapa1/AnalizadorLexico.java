@@ -65,26 +65,55 @@ public class AnalizadorLexico {
                     addToken(token);
 
                 } else if (linea.charAt(i) == '+') {
-                    if (current == "" && linea.length() != i + 1) {
-                        nameToken = "op_suma";
-                        current = "+";
-                    } else if (current == "+") {
-                        nameToken = "op_contador_sum";
-                        Token token = new Token(numeroLinea, i - 1, nameToken, "+" + current);
-                        current = "";
-                        nameToken = "";
+                    if (!(current.equals("")) && nameToken.equals("p_string")){
+                        current = current + linea.charAt(i);
+                        continue;
+                    } else {
+                        if (!(current.equals(""))){
+                            //revisar la columna
+                            Token token = new Token(numeroLinea,i, nameToken, current);
+                            nameToken = "";
+                            current = "";
+                        }
+                        if (current.equals("") && linea.length() != i + 1) {
+                            nameToken = "op_suma";
+                            current = "+";
+
+                        } else if (current.equals("+") && nameToken.equals("op_suma")) {
+                            nameToken = "op_incr";
+                            Token token = new Token(numeroLinea, i - 1, nameToken, "+" + current);
+                            current = "";
+                            nameToken = "";
+
+                        }
+                        continue;
                     }
                 } else if (linea.charAt(i) == '-') {
-                    if (!(current == "")){
-                        //revisar la columna
-                        Token token = new Token(numeroLinea,i, nameToken, current);
-                        nameToken = "";
-                        current = "";
-                    } else if (){
+                    if (!(current.equals("")) && nameToken.equals("p_string")){
+                        current = current + linea.charAt(i);
+                        continue;
+                    } else {
+                        if (!(current.equals(""))){
+                            //revisar la columna
+                            Token token = new Token(numeroLinea,i, nameToken, current);
+                            nameToken = "";
+                            current = "";
+                        }
+                        if (current.equals("") && linea.length() != i + 1) {
+                            nameToken = "op_resta";
+                            current = "-";
 
+                        } else if (current.equals("-") && nameToken.equals("op_resta")) {
+                            nameToken = "op_dec";
+                            Token token = new Token(numeroLinea, i - 1, nameToken, "-" + current);
+                            current = "";
+                            nameToken = "";
+
+                        }
+                        continue;
                     }
 
-
+                } else if (linea.charAt(i) == '*'){
 
                 }
 
