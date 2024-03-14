@@ -44,37 +44,50 @@ public class AnalizadorLexico {
 
      private void analizarLinea(String linea, int numeroLinea) {
 
-        for (int i = 0; i<linea.length(); i++){
+        for (int i = 0; i<linea.length(); i++) {
 
             String current = "";
-            String nextCurrent = "";
-            // Verificar si la línea es un comentario de una sola línea
-            if (linea.charAt(i) == '/' ){
-                // Es un comentario, ignorar la línea
-                if (linea.length() != i+1 && linea.charAt(i+1) == '?') {
-                    return;
-                }
-                //sino es un op
+            String nameToken = "";
+            if (!(linea.charAt(i) == ' ')) {
+                if (linea.charAt(i) == '"') {
 
-                Token token = new Token(numeroLinea,i,"op_div", linea.charAt(i));
-                addToken(token);
+                }
 
-             /*else {
-                if (linea.charAt(i) == '*'){
-                    Token token = new Token(numeroLinea,i,"t_mult", linea.charAt(i));
+                // Verificar si la línea es un comentario de una sola línea
+                if (linea.charAt(i) == '/') {
+                    // Es un comentario, ignorar la línea
+                    if (linea.length() != i + 1 && linea.charAt(i + 1) == '?') {
+                        return;
+                    }
+                    //sino es un op
+
+                    Token token = new Token(numeroLinea, i, "op_div", ""+ linea.charAt(i));
+                    addToken(token);
+
+                } else if (linea.charAt(i) == '+') {
+                    if (current == "" && linea.length() != i + 1) {
+                        nameToken = "op_suma";
+                        current = "+";
+                    } else if (current == "+") {
+                        nameToken = "op_contador_sum";
+                        Token token = new Token(numeroLinea, i - 1, nameToken, "+" + current);
+                        current = "";
+                        nameToken = "";
+                    }
+                } else if (linea.charAt(i) == '-') {
+                    if (!(current == "")){
+                        //revisar la columna
+                        Token token = new Token(numeroLinea,i, nameToken, current);
+                        nameToken = "";
+                        current = "";
+                    } else if (){
+
+                    }
+
+
+
                 }
-                if (linea.charAt(i) == '%'){
-                    Token token = new Token(numeroLinea,i,"t_porc", linea.charAt(i));
-                }
-                if (linea.charAt(i) == '+'){
-                    Token token = new Token(numeroLinea,i,"t_suma", linea.charAt(i));
-                }
-                if (linea.charAt(i) == '-'){
-                    Token token = new Token(numeroLinea,i,"t_resta", linea.charAt(i));
-                }
-                if (linea.charAt(i) == ':'){
-                    Token token = new Token(numeroLinea,i,"t_porc", linea.charAt(i));
-                } */
+
             }
 
 
