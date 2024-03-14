@@ -41,8 +41,13 @@ public class AnalizadorLexico {
         return tokens.remove();
     }
 
+    public int countTokens() {
+        return this.tokens.size();
+    }
 
-     private void analizarLinea(String linea, int numeroLinea) {
+
+
+    private void analizarLinea(String linea, int numeroLinea) {
 
         for (int i = 0; i<linea.length(); i++){
 
