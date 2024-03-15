@@ -9,18 +9,12 @@ public class Executor {
     public static void main(String[] args) {
         AnalizadorLexico l = new AnalizadorLexico();
         boolean printToFile = (args.length == 2);
-        String title = "| TOKEN | LEXEMA | NUMERO DE LINEA (NUMERO DE COLUMNA)|\n";
+
+        BufferedWriter writerBuffer = null; // Declara writerBuffer fuera del bloque try
 
         try {
-            BufferedWriter writerBuffer = null;
-
             if (printToFile) {
                 writerBuffer = createdBuffer();
-                writerBuffer.write("CORRECTO: ANALISIS LEXICO\n");
-                writerBuffer.write(title);
-            } else {
-                System.out.print("CORRECTO: ANALISIS LEXICO\n");
-                System.out.print(title);
             }
 
             l.analizarArchivo("C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru");
@@ -30,8 +24,31 @@ public class Executor {
             } else {
                 printTokensConsola(l);
             }
+
+        } catch (LexicalErrorException e) {
+            if (printToFile && writerBuffer != null) {
+                try {
+                    writerBuffer.write("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |\n");
+                    writerBuffer.write( "| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            } else {
+                System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
+                System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+
+        } finally {
+            try {
+                if (writerBuffer != null) {
+                    writerBuffer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -54,7 +71,6 @@ public class Executor {
                     " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
             writerBuffer.write(text);
         }
-        writerBuffer.close();
     }
 
     private static void printTokensConsola(AnalizadorLexico l) {
@@ -67,4 +83,3 @@ public class Executor {
         }
     }
 }
-
