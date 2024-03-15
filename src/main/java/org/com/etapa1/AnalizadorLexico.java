@@ -50,125 +50,155 @@ public class AnalizadorLexico {
             // Obtener el carácter actual y el siguiente (si existe)
             char currentChar =  linea.charAt(i);
             String current = "" + currentChar;
-            //char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0'; // '\0' indica el final de la cadena
+
+            char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0'; // '\0' indica el final de la cadena
 
             switch (currentChar) {
                 case '"':
+                    System.out.println("hola");
+                    if (var1.equals("lit_comillas_abiertas")){
+
+                        var2+=current;
+                        addToken(new Token(numeroLinea,i-var2.length()+1,"str",var2));
+                        var1="";
+                        var2="";
+                        break;
+
+                    }else if(var1.equals("")){
+                        var1="lit_comillas_abiertas";
+                        var2= current;
+                    }
 
                     break;
 
                 case '+': // operador suma
-                    if (var1.equals("op_suma")){
-                        var2+= current;
-                        addToken(new Token(numeroLinea,i-1,"op_incr",var2));
-                        var1="";
-                        var2="";
-                    } else if (var1.equals("")){
-                        var1="op_suma";
-                        var2=current;
+                    if (var1.equals("lit_comillas_abiertas")){
+
+                        var2+=current;
+                        break;
+                    }else {
+                        if (currentChar == '+' && nextChar == '+') {
+                            Token token = new Token(numeroLinea, i, "op_incr", current + current);
+                            addToken(token);
+                            i++;
+                        } else {
+
+                            Token token = new Token(numeroLinea, i, "op_suma", current);
+                            addToken(token);
+                        }
                     }
+
                     break;
                 case '-': // operador resta
-                    if(var1.equals("op_resta")){
+                    if (var1.equals("lit_comillas_abiertas")){
+
                         var2+=current;
-                        addToken(new Token(numeroLinea,i-1, "op_decr",var2));
-                        var1="";
-                        var2="";
-                    } else if (var1.equals("")){
-                        var1="op_resta";
-                        var2=current;
+                        break;
+                    }else {
+                        if (currentChar == '-' && nextChar == '-') {
+                            Token token = new Token(numeroLinea, i, "op_decr", current + current);
+                            addToken(token);
+                            i++;
+                        } else {
+                            Token token = new Token(numeroLinea, i, "op_decr", current);
+                            addToken(token);
+                        }
                     }
                     break;
                 case '(': // Parentesis abierto
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
+
+                    if (var1.equals("lit_comillas_abiertas")){
+
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "par_open", current));
+                        break;
                     }
-                    addToken(new Token(numeroLinea, i, "par_open", current));
-                    break;
 
                 case ')': // Parentesis cerrado
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
+                    if (var1.equals("lit_comillas_abiertas")){
+
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "par_close", current));
+                        break;
                     }
-                    addToken(new Token(numeroLinea, i, "par_close", current));
-                    break;
 
                 case '[': // Corchete abierto
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "cor_open", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "cor_open", current));
+                        break;
+                    }
                 case ']': // Corchete cerrado
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "cor_close", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "cor_close", current));
+                        break;
+                    }
                 case '}': // Llave abierta
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "braces_open", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "braces_open", current));
+                        break;
+                    }
                 case '{': // Llave cerrada
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "braces_close", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
-                case ';': // Punto y coma
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "braces_close", current));
+                        break;
                     }
-                    addToken(new Token(numeroLinea, i, "semicolon", current));
-                    break;
+                case ';': // Punto y coma
+                    if (var1.equals("lit_comillas_abiertas")){
+
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "semicolon", current));
+                        break;
+                    }
 
                 case ',': // Coma
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "comma", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "comma", current));
+                        break;
+                    }
                 case ':': // Dos puntos
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "colon", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "colon", current));
+                        break;
+                    }
                 case '.': // Punto
-                    if(!(var1.equals(""))){
-                        addToken(new Token(numeroLinea,i-1,var1,var2));
-                        var1="";
-                        var2="";
-                    }
-                    addToken(new Token(numeroLinea, i, "period", current));
-                    break;
+                    if (var1.equals("lit_comillas_abiertas")){
 
+                        var2+=current;
+                        break;
+                    }else {
+                        addToken(new Token(numeroLinea, i, "period", current));
+                        break;
+                    }
                 default:
                     // Caso por defecto, en caso de que no coincida con ningún caso anterior
                     // Verificar si la línea es un comentario de una sola línea
