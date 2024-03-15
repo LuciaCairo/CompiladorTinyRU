@@ -43,7 +43,8 @@ public class AnalizadorLexico {
     }
 
     private void analizarLinea(String linea, int numeroLinea) {
-
+        String var1="";
+        String var2="";
         for (int i = 0; i < linea.length(); i++) {
 
             // Obtener el carácter actual y el siguiente (si existe)
@@ -51,44 +52,120 @@ public class AnalizadorLexico {
             String current = "" + currentChar;
             //char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0'; // '\0' indica el final de la cadena
 
-            switch (current) {
-                case "(": // Parentesis abierto
+            switch (currentChar) {
+                case '"':
+
+                    break;
+
+                case '+': // operador suma
+                    if (var1.equals("op_suma")){
+                        var2+= current;
+                        addToken(new Token(numeroLinea,i-1,"op_incr",var2));
+                        var1="";
+                        var2="";
+                    } else if (var1.equals("")){
+                        var1="op_suma";
+                        var2=current;
+                    }
+                    break;
+                case '-': // operador resta
+                    if(var1.equals("op_resta")){
+                        var2+=current;
+                        addToken(new Token(numeroLinea,i-1, "op_decr",var2));
+                        var1="";
+                        var2="";
+                    } else if (var1.equals("")){
+                        var1="op_resta";
+                        var2=current;
+                    }
+                    break;
+                case '(': // Parentesis abierto
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "par_open", current));
                     break;
 
-                case ")": // Parentesis cerrado
+                case ')': // Parentesis cerrado
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "par_close", current));
                     break;
 
-                case "[": // Corchete abierto
+                case '[': // Corchete abierto
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "cor_open", current));
                     break;
 
-                case "]": // Corchete cerrado
+                case ']': // Corchete cerrado
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "cor_close", current));
                     break;
 
-                case "}": // Llave abierta
+                case '}': // Llave abierta
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "braces_open", current));
                     break;
 
-                case "{": // Llave cerrada
+                case '{': // Llave cerrada
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "braces_close", current));
                     break;
 
-                case ";": // Punto y coma
+                case ';': // Punto y coma
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "semicolon", current));
                     break;
 
-                case ",": // Coma
+                case ',': // Coma
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "comma", current));
                     break;
 
-                case ":": // Dos puntos
+                case ':': // Dos puntos
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "colon", current));
                     break;
 
-                case ".": // Punto
+                case '.': // Punto
+                    if(!(var1.equals(""))){
+                        addToken(new Token(numeroLinea,i-1,var1,var2));
+                        var1="";
+                        var2="";
+                    }
                     addToken(new Token(numeroLinea, i, "period", current));
                     break;
 
