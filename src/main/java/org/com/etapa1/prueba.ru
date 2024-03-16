@@ -1,3 +1,1 @@
-/? prueba de int, deberia devolver correcto analisis lexico (numero en cualquier posicion)
-
-00a
+/?123 3 3/0 / /n
