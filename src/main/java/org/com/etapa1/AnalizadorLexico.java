@@ -43,7 +43,20 @@ public class AnalizadorLexico {
     public int countTokens() {
         return this.tokens.size();
     }
+    public int isChar(String idChar, char nextChar) { //funcion para saber si es un char
+        if (nextChar == '\'') {
+            switch (idChar) {
+                case "CharBlackSlash":
 
+                    return 1;
+                case "iterChar":
+                    return 2;
+            }
+
+        }
+        return 0;
+
+    }
     private void analizarLinea(String linea, int numeroLinea) {
         String flag = "";
         String iterToken = "";
@@ -74,40 +87,75 @@ public class AnalizadorLexico {
                     }
                     break;
                 case '"':
-
-                    if (flag.equals("stringIter")) { //si recibo la ultima " y cierro el string
-
-                        iterToken += current;
-                        addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
                         flag = "";
-                        iterToken = "";
+                        i++;
                         break;
-
-                    } else if (flag.equals("")) { //abro string
-                        flag = "stringIter";
-                        iterToken = current;
-                    }
-
-                    break;
-
-                case '+': // operador suma
-                    if (flag.equals("stringIter")) {//si se esta formando un string
-
-                        iterToken += current;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
                         break;
                     } else {
-                        if (currentChar == '+' && nextChar == '+') {
 
-                            addToken(new Token(numeroLinea, i, "op_incr", current + current));
-                            i++;
-                        } else {
-                            addToken(new Token(numeroLinea, i, "op_suma", current));
+                        if (flag.equals("stringIter")) { //si recibo la ultima " y cierro el string
+
+                            iterToken += current;
+                            addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
+                            flag = "";
+                            iterToken = "";
+                            break;
+
+                        } else if (flag.equals("")) { //abro string
+                            flag = "stringIter";
+                            iterToken = current;
                         }
+
+                        break;
                     }
 
-                    break;
+                case '+': // operador suma
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    } else if (flag.equals("stringIter")) {//si se esta formando un string
+
+                            iterToken += current;
+                            break;
+                    } else {
+                            if (currentChar == '+' && nextChar == '+') {
+
+                                addToken(new Token(numeroLinea, i, "op_incr", current + current));
+                                i++;
+                                break;
+                            } else {
+                                addToken(new Token(numeroLinea, i, "op_suma", current));
+                                break;
+                            }
+                    }
+
+
+
                 case '-': // operador resta
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -122,8 +170,17 @@ public class AnalizadorLexico {
                     }
                     break;
                 case '(': // Parentesis abierto
-
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -133,7 +190,17 @@ public class AnalizadorLexico {
                     }
 
                 case ')': // Parentesis cerrado
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    } else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -143,7 +210,17 @@ public class AnalizadorLexico {
                     }
 
                 case '[': // Corchete abierto
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -152,7 +229,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case ']': // Corchete cerrado
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -161,7 +248,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case '}': // Llave abierta
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    } else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -170,7 +267,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case '{': // Llave cerrada
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -179,7 +286,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case ';': // Punto y coma
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -189,7 +306,17 @@ public class AnalizadorLexico {
                     }
 
                 case ',': // Coma
-                    if (flag.equals("stringIter")) { //si se esta formando un string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if ((flag.equals("stringIter"))) { //si se esta formando un string
 
                         iterToken += current;
                         break;
@@ -198,7 +325,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case ':': // Dos puntos
-                    if (flag.equals("stringIter")) {//si se esta formando el string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) {//si se esta formando el string
 
                         iterToken += current;
                         break;
@@ -207,7 +344,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case '.': // Punto
-                    if (flag.equals("stringIter")) { //si se esta formando string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    } else if (flag.equals("stringIter")) { //si se esta formando string
 
                         iterToken += current;
                         break;
@@ -216,7 +363,17 @@ public class AnalizadorLexico {
                         break;
                     }
                 case '/':
-                    if (flag.equals("stringIter")) { //si se esta formando string
+                    if(isChar(flag,nextChar) == 1) { // si es un char
+                        addToken(new Token(numeroLinea, i + 1, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (isChar(flag, nextChar) == 2) {
+                        addToken(new Token(numeroLinea, i, "char", current));
+                        flag = "";
+                        i++;
+                        break;
+                    }else if (flag.equals("stringIter")) { //si se esta formando string
 
                         iterToken += current;
                         break;
@@ -235,8 +392,17 @@ public class AnalizadorLexico {
                             //si viene un numero int
 
                             if (currentChar >= '0' && currentChar <= '9') {
-
-                                if (flag.equals("stringIter")) { //si se esta formando string
+                                if(isChar(flag,nextChar) == 1) { // si es un char
+                                    addToken(new Token(numeroLinea, i + 1, "char", current));
+                                    flag = "";
+                                    i++;
+                                    break;
+                                }else if (isChar(flag, nextChar) == 2) {
+                                    addToken(new Token(numeroLinea, i, "char", current));
+                                    flag = "";
+                                    i++;
+                                    break;
+                                }else if (flag.equals("stringIter")) { //si se esta formando string
 
                                     iterToken += current;
                                     break;
@@ -261,28 +427,28 @@ public class AnalizadorLexico {
 
                                 }
                             } else if (currentChar >= 65 && currentChar <= 90){ //Letras mayuscula en ASCII
+                                if(isChar(flag,nextChar) == 1) { // si es un char
+                                    addToken(new Token(numeroLinea, i + 1, "char", current));
+                                }else if (isChar(flag, nextChar) == 2) {
+                                    addToken(new Token(numeroLinea, i, "char", current));
 
-                                if (flag == "CharBlackSlash"){ //si viene de '/
-
-                                    addToken(new Token(numeroLinea,i - 2, "char",current));
-                                    flag ="";
-                                    break;
-                                } else if(flag == "iterChar"){ //si viene de '
-                                    addToken(new Token(numeroLinea, i - 1,"char",current));
-                                    flag="";
-                                    break;
                                 }
+                                flag = "";
+                                i++;
+                                break;
+
                             } else if (currentChar >= 97 && currentChar <= 122){ //Letras minusculas
-                                if (flag == "CharBlackSlash"){ //si viene de '/
 
-                                    addToken(new Token(numeroLinea,i - 2, "char",current));
-                                    flag ="";
-                                    break;
-                                } else if(flag == "iterChar"){ //si viene de '
-                                    addToken(new Token(numeroLinea, i - 1,"char",current));
-                                    flag="";
-                                    break;
+                                if(isChar(flag,nextChar) == 1) { // si es un char
+                                    addToken(new Token(numeroLinea, i + 1, "char", current));
+                                }else if (isChar(flag, nextChar) == 2) {
+                                    addToken(new Token(numeroLinea, i, "char", current));
+
                                 }
+                                flag = "";
+                                i++;
+                                break;
+
                             }
 
 
