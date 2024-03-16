@@ -23,7 +23,7 @@ public class Executor {
                 System.out.print(title);
             }
 
-            l.analizarArchivo("C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru");
+            l.analizarArchivo("C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru");
 
             if (printToFile) {
                 printTokens(writerBuffer, l);
