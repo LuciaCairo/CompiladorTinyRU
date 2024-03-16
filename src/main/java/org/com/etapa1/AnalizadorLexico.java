@@ -56,13 +56,18 @@ public class AnalizadorLexico {
             char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0'; // '\0' indica el final de la cadena
 
             switch (currentChar) {
-                /*case '\'':
-                    if (nextChar){
+                case '\'':
 
+                    if (currentChar == '\\'){//si despues de las ' viene /
+                        flag = "CharBlackSlash";
+                        i++;
+                        break;
+                    } else{
+                        flag = "iterChar";
+                        break;
                     }
-                    addToken(new Token(numeroLinea, i, "char", current));
-                    break;
-                */
+
+
                 case '\0': //NULL
                     if (flag.equals("stringIter")){
                         //hay q largar excepción, porque seria q el string tenga null en el medio
@@ -254,6 +259,29 @@ public class AnalizadorLexico {
                                         break;
                                     }
 
+                                }
+                            } else if (currentChar >= 65 && currentChar <= 90){ //Letras mayuscula en ASCII
+
+                                if (flag == "CharBlackSlash"){ //si viene de '/
+
+                                    addToken(new Token(numeroLinea,i - 2, "char",current));
+                                    flag ="";
+                                    break;
+                                } else if(flag == "iterChar"){ //si viene de '
+                                    addToken(new Token(numeroLinea, i - 1,"char",current));
+                                    flag="";
+                                    break;
+                                }
+                            } else if (currentChar >= 97 && currentChar <= 122){ //Letras minusculas
+                                if (flag == "CharBlackSlash"){ //si viene de '/
+
+                                    addToken(new Token(numeroLinea,i - 2, "char",current));
+                                    flag ="";
+                                    break;
+                                } else if(flag == "iterChar"){ //si viene de '
+                                    addToken(new Token(numeroLinea, i - 1,"char",current));
+                                    flag="";
+                                    break;
                                 }
                             }
 
