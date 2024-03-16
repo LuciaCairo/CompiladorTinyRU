@@ -299,10 +299,73 @@ public class AnalizadorLexico {
 
                 default:
 
+                    // Identificadores
+                    if (currentChar >= 97 && currentChar <= 122){ // Letras minusculas en ASCII
+                        if (flag.equals("stringIter")) {
+                            iterToken += current;
+                        } else {
+                            if (flag == "") {
+                                if (nextChar == ' ' || i + 1 == linea.length()) {
+                                    addToken(new Token(numeroLinea, i - iterToken.length() + 1, "id", current));
+                                } else {
+                                    flag = "identifier";
+                                    iterToken += current;
+                                }
+                            } else if (flag.equals("identifier")){
+                                if (nextChar == ' ' || i + 1 == linea.length()) {
+                                    iterToken += current;
+                                    addToken(new Token(numeroLinea, i - iterToken.length() + 1, "id", iterToken));
+                                    flag = "";
+                                    iterToken = "";}
+                                } else {
+                                        iterToken += current;
+                            }
+                        }
+                        break;
+                    }
+
+                    // Si el carácter actual es un _ seguimos contruyendo el string o identificador
+                    if (currentChar == '_') {
+                        if (flag.equals("identifier") || flag.equals("stringIter")) {
+                            iterToken += current;
+                        }
+                        break;
+                    }
+
+                    // Nombres de clase
+                    if(currentChar >= 65 && currentChar <= 90){ //Letras mayuscula en ASCII
+                        if (flag.equals("stringIter")) {
+                            iterToken += current;
+                        } else{
+                            if(flag.equals("identifier")){
+                                if (nextChar == ' ' || i + 1 == linea.length()) {
+                                    iterToken += current;
+                                    addToken(new Token(numeroLinea, i - iterToken.length() + 1, "id", iterToken));
+                                    flag = "";
+                                    iterToken = "";
+
+                                } else {
+                                    iterToken += current;
+                                }
+                            }
+                        }
+                        break;
+                    }
+
                     // Si viene un numero entero
                     if (currentChar >= '0' && currentChar <= '9') {
                         if (flag.equals("stringIter")) {
                             iterToken += current;
+                        }else if(flag.equals("identifier")){
+                            if (nextChar == ' ' || i + 1 == linea.length()) {
+                                    iterToken += current;
+                                    addToken(new Token(numeroLinea, i - iterToken.length() + 1, "id", iterToken));
+                                    flag = "";
+                                    iterToken = "";
+
+                                } else {
+                                    iterToken += current;
+                                }
                         } else {
                             if (!(nextChar >= '0' && nextChar <= '9')) {
                                 iterToken += current;
