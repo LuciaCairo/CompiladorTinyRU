@@ -55,9 +55,7 @@ public class AnalizadorLexico {
             switch (currentChar) {
 
                 case '"': // String
-
                     if (flag.equals("stringIter")) { // Recibo la ultima " y cierro el string
-
                         iterToken += current;
                         addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
                         flag = "";
