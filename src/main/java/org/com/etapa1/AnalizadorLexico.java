@@ -45,8 +45,8 @@ public class AnalizadorLexico {
     }
 
     private void analizarLinea(String linea, int numeroLinea) {
-        String var1 = "";
-        String var2 = "";
+        String flag = "";
+        String iterToken = "";
         for (int i = 0; i < linea.length(); i++) {
 
             // Obtener el carácter actual y el siguiente (si existe)
@@ -56,64 +56,71 @@ public class AnalizadorLexico {
             char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0'; // '\0' indica el final de la cadena
 
             switch (currentChar) {
+                /*case '\'':
+                    if (nextChar){
 
-
+                    }
+                    addToken(new Token(numeroLinea, i, "char", current));
+                    break;
+                */
+                case '\0': //NULL
+                    if (flag.equals("stringIter")){
+                        //hay q largar excepción, porque seria q el string tenga null en el medio
+                    }
+                    break;
                 case '"':
 
-                    if (var1.equals("lit_comillas_abiertas")) { //si recibo la ultima " y cierro el string
+                    if (flag.equals("stringIter")) { //si recibo la ultima " y cierro el string
 
-                        var2 += current;
-                        addToken(new Token(numeroLinea, i - var2.length() + 1, "str", var2));
-                        var1 = "";
-                        var2 = "";
+                        iterToken += current;
+                        addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
+                        flag = "";
+                        iterToken = "";
                         break;
 
-                    } else if (var1.equals("")) { //abro string
-                        var1 = "lit_comillas_abiertas";
-                        var2 = current;
+                    } else if (flag.equals("")) { //abro string
+                        flag = "stringIter";
+                        iterToken = current;
                     }
 
                     break;
 
                 case '+': // operador suma
-                    if (var1.equals("lit_comillas_abiertas")) {//si se esta formando un string
+                    if (flag.equals("stringIter")) {//si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         if (currentChar == '+' && nextChar == '+') {
-                            Token token = new Token(numeroLinea, i, "op_incr", current + current);
-                            addToken(token);
+
+                            addToken(new Token(numeroLinea, i, "op_incr", current + current));
                             i++;
                         } else {
-
-                            Token token = new Token(numeroLinea, i, "op_suma", current);
-                            addToken(token);
+                            addToken(new Token(numeroLinea, i, "op_suma", current));
                         }
                     }
 
                     break;
                 case '-': // operador resta
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         if (currentChar == '-' && nextChar == '-') {
-                            Token token = new Token(numeroLinea, i, "op_decr", current + current);
-                            addToken(token);
+                            addToken( new Token(numeroLinea, i, "op_decr", current + current));
                             i++;
                         } else {
-                            Token token = new Token(numeroLinea, i, "op_resta", current);
-                            addToken(token);
+
+                            addToken(new Token(numeroLinea, i, "op_resta", current));
                         }
                     }
                     break;
                 case '(': // Parentesis abierto
 
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "par_open", current));
@@ -121,9 +128,9 @@ public class AnalizadorLexico {
                     }
 
                 case ')': // Parentesis cerrado
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "par_close", current));
@@ -131,45 +138,45 @@ public class AnalizadorLexico {
                     }
 
                 case '[': // Corchete abierto
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "cor_open", current));
                         break;
                     }
                 case ']': // Corchete cerrado
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "cor_close", current));
                         break;
                     }
                 case '}': // Llave abierta
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "braces_open", current));
                         break;
                     }
                 case '{': // Llave cerrada
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "braces_close", current));
                         break;
                     }
                 case ';': // Punto y coma
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "semicolon", current));
@@ -177,36 +184,36 @@ public class AnalizadorLexico {
                     }
 
                 case ',': // Coma
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando un string
+                    if (flag.equals("stringIter")) { //si se esta formando un string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "comma", current));
                         break;
                     }
                 case ':': // Dos puntos
-                    if (var1.equals("lit_comillas_abiertas")) {//si se esta formando el string
+                    if (flag.equals("stringIter")) {//si se esta formando el string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "colon", current));
                         break;
                     }
                 case '.': // Punto
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando string
+                    if (flag.equals("stringIter")) { //si se esta formando string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         addToken(new Token(numeroLinea, i, "period", current));
                         break;
                     }
                 case '/':
-                    if (var1.equals("lit_comillas_abiertas")) { //si se esta formando string
+                    if (flag.equals("stringIter")) { //si se esta formando string
 
-                        var2 += current;
+                        iterToken += current;
                         break;
                     } else {
                         if (currentChar == '/' && nextChar == '?') {
@@ -216,14 +223,39 @@ public class AnalizadorLexico {
                     Token token = new Token(numeroLinea, i, "op_div", current);
                     addToken(token);
                     break;
+
+
                 default:
                             // Caso por defecto, en caso de que no coincida con ningún caso anterior
                             //si viene un numero int
-                            if (currentChar > '1' && currentChar < '9') {
 
+                            if (currentChar >= '0' && currentChar <= '9') {
 
+                                if (flag.equals("stringIter")) { //si se esta formando string
+
+                                    iterToken += current;
+                                    break;
+                                } else {
+                                    if ((!(nextChar >= '0' && nextChar <= '9')) || nextChar == '\0') {
+                                        iterToken += current;
+                                        addToken(new Token(numeroLinea, i - iterToken.length() + 1, "int", iterToken));
+                                        flag = "";
+                                        iterToken = "";
+                                        break;
+                                    } else {
+                                        if (flag == "") {
+                                            flag = "int";
+                                            iterToken = current;
+                                            break;
+                                        } else if (flag == "int") {
+                                            iterToken += current;
+                                            break;
+                                        }
+                                        break;
+                                    }
+
+                                }
                             }
-                            break;
 
 
             }
