@@ -10,7 +10,7 @@ public class Executor {
         AnalizadorLexico l = new AnalizadorLexico();
         boolean printToFile = (args.length == 2);
 
-        BufferedWriter writerBuffer = null; // Declara writerBuffer fuera del bloque try
+        BufferedWriter writerBuffer = null;
 
         try {
             if (printToFile) {
