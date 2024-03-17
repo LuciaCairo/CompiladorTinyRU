@@ -1,3 +1,3 @@
-/? Caracter Hangul Invalido
+/? String mal formado que nunca cierra
 
-++---:<>"++++\0"
+"++++++++++++55555555654754647

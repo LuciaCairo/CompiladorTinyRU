@@ -56,6 +56,14 @@ public class AnalizadorLexico {
         return 0;
 
     }
+    //funcion para contar el largo de los string
+    public void limitChar(int num, int fila, int columna) {
+        if (num > 1024){
+            throw new LexicalErrorException(fila, columna, "String supera la cantidad maxima de caracteres en cadenas");
+        }
+    }
+
+
     private void analizarLinea(String linea, int numeroLinea) {
         String flag = ""; // Bandera para indicar que se esta guardando
         String iterToken = "";
@@ -71,6 +79,7 @@ public class AnalizadorLexico {
                 case '\'':
                     if (flag.equals("stringIter")) {//si se esta formando un string
                         countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
 
                         break;
@@ -124,6 +133,7 @@ public class AnalizadorLexico {
 
                     } else if (flag.equals("stringIter")) {//si se esta formando un string
                         countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
 
                         break;
@@ -144,6 +154,9 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) { //Si se esta formando un string
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
+
                         iterToken += current;
 
                     } else {
@@ -168,7 +181,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) { //si se esta formando un string
-
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "par_open", current));
@@ -182,6 +196,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) { //si se esta formando un string
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "par_close", current));
@@ -195,6 +211,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) { //si se esta formando un string
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "cor_open", current));
@@ -208,7 +226,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) { //si se esta formando un string
-
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "cor_close", current));
@@ -223,8 +242,9 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) { //si se esta formando un string
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
-                        break;
                     } else {
                         addToken(new Token(numeroLinea, i, "braces_close", current));
                         break;
@@ -236,6 +256,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "braces_close", current));
@@ -244,11 +266,14 @@ public class AnalizadorLexico {
 
                 case ';': // Punto y coma
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
+
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
                         i++;
 
                     } else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "semicolon", current));
@@ -262,7 +287,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if ((flag.equals("stringIter"))) { //si se esta formando un string
-
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "comma", current));
@@ -276,7 +302,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {//si se esta formando el string
-
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "colon", current));
@@ -290,7 +317,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) { //si se esta formando string
-
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "period", current));
@@ -304,6 +332,8 @@ public class AnalizadorLexico {
                         i++;
 
                     } else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '?') { // Si el siguiente carácter es '?', es un comentario
@@ -331,6 +361,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "op_mult", current));
@@ -344,6 +376,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         addToken(new Token(numeroLinea, i, "op_mod", current));
@@ -357,6 +391,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '=') { // Si el siguiente carácter es '=', es igualdad (==)
@@ -375,6 +411,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '=') { // Si el siguiente carácter es '=', es menor o igual (<=)
@@ -393,6 +431,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '=') { // Si el siguiente carácter es '=', es mayor o igual (>=)
@@ -411,6 +451,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '=') { // Si el siguiente carácter es '=', es diferencia (!=)
@@ -429,6 +471,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '&') { // Si el siguiente carácter es '&', es un AND
@@ -447,6 +491,8 @@ public class AnalizadorLexico {
                         i++;
 
                     }else if (flag.equals("stringIter")) {
+                        countStr++;
+                        limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
                         if (nextChar == '|') { // Si el siguiente carácter es '|', es un OR
@@ -470,7 +516,8 @@ public class AnalizadorLexico {
                             i++;
 
                         } else if (flag.equals("stringIter")) { //si se esta formando string
-
+                            countStr++;
+                            limitChar(countStr,numeroLinea,i);
                             iterToken += current;
                             break;
                         } else {
@@ -535,6 +582,9 @@ public class AnalizadorLexico {
 
 
             }
+        }
+        if (flag == "stringIter"){
+            throw new LexicalErrorException(numeroLinea, linea.length(), "String mal formado. Se esperaba un fin de string ");
         }
     }
 }
