@@ -1,4 +1,3 @@
-/?hfdjghdfkjhgjdkf@
-/++-
-"+-+()[]"12345
-'a''\n''6'';'
+/? Caracter Hangul Invalido
+
+++---:<>"++++\0"
