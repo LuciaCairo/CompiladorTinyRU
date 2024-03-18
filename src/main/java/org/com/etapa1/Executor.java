@@ -64,22 +64,30 @@ public class Executor {
     }
 
     private static void printTokens(BufferedWriter writerBuffer, AnalizadorLexico l) throws IOException {
+        int n = 0;
         while (l.countTokens() > 0) {
             Token t = l.nextToken();
             String text = "| " + t.getName() +
                     " | " + t.getLexema() +
                     " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
             writerBuffer.write(text);
+            n = t.getLine();
         }
+        String fin = "| EOF | EOF | LINEA " + (n+1) + " (COLUMNA 0 ) |\n";
+        writerBuffer.write(fin);
     }
 
     private static void printTokensConsola(AnalizadorLexico l) {
+        int n = 0;
         while (l.countTokens() > 0) {
             Token t = l.nextToken();
             String text = "| " + t.getName() +
                     " | " + t.getLexema() +
                     " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
             System.out.print(text);
+            n = t.getLine();
         }
+        String fin = "| EOF | EOF | LINEA " + (n+1) + " (COLUMNA 0 ) |\n";
+        System.out.print(fin);
     }
 }
