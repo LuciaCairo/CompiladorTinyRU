@@ -43,9 +43,22 @@ public class AnalizadorLexico {
         return this.tokens.size();
     }
     public int isChar(String idChar, char nextChar,int fila ,int columna, String current) { //funcion para saber si es un char
+        char [] charCurrent = current.toCharArray();
         if (nextChar == '\'') {
             if (idChar == "CharBlackSlash") {
-                addToken(new Token(fila, columna + 1, "char", current));
+
+                if (charCurrent[0]== 't'){
+
+                    addToken(new Token(fila, columna - 2, "char","\\" + current)); // ver si la columna esta bien
+                } else if (charCurrent[0]== 'n' ){
+                    addToken(new Token(fila, columna - 2, "char","\\" + current));
+
+                } else if (charCurrent[0] == 'r') {
+                    addToken(new Token(fila, columna - 2, "char","\\" + current));
+                } else {
+                    addToken(new Token(fila, columna - 1, "char", current));
+                }
+
             } else if (idChar == "iterChar") {
                 addToken(new Token(fila, columna, "char", current));
             }
@@ -83,21 +96,37 @@ public class AnalizadorLexico {
                         iterToken += current;
 
                         break;
-                    }else if (nextChar == '\\') {//si despues de las ' viene /
-                        flag = "CharBlackSlash";
-                        i++;
-                        break;
                     } else {
                         flag = "iterChar";
                         break;
                     }
 
 
-                case '\\': //NULL
+                case '\\': // barra invertida
 
-                    if (flag.equals("stringIter") && nextChar == '0') {
-                        //hay q largar excepción, porque seria q el string tenga null en el medio
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter invalido. Los Str no permiten caracter null");
+                    if (flag.equals("stringIter") ) {//NULL
+
+                        if (nextChar =='0'){
+
+                            throw new LexicalErrorException(numeroLinea, i, "Caracter invalido. Los Str no permiten caracter null");
+                        } else{ // si no es \n que agregue al string
+
+                            countStr++;
+                            limitChar(countStr,numeroLinea,i);
+                            iterToken += current;
+                        }
+
+                    } else if (flag.equals("iterChar")){
+
+                        flag = "CharBlackSlash";
+
+                    }
+                    break;
+                case ' ':
+
+                    if (flag.equals("stringIter")){
+                        limitChar(countStr,numeroLinea,i);
+                        iterToken += current;
                     }
                     break;
                 case '"': //si comienza un string o quiero agregar un char
@@ -109,7 +138,7 @@ public class AnalizadorLexico {
                     }else {
                         if (flag.equals("stringIter")) { //si recibo la ultima " y cierro el string
 
-                            iterToken += current;
+
                             addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
                             flag = "";
                             iterToken = "";
@@ -118,7 +147,6 @@ public class AnalizadorLexico {
                         } else if (flag.equals("")) { //abro string
                             flag = "stringIter";
 
-                            iterToken = current;
                         }
 
                         break;
@@ -504,7 +532,7 @@ public class AnalizadorLexico {
                     }
                     break;
 
-                case '?':
+
 
 
                 default:
