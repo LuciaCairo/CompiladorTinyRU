@@ -9,6 +9,7 @@ public class Executor {
     public static void main(String[] args) {
         AnalizadorLexico l = new AnalizadorLexico();
         boolean printToFile = (args.length == 2);
+        String title = "| TOKEN | LEXEMA | NUMERO DE LINEA (NUMERO DE COLUMNA)|\n";
 
         BufferedWriter writerBuffer = null;
 
@@ -20,8 +21,12 @@ public class Executor {
             l.analizarArchivo("C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru");
 
             if (printToFile) {
+                writerBuffer.write("CORRECTO: ANALISIS LEXICO\n");
+                writerBuffer.write(title);
                 printTokens(writerBuffer, l);
             } else {
+                System.out.print("CORRECTO: ANALISIS LEXICO\n");
+                System.out.print(title);
                 printTokensConsola(l);
             }
 
