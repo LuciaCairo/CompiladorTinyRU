@@ -46,21 +46,21 @@ public class AnalizadorLexico {
         char [] charCurrent = current.toCharArray();
         if (nextChar == '\'') {
             if (idChar == "CharBlackSlash") {
-
                 if (charCurrent[0]== 't'){
-
-                    addToken(new Token(fila, columna - 2, "char","\\" + current)); // ver si la columna esta bien
+                    addToken(new Token(fila, columna - 3, "char","\\" + current)); // ver si la columna esta bien
                 } else if (charCurrent[0]== 'n' ){
-                    addToken(new Token(fila, columna - 2, "char","\\" + current));
-
+                    addToken(new Token(fila, columna - 3, "char","\\" + current));
+                } else if (charCurrent[0]== 'v' ){
+                    addToken(new Token(fila, columna - 3, "char","\\" + current));
                 } else if (charCurrent[0] == 'r') {
-                    addToken(new Token(fila, columna - 2, "char","\\" + current));
+                    addToken(new Token(fila, columna - 3, "char","\\" + current));
+                }else if (charCurrent[0] == '0') {
+                    throw new LexicalErrorException(fila, columna - 3, "Caracter invalido. Los Char no permiten caracter null");
                 } else {
-                    addToken(new Token(fila, columna - 1, "char", current));
+                    addToken(new Token(fila, columna - 2, "char", current));
                 }
-
             } else if (idChar == "iterChar") {
-                addToken(new Token(fila, columna, "char", current));
+                addToken(new Token(fila, columna -1, "char", current));
             }
 
         } else{
@@ -72,7 +72,7 @@ public class AnalizadorLexico {
     //funcion para contar el largo de los string
     public void limitChar(int num, int fila, int columna) {
         if (num > 1024){
-            throw new LexicalErrorException(fila, columna, "String supera la cantidad maxima de caracteres en cadenas");
+            throw new LexicalErrorException(fila, columna - num, "String supera la cantidad maxima de caracteres en cadenas");
         }
     }
 
@@ -180,41 +180,46 @@ public class AnalizadorLexico {
 
             switch (currentChar) {
                 case '\'':
-                    if (flag.equals("stringIter")) {//si se esta formando un string
+                    if (flag.equals("stringIter")) { //Si se esta formando un string
                         countStr++;
                         limitChar(countStr,numeroLinea,i);
                         iterToken += current;
-
-                        break;
+                    } else if (flag.equals("CharBlackSlash")){
+                        isChar(flag,nextChar,numeroLinea,i,current);
+                        flag = "";
+                        i++;
                     } else {
                         flag = "iterChar";
-                        break;
                     }
+                    break;
 
                 case '\\': // barra invertida
-
                     if (flag.equals("stringIter") ) {//NULL
-
                         if (nextChar =='0'){
-
                             throw new LexicalErrorException(numeroLinea, i, "Caracter invalido. Los Str no permiten caracter null");
-                        } else{ // si no es \n que agregue al string
-
+                        } else{
                             countStr++;
                             limitChar(countStr,numeroLinea,i);
                             iterToken += current;
                         }
-
+                    } else if (flag.equals("CharBlackSlash")){
+                        isChar(flag,nextChar,numeroLinea,i,current);
+                        flag = "";
+                        i++;
                     } else if (flag.equals("iterChar")){
-
                         flag = "CharBlackSlash";
-
+                    } else{
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter invalido '\\'" );
                     }
                     break;
 
                 case ' ':
+                    if(flag == "CharBlackSlash" || flag == "iterChar"){
+                        isChar(flag,nextChar,numeroLinea,i,current);
+                        flag = "";
+                        i++;
 
-                    if (flag.equals("stringIter")){
+                    } else if (flag.equals("stringIter")){
                         limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     }
@@ -225,12 +230,9 @@ public class AnalizadorLexico {
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
                         i++;
-
                     }else {
                         if (flag.equals("stringIter")) { //si recibo la ultima " y cierro el string
-
-
-                            addToken(new Token(numeroLinea, i - iterToken.length() + 1, "str", iterToken));
+                            addToken(new Token(numeroLinea, i - iterToken.length() -1, "str", iterToken));
                             flag = "";
                             iterToken = "";
                             break;
@@ -239,11 +241,11 @@ public class AnalizadorLexico {
                             flag = "stringIter";
 
                         }
-
-                        break;
                     }
+                    break;
 
                 case '+': // Operador suma
+                    System.out.println(flag);
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
@@ -794,12 +796,17 @@ public class AnalizadorLexico {
                             (currentChar >= '\u03B1' && currentChar <= '\u03C1') ||
                             (currentChar >= '\u03C3' && currentChar <= '\u03C9')) {
                         throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
-                    } else if(currentChar == '@'){
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
+                    } else{
+                        if(flag == "CharBlackSlash" || flag == "iterChar"){
+                            isChar(flag,nextChar,numeroLinea,i,current);
+                            flag = "";
+                            i++;
 
-                    }
-
-                    else{
+                        }else if (flag.equals("stringIter")) {
+                            countStr++;
+                            limitChar(countStr,numeroLinea,i);
+                            iterToken += current;
+                        }else
                         throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
                     }
 
@@ -810,6 +817,9 @@ public class AnalizadorLexico {
         }
         if (flag == "stringIter"){
             throw new LexicalErrorException(numeroLinea, linea.length(), "String mal formado. Se esperaba un fin de string ");
+        }
+        if (flag == "CharBlackSlash" || flag == "iterChar"){
+            throw new LexicalErrorException(numeroLinea, linea.length(), "Caracter mal formado. Se esperaba un fin de caracter ' ");
         }
     }
 }
