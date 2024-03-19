@@ -55,7 +55,7 @@ public class AnalizadorLexico {
                 } else if (charCurrent[0] == 'r') {
                     addToken(new Token(fila, columna - 3, "char","\\" + current));
                 }else if (charCurrent[0] == '0') {
-                    throw new LexicalErrorException(fila, columna - 3, "Caracter invalido. Los Char no permiten caracter null");
+                    throw new LexicalErrorException(fila, columna , "Caracter invalido. Los caracteres no permiten caracter null");
                 } else {
                     addToken(new Token(fila, columna - 2, "char", current));
                 }
@@ -153,7 +153,7 @@ public class AnalizadorLexico {
             case "Char":
                 addToken(new Token(line, col, "class_Char", lexema));
                 break;
-            case "String":
+            case "Str":
                 addToken(new Token(line, col, "class_String", lexema));
                 break;
             case "IO":
@@ -688,6 +688,8 @@ public class AnalizadorLexico {
                             } else {
                                 iterToken += current;
                             }
+                        } else{
+                            throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
                         }
                         break;
                     }
