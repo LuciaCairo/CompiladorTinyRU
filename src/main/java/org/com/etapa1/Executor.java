@@ -31,17 +31,8 @@ public class Executor {
             }
 
         } catch (LexicalErrorException e) {
-            if (printToFile && writerBuffer != null) {
-                try {
-                    writerBuffer.write("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |\n");
-                    writerBuffer.write( "| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            } else {
-                System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
-                System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
-            }
+            System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
+            System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,8 +69,6 @@ public class Executor {
             writerBuffer.write(text);
             n = t.getLine();
         }
-        String fin = "| EOF | EOF | LINEA " + (n+1) + " (COLUMNA 0 ) |\n";
-        writerBuffer.write(fin);
     }
 
     private static void printTokensConsola(AnalizadorLexico l) {
@@ -92,7 +81,5 @@ public class Executor {
             System.out.print(text);
             n = t.getLine();
         }
-        String fin = "| EOF | EOF | LINEA " + (n+1) + " (COLUMNA 0 ) |\n";
-        System.out.print(fin);
     }
 }
