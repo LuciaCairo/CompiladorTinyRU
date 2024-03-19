@@ -77,6 +77,96 @@ public class AnalizadorLexico {
     }
 
 
+    // Cuando se forma un identificador, verificamos que si es una palabra reservada
+    private void isKeyWord(int line, int col, String lexema) {
+        switch(lexema) {
+            case "struct":
+                addToken(new Token(line, col, "keyword_struct", lexema));
+                break;
+            case "impl":
+                addToken(new Token(line, col, "keyword_impl", lexema));
+                break;
+            case "else":
+                addToken(new Token(line, col, "keyword_else", lexema));
+                break;
+            case "false":
+                addToken(new Token(line, col, "keyword_false", lexema));
+                break;
+            case "if":
+                addToken(new Token(line, col, "keyword_if", lexema));
+                break;
+            case "ret":
+                addToken(new Token(line, col, "keyword_ret", lexema));
+                break;
+            case "while":
+                addToken(new Token(line, col, "keyword_while", lexema));
+                break;
+            case "true":
+                addToken(new Token(line, col, "keyword_true", lexema));
+                break;
+            case "nil":
+                addToken(new Token(line, col, "keyword_nil", lexema));
+                break;
+            case "new":
+                addToken(new Token(line, col, "keyword_new", lexema));
+                break;
+            case "fn":
+                addToken(new Token(line, col, "keyword_fn", lexema));
+                break;
+            case "st":
+                addToken(new Token(line, col, "keyword_st", lexema));
+                break;
+            case "pri":
+                addToken(new Token(line, col, "keyword_pri", lexema));
+                break;
+            case "self":
+                addToken(new Token(line, col, "keyword_self", lexema));
+                break;
+            case "void":
+                addToken(new Token(line, col, "type_void", lexema));
+                break;
+            default:
+                addToken(new Token(line, col, "id", lexema));
+        }
+    }
+
+    // Verificamos si el caracter es una letra, un numero o un guion bajo
+    private boolean isCharValid(char c) {
+        return ((c >= '0' && c <= '9') ||   // numero
+                (c == '_') ||               // guion
+                (c >= 65 && c <= 90) ||     // mayuscula
+                (c >= 97 && c <= 122));     // minuscula
+    }
+
+    // Cuando se forma un nombre de clase, verificamos que si es una clase predefinida
+    private void isClass(int line, int col, String lexema) {
+        switch(lexema) {
+            case "Int":
+                addToken(new Token(line, col, "class_Int", lexema));
+                break;
+            case "Bool":
+                addToken(new Token(line, col, "class_Bool", lexema));
+                break;
+            case "Array":
+                addToken(new Token(line, col, "class_Array", lexema));
+                break;
+            case "Char":
+                addToken(new Token(line, col, "class_Char", lexema));
+                break;
+            case "String":
+                addToken(new Token(line, col, "class_String", lexema));
+                break;
+            case "IO":
+                addToken(new Token(line, col, "class_IO", lexema));
+                break;
+            case "Object":
+                addToken(new Token(line, col, "class_Object", lexema));
+                break;
+            default:
+                addToken(new Token(line, col, "struct_name", lexema));
+        }
+    }
+
     private void analizarLinea(String linea, int numeroLinea) {
         String flag = ""; // Bandera para indicar que se esta guardando
         String iterToken = "";
@@ -86,7 +176,7 @@ public class AnalizadorLexico {
             // Obtener el carácter actual y el siguiente (si existe)
             char currentChar = linea.charAt(i);
             String current = "" + currentChar;
-            char nextChar = (i + 1 < linea.length()) ? linea.charAt(i + 1) : '\0';
+            char nextChar = (i + 1 < linea.length())? linea.charAt(i + 1) : '\0';
 
             switch (currentChar) {
                 case '\'':
@@ -100,7 +190,6 @@ public class AnalizadorLexico {
                         flag = "iterChar";
                         break;
                     }
-
 
                 case '\\': // barra invertida
 
@@ -122,6 +211,7 @@ public class AnalizadorLexico {
 
                     }
                     break;
+
                 case ' ':
 
                     if (flag.equals("stringIter")){
@@ -129,6 +219,7 @@ public class AnalizadorLexico {
                         iterToken += current;
                     }
                     break;
+
                 case '"': //si comienza un string o quiero agregar un char
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
@@ -152,19 +243,17 @@ public class AnalizadorLexico {
                         break;
                     }
 
-
                 case '+': // Operador suma
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
                         i++;
 
-                    } else if (flag.equals("stringIter")) {//si se esta formando un string
+                    } else if (flag.equals("stringIter")) { //Si se esta formando un string
                         countStr++;
                         limitChar(countStr,numeroLinea,i);
                         iterToken += current;
 
-                        break;
                     } else {
                         if (nextChar == '+') { // Si el siguiente carácter es '+', es incremento (++)
                             addToken(new Token(numeroLinea, i, "op_incr", current + current));
@@ -181,10 +270,9 @@ public class AnalizadorLexico {
                         flag = "";
                         i++;
 
-                    }else if (flag.equals("stringIter")) { //Si se esta formando un string
+                    }else if(flag.equals("stringIter")) { //Si se esta formando un string
                         countStr++;
                         limitChar(countStr,numeroLinea,i);
-
                         iterToken += current;
 
                     } else {
@@ -262,7 +350,6 @@ public class AnalizadorLexico {
                     }
                     break;
 
-
                 case '{': // Llave abierta
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
@@ -274,9 +361,10 @@ public class AnalizadorLexico {
                         limitChar(countStr,numeroLinea,i);
                         iterToken += current;
                     } else {
-                        addToken(new Token(numeroLinea, i, "braces_close", current));
-                        break;
+                        addToken(new Token(numeroLinea, i, "braces_open", current));
                     }
+                    break;
+
                 case '}': // Llave cerrada
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
@@ -512,7 +600,7 @@ public class AnalizadorLexico {
                     }
                     break;
 
-                case '|': // Operador AND
+                case '|': // Operador OR
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
@@ -532,12 +620,121 @@ public class AnalizadorLexico {
                     }
                     break;
 
-
-
-
                 default:
+                    // Identificadores
+                    if (currentChar >= 97 && currentChar <= 122) { // Letras minusculas en ASCII
+                        if(flag == "CharBlackSlash" || flag == "iterChar"){
+                            isChar(flag,nextChar,numeroLinea,i,current);
+                            flag = "";
+                            i++;
+                        } else if (flag.equals("stringIter")) {
+                            iterToken += current;
+                        } else {
+                            if (flag == "") { // Llega la primera letra del identificador
+                                if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                    isKeyWord(numeroLinea, i, current);
+                                    flag = "";
+                                    iterToken = "";
+                                } else {
+                                    flag = "identifier";
+                                    iterToken += current;
+                                }
+                            } else {
+                                if (flag.equals("identifier")) {
+                                    if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                        iterToken += current;
+                                        isKeyWord(numeroLinea,i - iterToken.length() + 1, iterToken);
+                                        flag = "";
+                                        iterToken = "";
+                                    } else {
+                                        iterToken += current;
+                                    }
+                                } else {
+                                    if (flag.equals("struct")) {
+                                        if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                            iterToken += current;
+                                            isClass(numeroLinea,i - iterToken.length() + 1, iterToken);
+                                            flag = "";
+                                            iterToken = "";
+                                        } else {
+                                            iterToken += current;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
 
-                    if (currentChar >= '0' && currentChar <= '9') {
+                    // Si el carácter actual es un _ seguimos contruyendo el string o identificador o nombre de clase
+                    else if (currentChar == '_') {
+                        if (flag.equals("stringIter")) {
+                            iterToken += current;
+                        } else if(flag.equals("struct")){
+                            if(nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                // Error: Los nombres de clase no debe terminar con _
+                                throw new LexicalErrorException(numeroLinea, i - iterToken.length(), "Los nombres de" +
+                                        " clase deben finalizar con letra. " + iterToken+current + " es invalido " );
+                            } else {
+                                iterToken += current;
+                            }
+                        } else if(flag.equals("identifier")){
+                            if(nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                isKeyWord(numeroLinea, i - iterToken.length(),iterToken+current);
+                                flag = "";
+                                iterToken = "";
+                            } else {
+                                iterToken += current;
+                            }
+                        }
+                        break;
+                    }
+
+                    // Nombres de clase
+                    else if (currentChar >= 65 && currentChar <= 90) { //Letras mayuscula en ASCII
+                        if(flag == "CharBlackSlash" || flag == "iterChar"){
+                            isChar(flag,nextChar,numeroLinea,i,current);
+                            flag = "";
+                            i++;
+                        } else if (flag.equals("stringIter")) {
+                            iterToken += current;
+                        } else {
+                            if (flag == "") { // Llega la primera letra del nombre de clase
+                                if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                    isClass(numeroLinea, i ,current);
+                                    flag = "";
+                                    iterToken = "";
+                                } else {
+                                    flag = "struct";
+                                    iterToken += current;
+                                }
+                            } else {
+                                if (flag.equals("identifier")) {
+                                    if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                        iterToken += current;
+                                        isKeyWord(numeroLinea,i - iterToken.length() + 1, iterToken);
+                                        flag = "";
+                                        iterToken = "";
+                                    } else {
+                                        iterToken += current;
+                                    }
+                                } else if (flag.equals("struct")) {
+                                    if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                        iterToken += current;
+                                        isClass(numeroLinea,i - iterToken.length() + 1, iterToken);
+                                        flag = "";
+                                        iterToken = "";
+                                    } else {
+                                        iterToken += current;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+
+                    // Si viene un numero entero
+                    else if (currentChar >= '0' && currentChar <= '9') {
                         if(flag == "CharBlackSlash" || flag == "iterChar"){
                             isChar(flag,nextChar,numeroLinea,i,current);
                             flag = "";
@@ -547,65 +744,65 @@ public class AnalizadorLexico {
                             countStr++;
                             limitChar(countStr,numeroLinea,i);
                             iterToken += current;
-                            break;
+                        } else if (flag.equals("identifier")) {
+                            if (nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                iterToken += current;
+                                isKeyWord(numeroLinea, i - iterToken.length() + 1, iterToken);
+                                flag = "";
+                                iterToken = "";
+
+                            } else {
+                                iterToken += current;
+                            }
+                        } else if(flag.equals("struct")){
+                            if(nextChar == ' ' || i + 1 == linea.length() || !isCharValid(nextChar)) {
+                                // Error: Los nombres de clase no debe terminar con numero
+                                throw new LexicalErrorException(numeroLinea, i - iterToken.length(), "Los nombres de" +
+                                        " clase deben finalizar con letra. " + iterToken+current + " es invalido " );
+                            } else {
+                                iterToken += current;
+                            }
                         } else {
-                            if ((!(nextChar >= '0' && nextChar <= '9')) || nextChar == '\0') {
+                            if (!(nextChar >= '0' && nextChar <= '9')) {
                                 iterToken += current;
                                 addToken(new Token(numeroLinea, i - iterToken.length() + 1, "int", iterToken));
                                 flag = "";
                                 iterToken = "";
-                                break;
+
                             } else {
                                 if (flag == "") {
                                     flag = "int";
                                     iterToken = current;
-
                                 } else if (flag == "int") {
                                     iterToken += current;
                                 }
-
                             }
                             break;
                         }
-                    } else if (currentChar >= 65 && currentChar <= 90) { //Letras mayuscula en ASCII
-                        if(flag == "CharBlackSlash" || flag == "iterChar"){
+                    }
 
-                            isChar(flag,nextChar,numeroLinea,i,current);
-                            flag = "";
-                            i++;
-
-                        }
-
-                        break;
-
-                    } else if (currentChar >= 97 && currentChar <= 122) { //Letras minusculas
-
-                        if(flag == "CharBlackSlash" || flag == "iterChar"){
-                            //if (currentChar == 116){
-
-                            //} else {
-                                isChar(flag,nextChar,numeroLinea,i,current);
-                                flag = "";
-                                i++;
-                            //}
-
-
-                        }
-                        break;
-                        //si me viene un caracter chino
-                    } else if ((currentChar >= '\u4E00' && currentChar <= '\u9FFF') || (currentChar >= '\u3400' && currentChar <= '\u4DBF')){
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido ' " + current + "'" );
+                    else if ((currentChar >= '\u4E00' && currentChar <= '\u9FFF') ||
+                            (currentChar >= '\u3400' && currentChar <= '\u4DBF')){
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
                       // alfabeto Hangeul
-                    } else if ((currentChar >= '\uAC00' && currentChar <= '\uD7A3') || (currentChar >= '\u3131' && currentChar <= '\u318E')){
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido ' " + current + "'" );
+                    } else if ((currentChar >= '\uAC00' && currentChar <= '\uD7A3') ||
+                            (currentChar >= '\u3131' && currentChar <= '\u318E')){
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
                         //alfabeto griego
-                    } else if ((currentChar>= '\u0391' && currentChar <= '\u03A1') || (currentChar >= '\u03A3' && currentChar <= '\u03A9') ||
-                        (currentChar >= '\u03B1' && currentChar <= '\u03C1') || (currentChar >= '\u03C3' && currentChar <= '\u03C9')) {
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido ' " + current + "'" );
+                    } else if ((currentChar>= '\u0391' && currentChar <= '\u03A1') ||
+                            (currentChar >= '\u03A3' && currentChar <= '\u03A9') ||
+                            (currentChar >= '\u03B1' && currentChar <= '\u03C1') ||
+                            (currentChar >= '\u03C3' && currentChar <= '\u03C9')) {
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
                     } else if(currentChar == '@'){
-                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido ' " + current + "'" );
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
 
                     }
+
+                    else{
+                        throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
+                    }
+
 
 
 
