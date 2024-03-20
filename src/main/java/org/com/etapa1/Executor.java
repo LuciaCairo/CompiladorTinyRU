@@ -60,26 +60,34 @@ public class Executor {
     }
 
     private static void printTokens(BufferedWriter writerBuffer, AnalizadorLexico l) throws IOException {
-        int n = 0;
-        while (l.countTokens() > 0) {
+        int n = l.countTokens();
+        while ( n > 0) {
             Token t = l.nextToken();
-            String text = "| " + t.getName() +
-                    " | " + t.getLexema() +
-                    " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
-            writerBuffer.write(text);
-            n = t.getLine();
+            if(t.getName() == "EOF") {
+                n = 0;
+            } else {
+                String text = "| " + t.getName() +
+                        " | " + t.getLexema() +
+                        " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
+                writerBuffer.write(text);
+                n = l.countTokens();
+            }
         }
     }
 
     private static void printTokensConsola(AnalizadorLexico l) {
-        int n = 0;
-        while (l.countTokens() > 0) {
+        int n = l.countTokens();
+        while (n > 0) {
             Token t = l.nextToken();
-            String text = "| " + t.getName() +
-                    " | " + t.getLexema() +
-                    " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
-            System.out.print(text);
-            n = t.getLine();
+            if(t.getName() == "EOF") {
+                n = 0;
+            } else {
+                String text = "| " + t.getName() +
+                        " | " + t.getLexema() +
+                        " | LINEA " + t.getLine() + " (COLUMNA " + t.getCol() + ") |\n";
+                System.out.print(text);
+                n = l.countTokens();
+            }
         }
     }
 }
