@@ -47,13 +47,13 @@ public class AnalizadorLexico {
         if (nextChar == '\'') {
             if (idChar == "CharBlackSlash") {
                 if (charCurrent[0]== 't'){
-                    addToken(new Token(fila, columna - 3, "char","\\" + current)); // ver si la columna esta bien
+                    addToken(new Token(fila, columna - 2, "char","\\" + current)); // ver si la columna esta bien
                 } else if (charCurrent[0]== 'n' ){
-                    addToken(new Token(fila, columna - 3, "char","\\" + current));
+                    addToken(new Token(fila, columna - 2, "char","\\" + current));
                 } else if (charCurrent[0]== 'v' ){
-                    addToken(new Token(fila, columna - 3, "char","\\" + current));
+                    addToken(new Token(fila, columna - 2, "char","\\" + current));
                 } else if (charCurrent[0] == 'r') {
-                    addToken(new Token(fila, columna - 3, "char","\\" + current));
+                    addToken(new Token(fila, columna - 2, "char","\\" + current));
                 }else if (charCurrent[0] == '0') {
                     throw new LexicalErrorException(fila, columna , "Caracter invalido. Los caracteres no permiten caracter null");
                 } else {
