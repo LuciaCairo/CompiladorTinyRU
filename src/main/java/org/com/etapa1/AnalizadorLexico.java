@@ -245,7 +245,6 @@ public class AnalizadorLexico {
                     break;
 
                 case '+': // Operador suma
-                    System.out.println(flag);
                     if(flag == "CharBlackSlash" || flag == "iterChar"){
                         isChar(flag,nextChar,numeroLinea,i,current);
                         flag = "";
@@ -798,6 +797,14 @@ public class AnalizadorLexico {
                             (currentChar >= '\u03B1' && currentChar <= '\u03C1') ||
                             (currentChar >= '\u03C3' && currentChar <= '\u03C9')) {
                         throw new LexicalErrorException(numeroLinea, i, "Caracter Invalido '" + current + "'" );
+                    } else if (currentChar == 26) {
+                        if(flag == "CharBlackSlash" || flag == "iterChar"){
+                            throw new LexicalErrorException(numeroLinea, i, "Caracter invalido. Los caracteres no permiten EOF");
+                        }else if (flag.equals("stringIter")) {
+                            throw new LexicalErrorException(numeroLinea, i, "Caracter invalido. Los Str no permiten EOF");
+                        } else{
+                            addToken(new Token(numeroLinea, i - iterToken.length() + 1, "EOF", current));
+                        }
                     } else{
                         if(flag == "CharBlackSlash" || flag == "iterChar"){
                             isChar(flag,nextChar,numeroLinea,i,current);
