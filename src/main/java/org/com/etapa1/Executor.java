@@ -13,32 +13,32 @@ public class Executor {
             return;
         }
 
-        String archivoFuente = args[0];
+        String input = args[0];
 
         // Verificar existencia del archivo
-        File file = new File(archivoFuente);
+        File file = new File(input);
         if (!file.exists()) {
-            System.out.println("ERROR: El archivo fuente '" + archivoFuente + "' no existe.");
+            System.out.println("ERROR: El archivo fuente '" + input + "' no existe.");
             return;
         }
 
         // Verificar si el archivo no está vacío
         if (file.length() == 0) {
-            System.out.println("ERROR: El archivo fuente '" + archivoFuente + "' está vacío.");
+            System.out.println("ERROR: El archivo fuente '" + input + "' está vacío.");
             return;
         }
 
         // Verificar extensión del archivo
-        if (!archivoFuente.endsWith(".ru")) {
+        if (!input.endsWith(".ru")) {
             System.out.println("ERROR: El archivo fuente debe tener la extensión '.ru'.");
             return;
         }
 
-        String archivoSalida = null;
+        String output = null;
 
         // Verificamos si se proporciona un archivo de salida
         if (args.length >= 2) {
-            archivoSalida = args[1];
+            output = args[1];
         }
 
         AnalizadorLexico l = new AnalizadorLexico();
@@ -49,10 +49,10 @@ public class Executor {
 
         try {
             if (printToFile) {
-                writerBuffer = createdBuffer(archivoSalida);
+                writerBuffer = createdBuffer(output);
             }
 
-            l.analizarArchivo(archivoFuente);
+            l.analyzeFile(input);
 
             if (printToFile) {
                 writerBuffer.write("CORRECTO: ANALISIS LEXICO\n");
@@ -82,8 +82,8 @@ public class Executor {
         }
     }
 
-    private static BufferedWriter createdBuffer(String archivoSalida) throws IOException {
-        FileWriter writerArchivo = new FileWriter(archivoSalida);
+    private static BufferedWriter createdBuffer(String output) throws IOException {
+        FileWriter writerArchivo = new FileWriter(output);
         return new BufferedWriter(writerArchivo);
     }
 

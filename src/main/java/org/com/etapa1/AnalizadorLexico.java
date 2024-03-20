@@ -12,8 +12,8 @@ public class AnalizadorLexico {
         this.tokens = new LinkedList<>();
     }
 
-    public Queue<Token> analizarArchivo(String rutaArchivo) {
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+    public Queue<Token> analyzeFile(String route) {
+        try (BufferedReader br = new BufferedReader(new FileReader(route))) {
             String linea;
             int numeroLinea = 1;
 

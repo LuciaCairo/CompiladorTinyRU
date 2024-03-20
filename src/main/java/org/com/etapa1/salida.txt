@@ -1,3 +1,0 @@
-ERROR: LEXICO
-| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
-| LINEA 7 | COLUMNA 3 | Se ha encontrado un solo '&' en la línea. Se esperaba un operador and (&&)|
