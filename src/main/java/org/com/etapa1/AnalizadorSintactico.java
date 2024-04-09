@@ -44,8 +44,7 @@ public class AnalizadorSintactico {
             currentToken = l.nextToken();
             // Comenzar el análisis sintáctico desde el símbolo inicial ⟨program⟩
             program();
-            // Verificar si se ha alcanzado el final del archivo
-            //match("EOF");
+
             System.out.println("CORRECTO: ANALISIS SINTACTICO \n");
 
         } catch (LexicalErrorException e) {
@@ -55,21 +54,12 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void program() {
-        start();
-    }
-
-    private static void start() {
-        match("start");
-        // Aca va el código para analizar el resto de la producción ⟨Start⟩
-    }
-
     // Método para emparejar el token actual con un token esperado
     private static void match(String expectedToken) {
         if (currentToken.getLexema().equals(expectedToken)) {
             advance();
         } else {
-            System.out.println("Error de sintaxis. Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getName());
+            System.out.println("Error de sintaxis. Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getLexema());
             System.exit(1);
             // ACA VA UNA EXCEPCION EN REALIDAD
         }
@@ -77,21 +67,31 @@ public class AnalizadorSintactico {
 
     // Método para avanzar al siguiente token
     private static void advance() {
-        currentToken = l.nextToken();
+        if (l.countTokens() <= 0){ // No hay mas tokens
+            // Aca nose bien que deberia pasar
+            // excepcion ??
+        } else {
+            currentToken = l.nextToken();
+        }
     }
 
-    /*private static void printTokensConsola(AnalizadorLexico l) {
-        int n = l.countTokens();
-        while (n > 0) {
-            Token t = l.nextToken();
-            if(t.getName() == "EOF") {
-                n = 0;
-            } else {
-                // ACA VAMOS RECIBIENDO LOS TOKENS Y LLAMANDO A LOS METODOS
-                String text = "TOKEN: " + t.getName()  + "\n";
-                System.out.print(text);
-                n = l.countTokens();
-            }
+    // NOSE SI ESTA BIEN DEFINIDA ESTA FUNCION
+    private static void program() {
+        if (currentToken.getLexema().equals("struct") || currentToken.getLexema().equals("impl")){
+            definiciones();
+            start();
+        } else {
+            start();
         }
-    }*/
+
+    }
+
+    private static void definiciones() {
+
+    }
+
+    private static void start() {
+    }
+
+
 }
