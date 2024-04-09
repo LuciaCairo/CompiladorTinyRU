@@ -1,0 +1,4 @@
+
+&
+struct Hola
+start{}
