@@ -130,7 +130,7 @@ public class AnalizadorSintactico {
         } else {
             System.out.println("Error Sintactico. Se esperaba ':' o '{'");
             System.exit(1); // EXCEPCION!!!
-            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+            // Lanzar una excepción
         }
     }
 
