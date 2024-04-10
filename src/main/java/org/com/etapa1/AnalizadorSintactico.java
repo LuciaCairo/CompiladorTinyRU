@@ -361,9 +361,12 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("{") ||
+                currentToken.getName().equals("struct_name") ||
                 currentToken.getName().equals("id")){
             sentencias();
-        } else{
+        } else if(currentToken.getLexema().equals("}")){
+            // lambda
+        }else{
             System.out.println("Error sintáctico. ");
             System.exit(1); // EXCEPCION!!!
         }
@@ -385,7 +388,7 @@ public class AnalizadorSintactico {
             match(",");
             listaDeclaracionVariables();
         }else if(currentToken.getLexema().equals(";")){
-            match(";");
+            //match(";");
             //Preguntar si esto esta bien, porque en teoria segun el algoritmo cuando tenes lamda no tenes que hacer nada
         }else{
             System.out.println("Error Sintactico. Se esperaba ',' o ';'"); //Revisar este error
@@ -393,7 +396,66 @@ public class AnalizadorSintactico {
         }
     }
 
-    // QUEDE ACA
+    private static void argumentosFormales() {
+        match("(");
+        argumentosFormales1();
+    }
+
+    private static void argumentosFormales1() {
+        if (currentToken.getLexema().equals("Str") ||
+                currentToken.getLexema().equals("Bool") ||
+                currentToken.getLexema().equals("Int") ||
+                currentToken.getLexema().equals("Char") ||
+                currentToken.getLexema().equals("Array") ||
+                currentToken.getName().equals("struct_name")){
+            listaArgumentosFormales();
+            match(")");
+        }else if(currentToken.getLexema().equals(")")){
+            match(")");
+        }else{
+            System.out.println("Error Sintactico."); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+        }
+    }
+
+    private static void listaArgumentosFormales() {
+        argumentoFormal();
+        listaArgumentosFormales1();
+    }
+
+    private static void listaArgumentosFormales1() {
+        if (currentToken.getLexema().equals(",")){
+            match(",");
+            listaArgumentosFormales();
+
+        }else if(currentToken.getLexema().equals(")")){
+            match(")");
+        }else{
+            System.out.println("Error Sintactico.");
+            System.exit(1); // EXCEPCION!!!
+        }
+    }
+
+    private static void argumentoFormal() {
+        tipo();
+        match("id");
+    }
+
+    private static void tipoMetodo() {
+        if (currentToken.getLexema().equals("Str") ||
+                currentToken.getLexema().equals("Bool") ||
+                currentToken.getLexema().equals("Int") ||
+                currentToken.getLexema().equals("Char") ||
+                currentToken.getLexema().equals("Array") ||
+                currentToken.getName().equals("struct_name")){
+            tipo();
+        }else if(currentToken.getLexema().equals("void")){
+            match("void");
+        }else{
+            System.out.println("Error Sintactico."); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+        }
+    }
 
     private static void tipo() {
         if (currentToken.getLexema().equals("Str") ||
@@ -427,15 +489,31 @@ public class AnalizadorSintactico {
             // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
         }
     }
-    private static void tipoArreglo() {
 
-    }
     private static void tipoReferencia() {
+        match("struct_name");
     }
-    private static void argumentosFormales() {
+    private static void tipoArreglo() {
+        match("Array");
+        tipoPrimitivo();
     }
+
+
     private static void sentencia() {
+        if (currentToken.getLexema().equals(",")){
+            match(";");
+        } else if (currentToken.getLexema().equals("self") ||
+                currentToken.getName().equals("id") ||
+                currentToken.getName().equals("structName") ){ // ACA
+            match("Bool");
+        } else if (currentToken.getLexema().equals("Int")){
+            match("Int");
+        } else if(currentToken.getLexema().equals("Char")){
+            match("Array");
+        } else{
+            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo'"); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        }
     }
-
-
 }
