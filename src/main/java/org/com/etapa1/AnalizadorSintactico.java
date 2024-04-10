@@ -16,7 +16,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
 
         // Verificar existencia del archivo
         File file = new File(input);
@@ -197,9 +197,100 @@ public class AnalizadorSintactico {
     }
 
     private static void atributo() {
-    }
+        if (currentToken.getLexema().equals("Pri")){
+            visibilidad();
+            tipo();
+            listaDeclaracionVariables();
+        } else{
 
+            if (currentToken.getLexema().equals("Str") ||
+                    currentToken.getLexema().equals("Bool") ||
+                    currentToken.getLexema().equals("Int") ||
+                    currentToken.getLexema().equals("Char") ||
+                    currentToken.getLexema().equals("Array") ||
+                    currentToken.getName().equals("struct_name")) {
+
+                tipo();
+            } else{
+                System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o '}' "+". Se encontró: " + currentToken.getLexema()); //Revisar este error
+                System.exit(1); // EXCEPCION!!!
+                // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+            }
+
+        }
+    }
+    private static void visibilidad() {
+    }
+    private static void tipo() {
+        if (currentToken.getLexema().equals("Str") ||
+                currentToken.getLexema().equals("Bool") ||
+                currentToken.getLexema().equals("Int") ||
+                currentToken.getLexema().equals("Char"))
+                {
+            tipoPrimitivo();
+        }else if(currentToken.getLexema().equals("Array")){
+            tipoArreglo();
+        }else if(currentToken.getName().equals("struct_name")){
+            tipoReferencia();
+        }else {
+            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o 'Arreglo' o 'IDStruc'"); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        }
+    }
+    private static void listaDeclaracionVariables() {
+        match("Id");
+        listaDeclaracionVariables1();
+    }
+    private static void listaDeclaracionVariables1() {
+        if(currentToken.getLexema().equals(",")){
+            match(",");
+        }else if(currentToken.getLexema().equals(";")){
+            match(";"); //Preguntar si esto esta bien, porque en teoria segun el algoritmo cuando tenes lamda no tenes que hacer nada
+        }else{
+            System.out.println("Error Sintactico. Se esperaba ',' o ';'"); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        }
+    }
+    private static void tipoPrimitivo() {
+        if (currentToken.getLexema().equals("Str")){
+            match("Str");
+        } else if (currentToken.getLexema().equals("Bool")){
+            match("Bool");
+        } else if (currentToken.getLexema().equals("Int")){
+            match("Int");
+        } else if(currentToken.getLexema().equals("Char")){
+            match("Array");
+        } else{
+            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo'"); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        }
+    }
+    private static void tipoArreglo() {
+
+    }
+    private static void tipoReferencia() {
+    }
     private static void atributos1() {
+        if (currentToken.getLexema().equals("Pri") ||
+                currentToken.getLexema().equals("Str") ||
+                currentToken.getLexema().equals("Bool") ||
+                currentToken.getLexema().equals("Int") ||
+                currentToken.getLexema().equals("Char") ||
+                currentToken.getLexema().equals("Array") ||
+                currentToken.getName().equals("struct_name")){
+            atributos();
+
+        } else if (currentToken.getLexema().equals("}")){
+
+        } else{
+            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o '}' "+". Se encontroó: " + currentToken.getLexema()); //Revisar este error
+            System.exit(1); // EXCEPCION!!!
+            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        }
+
     }
 
     private static void impl() {

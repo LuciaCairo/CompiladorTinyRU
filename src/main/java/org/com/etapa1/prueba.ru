@@ -1,4 +1,4 @@
 
-&
-struct Hola
+
+struct Hola{Str}
 start{}
