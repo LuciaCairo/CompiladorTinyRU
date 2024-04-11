@@ -50,6 +50,11 @@ public class AnalizadorSintactico {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
             System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
 
+        } catch (SyntactErrorException e) {
+            System.out.println("ERROR: SINTACTICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
+            System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
+            System.out.println("FUNCION " + e.functionName() + "\n");
+
         }
     }
 
@@ -59,9 +64,8 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals(expectedToken)) {
             advance();
         } else {
-            System.out.println("Error de sintaxis. Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getLexema());
-            System.exit(1);
-            // ACA VA UNA EXCEPCION EN REALIDAD
+            throw new SyntactErrorException(currentToken.getLine(), currentToken.getCol(),
+                    "Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getLexema(),"match");
         }
     }
 
