@@ -504,9 +504,10 @@ public class AnalizadorSintactico {
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ||
-                currentToken.getName().equals("structName") ){ // ACA
-            match("Bool");
-        } else if (currentToken.getLexema().equals("Int")){
+                currentToken.getName().equals("structName") ){
+            asignacion();
+            match(";");
+        } else if (currentToken.getLexema().equals("Int")){ // ACA | ⟨Sentencia-Simple⟩”;”
             match("Int");
         } else if(currentToken.getLexema().equals("Char")){
             match("Array");
