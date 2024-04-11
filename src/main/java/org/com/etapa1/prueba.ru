@@ -1,3 +1,3 @@
 
-struct Hola{pri Uma a; pri Int b}
+struc1t Hola{pri Uma a; pri Int b;}
 start{}
