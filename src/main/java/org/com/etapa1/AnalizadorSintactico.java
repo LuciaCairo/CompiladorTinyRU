@@ -1117,4 +1117,42 @@ public class AnalizadorSintactico {
 
     private static void encadenado() {
     }
+    private static void expresionParentizada() {
+        if(currentToken.getLexema().equals("(")){
+            match("(");
+            expresion();
+            match(")");
+
+        }
+    }
+
+    private static void expresionParentizada1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        }else if(currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") ||
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "expresionParentizada1");
+        }
+    }
 }
