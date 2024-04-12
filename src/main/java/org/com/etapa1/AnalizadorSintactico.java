@@ -603,10 +603,20 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("else")){
             match("else");
             sentencia();
-        }else if(currentToken.getLexema().equals(")")){ // calcular s(sentencia1)
+        }else if(currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("if")||
+                currentToken.getLexema().equals("while")||
+                currentToken.getLexema().equals("ret")||
+                currentToken.getName().equals("id")||
+                currentToken.getLexema().equals("self")||
+                (currentToken.getLexema().equals("(")) ||
+                (currentToken.getLexema().equals("{"))){
             // lambda
         }else{
-            // error
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: else, if, ';', self, id, '(', '{', while o ret. Se encontró " + currentToken.getLexema(),
+                    "sentencia1");
         }
     }
 
@@ -712,9 +722,13 @@ public class AnalizadorSintactico {
     private static void encadenadosSimples1() {
         if (currentToken.getLexema().equals(".")){
             encadenadosSimples();
-        }else if(currentToken.getLexema().equals(")")){ // calcular s(sentencia1)
+        }else if(currentToken.getLexema().equals("=")){
             // lambda
         }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '.' o '='. Se encontró " + currentToken.getLexema(),
+                    "encadenadosSimples1");
         }
     }
 
@@ -724,7 +738,16 @@ public class AnalizadorSintactico {
     }
 
     private static void accesoSelfSimple1() {
-        //
+        if (currentToken.getLexema().equals(".")){
+            encadenadosSimples();
+        }else if(currentToken.getLexema().equals("=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '.' o '='. Se encontró " + currentToken.getLexema(),
+                    "accesoSelfSimple1");
+        }
     }
 
     private static void encadenadoSimple1() {
@@ -748,9 +771,16 @@ public class AnalizadorSintactico {
             match("||");
             expAnd();
             expresion1();
-        }else if(currentToken.getLexema().equals(")")){ // calcular s(sentencia1)
+        }else if(currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
             // lambda
         }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expresion1");
         }
     }
 
@@ -760,8 +790,22 @@ public class AnalizadorSintactico {
     }
 
     private static void expAnd1() {
-        expIgual();
-        expAnd1();
+        if (currentToken.getLexema().equals("&&")){
+            match("&&");
+            expIgual();
+            expAnd1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '&&','||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expAnd1");
+        }
     }
 
     private static void expIgual() {
@@ -770,6 +814,24 @@ public class AnalizadorSintactico {
     }
 
     private static void expIgual1() {
+        if (currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")){
+            opIgual();
+            expCompuesta();
+            expIgual1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expIgual1");
+        }
     }
 
     private static void expCompuesta() {
@@ -778,7 +840,27 @@ public class AnalizadorSintactico {
     }
 
     private static void expCompuesta1() {
-        //
+        if (currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")){
+            opCompuesto();
+            expAd();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expCompuesta1");
+        }
     }
 
     private static void expAd() {
@@ -787,7 +869,30 @@ public class AnalizadorSintactico {
     }
 
     private static void expAd1() {
-
+        if (currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-")){
+            opAd();
+            expMul();
+            expAd1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, +, -, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expAd1");
+        }
     }
 
     private static void expMul() {
@@ -796,6 +901,33 @@ public class AnalizadorSintactico {
     }
 
     private static void expMul1() {
+        if (currentToken.getLexema().equals("*") ||
+                currentToken.getLexema().equals("/")||
+                currentToken.getLexema().equals("%")){
+            opMul();
+            expUn();
+            expMul1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expMul1");
+        }
     }
 
     private static void expUn() {
@@ -927,6 +1059,33 @@ public class AnalizadorSintactico {
     }
 
     private static void operando1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("*")){
+            // lambda
+
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "operando1");
+        }
     }
 
     private static void literal() {
@@ -954,5 +1113,8 @@ public class AnalizadorSintactico {
     }
 
     private static void encadenadoSimple() {
+    }
+
+    private static void encadenado() {
     }
 }
