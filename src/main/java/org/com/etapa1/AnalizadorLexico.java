@@ -156,12 +156,12 @@ public class AnalizadorLexico {
             case "Str":
                 addToken(new Token(line, col, "class_String", lexema));
                 break;
-            case "IO":
+            /*case "IO":
                 addToken(new Token(line, col, "class_IO", lexema));
                 break;
             case "Object":
                 addToken(new Token(line, col, "class_Object", lexema));
-                break;
+                break;*/
             default:
                 addToken(new Token(line, col, "struct_name", lexema));
         }

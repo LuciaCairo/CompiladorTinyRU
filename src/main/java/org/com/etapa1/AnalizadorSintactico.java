@@ -60,7 +60,17 @@ public class AnalizadorSintactico {
 
     // Método para emparejar el token actual con un token esperado
     private static void match(String expectedToken) {
-        if (currentToken.getLexema().equals(expectedToken) ||
+        //System.out.print(currentToken.getLexema());
+        //System.out.print(currentToken.getName());
+        if(expectedToken.equals("idMetAt")){
+            if (currentToken.getName().equals("id") ||
+                    currentToken.getName().equals("struct_name")) {
+                advance();
+            } else {
+                throw new SyntactErrorException(currentToken.getLine(), currentToken.getCol(),
+                        "Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getLexema(),"match");
+            }
+        } else if (currentToken.getLexema().equals(expectedToken) ||
                 currentToken.getName().equals(expectedToken)) {
             advance();
         } else {
@@ -71,7 +81,7 @@ public class AnalizadorSintactico {
 
     // Método para avanzar al siguiente token
     private static void advance() {
-        if (l.countTokens() <= 0){ // No hay mas tokens
+        if(l.countTokens() <= 0){ // No hay mas tokens
             // Aca nose bien que deberia pasar
             // Excepcion ??
         } else {
@@ -80,12 +90,18 @@ public class AnalizadorSintactico {
     }
 
     private static void program() {
-        if (currentToken.getLexema().equals("struct") || currentToken.getLexema().equals("impl")){
+        if (currentToken.getLexema().equals("struct") ||
+                currentToken.getLexema().equals("impl")){
             definiciones();
-            start(); // No se si va start ????
-        } else {
             start();
-        } // Falta EXCEPCION !!
+        } else if(currentToken.getLexema().equals("start")) {
+            start();
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: struct, impl o start. Se encontró: " + currentToken.getLexema(),
+                    "program");
+        }
     }
 
     private static void start() {
@@ -96,30 +112,35 @@ public class AnalizadorSintactico {
     private static void definiciones() {
         if (currentToken.getLexema().equals("struct")) {
             struct();
-            definiciones1(); // Aca nose si tambien se llama a definiciones1 ???
+            definiciones1();
         } else if (currentToken.getLexema().equals("impl")) {
             impl();
-            definiciones1(); // Aca nose si tambien se llama a definiciones1 ???
+            definiciones1();
         } else {
-            System.out.println("Error Sintactico. Se esperaba 'struct' o 'impl'. Se encontró: " + currentToken.getLexema());
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: struct o impl. Se encontró: " + currentToken.getLexema(),
+                    "definiciones");
         }
     }
 
     private static void definiciones1() {
-        if (currentToken.getLexema().equals("struct") || currentToken.getLexema().equals("impl")) {
+        if (currentToken.getLexema().equals("struct") ||
+                currentToken.getLexema().equals("impl")) {
             definiciones();
-        } else {
-            // Si no se encuentra ni "struct" ni "impl", se asume que se ha completado la secuencia de definiciones
-            // y no se hace nada, ya que ⟨Definiciones1⟩ permite λ (la producción vacía)
-            // Esto significa que no hay más definiciones que analizar en este punto.
-            // EXCEPCION O NO ES UN ERROR???
+        } else if(currentToken.getLexema().equals("start")){
+            // lambda
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: start, struct o impl. Se encontró: " + currentToken.getLexema(),
+                    "definiciones1");
         }
     }
 
     private static void struct() {
         match("struct");
-        match("struct_name"); // ??? DOS MATCHS
+        match("struct_name");
         struct1();
     }
 
@@ -127,14 +148,15 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals(":")) {
             herencia();
             match("{");
-            struct2(); // QUE PASA CON STRUCT2? NO SE LLAMA O SI???
+            struct2();
         } else if (currentToken.getLexema().equals("{")) {
             match("{");
             struct2();
         } else {
-            System.out.println("Error Sintactico. Se esperaba ':' o '{'");
-            System.exit(1); // EXCEPCION!!!
-            // Lanzar una excepción
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ':' o '{'. Se encontró: " + currentToken.getLexema(),
+                    "struct1");
         }
     }
 
@@ -151,8 +173,10 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("}")) {
             match("}");
         } else {
-            System.out.println("Error sintáctico. Se esperaba un TIPO de atributo o '}'");
-            System.exit(1); // excepcion !!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de Tipo, pri o '}'. Se encontró: " + currentToken.getLexema(),
+                    "struct2");
         }
     }
 
@@ -170,11 +194,13 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("Array") ||
                 currentToken.getName().equals("struct_name")){
             atributos();
-        } else if (currentToken.getLexema().equals("}")){
-            // no se hace nada aca???
+        } else if(currentToken.getLexema().equals("}")){
+            // lambda
         } else{
-            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o '}' "+". Se encontroó: " + currentToken.getLexema()); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de Tipo, pri o '}'. Se encontró: " + currentToken.getLexema(),
+                    "atributos1");
         }
     }
 
@@ -192,15 +218,17 @@ public class AnalizadorSintactico {
     }
 
     private static void miembros1() {
-        if (currentToken.getLexema().equals("pri")
+        if (currentToken.getLexema().equals("st")
                 || currentToken.getLexema().equals("fn")
                 || currentToken.getLexema().equals(".")) {
             miembros();
         } else if(currentToken.getLexema().equals("}")){
-            // aca nada???
+            // lambda
         } else{
-            System.out.println("Error Sintactico. Se esperaba 'pri', 'fn', '.' o '}'. Se encontró: " + currentToken.getLexema());
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: st, fn, '.' o '}'. Se encontró: " + currentToken.getLexema(),
+                    "miembros1");
         }
     }
 
@@ -216,8 +244,10 @@ public class AnalizadorSintactico {
         } else if(currentToken.getLexema().equals(".")){
             constructor();
         } else{
-            System.out.println("Error Sintactico. Se esperaba 'st', 'fn', '.' o '}'. Se encontró: " + currentToken.getLexema());
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: st, fn o '.'. Se encontró: " + currentToken.getLexema(),
+                    "miembro");
         }
     }
 
@@ -230,7 +260,7 @@ public class AnalizadorSintactico {
     private static void atributo() {
         if (currentToken.getLexema().equals("pri")){
             visibilidad();
-            tipo(); // se llama tambien ?? quien es B todo o solo visibilidad?
+            tipo();
             listaDeclaracionVariables();
             match(";");
         } else if (currentToken.getLexema().equals("Str") ||
@@ -240,29 +270,37 @@ public class AnalizadorSintactico {
                     currentToken.getLexema().equals("Array") ||
                     currentToken.getName().equals("struct_name")) {
                 tipo();
-                listaDeclaracionVariables(); // se llama tambien ?? quien es B todo o solo tipo?
+                listaDeclaracionVariables();
                 match(";");
         } else {
-            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o '}' "+". Se encontró: " + currentToken.getLexema()); //Revisar este error
-            System.exit(1); // EXCEPCION!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de Tipo o pri. Se encontró: " + currentToken.getLexema(),
+                    "atributo");
         }
     }
 
     private static void metodo() {
         if (currentToken.getLexema().equals("st")){
-            formaMetodo(); //B
-            match("fn"); //x
-            // idMetAt ⟨Argumentos-Formales⟩ “->” ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
-            // que hago con el resto de la regla???
+            formaMetodo();
+            match("fn");
+            match("idMetAt");
+            argumentosFormales();
+            match("->");
+            tipoMetodo();
+            bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
-            match("fn"); //y
-            match("struct_name"); // nose si tambien match o no ???
-            argumentosFormales(); // C
-            // que hago con el resto de la regla???
-            // “->” ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
+            match("fn");
+            match("idMetAt");
+            argumentosFormales();
+            match("->");
+            tipoMetodo();
+            bloqueMetodo();
         } else {
-            System.out.println("Error Sintactico."); //Revisar este error
-            System.exit(1); // EXCEPCION!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: st o fn. Se encontró: " + currentToken.getLexema(),
+                    "metodo");
         }
     }
 
@@ -287,21 +325,26 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("Array") ||
                 currentToken.getName().equals("struct_name")){
             declaraciones();
-            bloqueMetodo2(); // esto tambien es B??? se llama?
+            bloqueMetodo2();
         } else if (currentToken.getLexema().equals(";") ||
                 currentToken.getLexema().equals("if") ||
+                currentToken.getLexema().equals("while") ||
                 currentToken.getLexema().equals("ret") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("{") ||
                 currentToken.getLexema().equals("(")){
-            sentencias();
+                sentencias();
             match("}");
         } else if(currentToken.getLexema().equals("}")) {
             match("}");
         } else{
-            System.out.println("Error sintáctico. Se esperaba una declaración o '}'. Se encontró: " + currentToken.getLexema());
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de tipo " +
+                            ",de declaracion (;, if, while, ret, id, self, (, {)" +
+                            "o '}'. Se encontró: " + currentToken.getLexema(),
+                    "bloqueMetodo1");
         }
     }
 
@@ -309,17 +352,21 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals(";") ||
                 currentToken.getLexema().equals("if") ||
                 currentToken.getLexema().equals("ret") ||
+                currentToken.getLexema().equals("while") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("{") ||
                 currentToken.getLexema().equals("(")){
-            sentencias();
+                sentencias();
             match("}");
         } else if(currentToken.getLexema().equals("}")) {
             match("}");
         } else{
-            System.out.println("Error sintáctico. Se esperaba una declaración, una sentencia o '}'. Se encontró: " + currentToken.getLexema());
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: declaracion (;, if, while, ret, id, self, (, {)" +
+                            "o '}'. Se encontró: " + currentToken.getLexema(),
+                    "bloqueMetodo2");
         }
     }
 
@@ -336,7 +383,6 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("Array") ||
                 currentToken.getName().equals("struct_name")){
             declaraciones();
-
         } else if(currentToken.getLexema().equals(";") ||
                 currentToken.getLexema().equals("if") ||
                 currentToken.getLexema().equals("while") ||
@@ -344,11 +390,16 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("{") ||
+                currentToken.getLexema().equals("}") ||
                 currentToken.getName().equals("id")){
-            // no hacer nada ???
+            //lambda
         } else{
-            System.out.println("Error sintáctico. ");
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de tipo " +
+                            ",de declaracion (;, if, while, ret, id, self, (, {, }). " +
+                            "Se encontró: " + currentToken.getLexema(),
+                    "declaraciones1");
         }
     }
 
@@ -365,14 +416,16 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("{") ||
-                currentToken.getName().equals("struct_name") ||
                 currentToken.getName().equals("id")){
-            sentencias();
+                sentencias();
         } else if(currentToken.getLexema().equals("}")){
             // lambda
         }else{
-            System.out.println("Error sintáctico. ");
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ';', if, while, ret, id, self, '(', '{' o '}'. " +
+                            "Se encontró: " + currentToken.getLexema(),
+                    "sentencias1");
         }
     }
 
@@ -383,7 +436,7 @@ public class AnalizadorSintactico {
     }
 
     private static void listaDeclaracionVariables() {
-        match("id");
+        match("idMetAt");
         listaDeclaracionVariables1();
     }
 
@@ -392,11 +445,12 @@ public class AnalizadorSintactico {
             match(",");
             listaDeclaracionVariables();
         }else if(currentToken.getLexema().equals(";")){
-            //match(";");
-            //Preguntar si esto esta bien, porque en teoria segun el algoritmo cuando tenes lamda no tenes que hacer nada
+            //lambda
         }else{
-            System.out.println("Error Sintactico. Se esperaba ',' o ';'"); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ',' o ';'. Se encontró " + currentToken.getLexema(),
+                    "listaDeclaracionVariables1");
         }
     }
 
@@ -417,8 +471,10 @@ public class AnalizadorSintactico {
         }else if(currentToken.getLexema().equals(")")){
             match(")");
         }else{
-            System.out.println("Error Sintactico."); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: Identificador de Tipo o ')'. Se encontró " + currentToken.getLexema(),
+                    "argumentosFormales1");
         }
     }
 
@@ -431,18 +487,19 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals(",")){
             match(",");
             listaArgumentosFormales();
-
         }else if(currentToken.getLexema().equals(")")){
-            match(")");
+            //lambda
         }else{
-            System.out.println("Error Sintactico.");
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ',' o ')'. Se encontró " + currentToken.getLexema(),
+                    "listaArgumentosFormales1");
         }
     }
 
     private static void argumentoFormal() {
         tipo();
-        match("id");
+        match("idMetAt");
     }
 
     private static void tipoMetodo() {
@@ -456,8 +513,10 @@ public class AnalizadorSintactico {
         }else if(currentToken.getLexema().equals("void")){
             match("void");
         }else{
-            System.out.println("Error Sintactico."); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: identificador de tipo. Se encontró " + currentToken.getLexema(),
+                    "tipoMetodo");
         }
     }
 
@@ -473,13 +532,15 @@ public class AnalizadorSintactico {
         }else if(currentToken.getName().equals("struct_name")){
             tipoReferencia();
         }else {
-            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo' o 'Arreglo' o 'IDStruc'"); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba:'Tipo-Primitivo' o 'Arreglo' o 'IDStruc'. Se encontró " + currentToken.getLexema(),
+                    "tipo");
         }
     }
 
     private static void tipoPrimitivo() {
-        if (currentToken.getLexema().equals("Str")){ // creo que son innecesarios los ifs???
+        if (currentToken.getLexema().equals("Str")){
             match("Str");
         } else if (currentToken.getLexema().equals("Bool")){
             match("Bool");
@@ -487,10 +548,11 @@ public class AnalizadorSintactico {
             match("Int");
         } else if(currentToken.getLexema().equals("Char")){
             match("Array");
-        } else{
-            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo'"); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
-            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+        } else {
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba:'Tipo-Primitivo'. Se encontró " + currentToken.getLexema(),
+                    "tipo");
         }
     }
 
@@ -502,22 +564,557 @@ public class AnalizadorSintactico {
         tipoPrimitivo();
     }
 
-
     private static void sentencia() {
-        if (currentToken.getLexema().equals(",")){
+        if (currentToken.getLexema().equals(";")){
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
-                currentToken.getName().equals("id") ||
-                currentToken.getName().equals("structName") ){ // ACA
-            match("Bool");
-        } else if (currentToken.getLexema().equals("Int")){
-            match("Int");
-        } else if(currentToken.getLexema().equals("Char")){
-            match("Array");
+                currentToken.getName().equals("id") ){
+            asignacion();
+            match(";");
+        } else if (currentToken.getLexema().equals("(") ){
+            sentenciaSimple();
+            match(";");
+        } else if (currentToken.getLexema().equals("if")){
+            match("if");
+            match("(");
+            expresion();
+            match(")");
+            sentencia();
+            sentencia1();
+        } else if (currentToken.getLexema().equals("while")){
+            match("while");
+            match("(");
+            expresion();
+            match(")");
+            sentencia();
+        } else if (currentToken.getLexema().equals("{")){
+            bloque();
+        } else if (currentToken.getLexema().equals("ret")){
+            match("ret");
+            sentencia2();
         } else{
-            System.out.println("Error Sintactico. Se esperaba 'Tipo-Primitivo'"); //Revisar este error
-            System.exit(1); // EXCEPCION!!!
-            // Lanzar una excepción en lugar de simplemente imprimir un mensaje de error
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba:',', self, id, '(', '{', if, while o ret. Se encontró " + currentToken.getLexema(),
+                    "sentencia");
         }
+    }
+    private static void sentencia1() {
+        if (currentToken.getLexema().equals("else")){
+            match("else");
+            sentencia();
+        }else if(currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("if")||
+                currentToken.getLexema().equals("while")||
+                currentToken.getLexema().equals("ret")||
+                currentToken.getName().equals("id")||
+                currentToken.getLexema().equals("self")||
+                (currentToken.getLexema().equals("(")) ||
+                (currentToken.getLexema().equals("{"))){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: else, if, ';', self, id, '(', '{', while o ret. Se encontró " + currentToken.getLexema(),
+                    "sentencia1");
+        }
+    }
+
+    private static void sentencia2() {
+        if (currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-") ||
+                currentToken.getLexema().equals("!") ||
+                currentToken.getLexema().equals("++") ||
+                currentToken.getLexema().equals("--") ||
+                currentToken.getLexema().equals("nil") ||
+                currentToken.getLexema().equals("true") ||
+                currentToken.getLexema().equals("false") ||
+                currentToken.getLexema().equals("self") ||
+                currentToken.getLexema().equals("(") ||
+                currentToken.getLexema().equals("new") ||
+                currentToken.getName().equals("int") ||
+                currentToken.getName().equals("str") ||
+                currentToken.getName().equals("char") ||
+                currentToken.getName().equals("id") ||
+                currentToken.getName().equals("struct_name")){
+            expresion();
+            match(";");
+        }else if(currentToken.getLexema().equals(";")){
+            match(";");
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operadores, literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "sentencia2");
+        }
+    }
+
+    private static void bloque() {
+        match("{");
+        bloque1();
+    }
+
+    private static void bloque1() {
+        if (currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals("if") ||
+                currentToken.getLexema().equals("while") ||
+                currentToken.getLexema().equals("ret") ||
+                currentToken.getName().equals("id") ||
+                currentToken.getLexema().equals("self") ||
+                currentToken.getLexema().equals("(") ||
+                currentToken.getLexema().equals("{")){
+            sentencias();
+            match("}");
+        }else if(currentToken.getLexema().equals("}")){
+            match("}");
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ';', if, while, ret, id, self, '(', '{' o '}'. Se encontró " + currentToken.getLexema(),
+                    "bloque1");
+        }
+    }
+
+    private static void asignacion() {
+        if (currentToken.getName().equals("id")){
+            accesoVarSimple();
+            match("=");
+            expresion();
+        }else if(currentToken.getLexema().equals("self")){
+            accesoSelfSimple();
+            match("=");
+            expresion();
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: self o id. Se encontró " + currentToken.getLexema(),
+                    "asignacion");
+        }
+    }
+
+    private static void accesoVarSimple() {
+        match("id");
+        accesoVarSimple1();
+    }
+
+    private static void accesoVarSimple1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenadosSimples();
+        }else if(currentToken.getLexema().equals("[")){
+            match("[");
+            expresion();
+            match("]");
+        } else if(currentToken.getLexema().equals("=")) {
+            // lambda
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '.', '[' o =. Se encontró " + currentToken.getLexema(),
+                    "accesoVarSimple1");
+        }
+    }
+
+    private static void encadenadosSimples() {
+       encadenadoSimple();
+       encadenadosSimples1();
+    }
+
+    private static void encadenadosSimples1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenadosSimples();
+        }else if(currentToken.getLexema().equals("=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '.' o '='. Se encontró " + currentToken.getLexema(),
+                    "encadenadosSimples1");
+        }
+    }
+
+    private static void accesoSelfSimple() {
+        match("self");
+        accesoSelfSimple1();
+    }
+
+    private static void accesoSelfSimple1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenadosSimples();
+        }else if(currentToken.getLexema().equals("=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '.' o '='. Se encontró " + currentToken.getLexema(),
+                    "accesoSelfSimple1");
+        }
+    }
+
+    private static void encadenadoSimple1() {
+        match(".");
+        match("id");
+    }
+
+    private static void sentenciaSimple() {
+        match("(");
+        expresion();
+        match(")");
+    }
+
+    private static void expresion() {
+        expAnd();
+        expresion1();
+    }
+
+    private static void expresion1() {
+        if (currentToken.getLexema().equals("||")){
+            match("||");
+            expAnd();
+            expresion1();
+        }else if(currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expresion1");
+        }
+    }
+
+    private static void expAnd() {
+        expIgual();
+        expAnd1();
+    }
+
+    private static void expAnd1() {
+        if (currentToken.getLexema().equals("&&")){
+            match("&&");
+            expIgual();
+            expAnd1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '&&','||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expAnd1");
+        }
+    }
+
+    private static void expIgual() {
+        expCompuesta();
+        expIgual1();
+    }
+
+    private static void expIgual1() {
+        if (currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")){
+            opIgual();
+            expCompuesta();
+            expIgual1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expIgual1");
+        }
+    }
+
+    private static void expCompuesta() {
+        expAd();
+        expCompuesta1();
+    }
+
+    private static void expCompuesta1() {
+        if (currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")){
+            opCompuesto();
+            expAd();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expCompuesta1");
+        }
+    }
+
+    private static void expAd() {
+        expMul();
+        expAd1();
+    }
+
+    private static void expAd1() {
+        if (currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-")){
+            opAd();
+            expMul();
+            expAd1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, +, -, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expAd1");
+        }
+    }
+
+    private static void expMul() {
+        expUn();
+        expMul1();
+    }
+
+    private static void expMul1() {
+        if (currentToken.getLexema().equals("*") ||
+                currentToken.getLexema().equals("/")||
+                currentToken.getLexema().equals("%")){
+            opMul();
+            expUn();
+            expMul1();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "expMul1");
+        }
+    }
+
+    private static void expUn() {
+        if (currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-") ||
+                currentToken.getLexema().equals("!") ||
+                currentToken.getLexema().equals("++") ||
+                currentToken.getLexema().equals("--")){
+            opUnario();
+            expUn();
+        }else if(currentToken.getLexema().equals("nil") ||
+                currentToken.getLexema().equals("true") ||
+                currentToken.getLexema().equals("false") ||
+                currentToken.getLexema().equals("self") ||
+                currentToken.getLexema().equals("(") ||
+                currentToken.getLexema().equals("new") ||
+                currentToken.getName().equals("int") ||
+                currentToken.getName().equals("str") ||
+                currentToken.getName().equals("char") ||
+                currentToken.getName().equals("id") ||
+                currentToken.getName().equals("struct_name")){
+            operando();
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operadores, literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "expUn");
+        }
+    }
+
+    private static void opIgual() {
+        if(currentToken.getLexema().equals("==")){
+            match("==");
+        } else if(currentToken.getLexema().equals("!=")){
+            match("!=");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: == o !=. Se encontró " + currentToken.getLexema(),
+                    "opIgual");
+        }
+    }
+
+    private static void opCompuesto() {
+        if(currentToken.getLexema().equals("<")){
+            match("<");
+        } else if(currentToken.getLexema().equals(">")){
+            match(">");
+        } else if(currentToken.getLexema().equals("<=")){
+            match("<=");
+        } else if(currentToken.getLexema().equals(">=")){
+            match(">=");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operadores compuestos. Se encontró " + currentToken.getLexema(),
+                    "literal");
+        }
+    }
+
+    private static void opAd() {
+        if(currentToken.getLexema().equals("+")){
+            match("+");
+        }else if(currentToken.getLexema().equals("-")){
+            match("-");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: + o -. Se encontró " + currentToken.getLexema(),
+                    "opAd");
+        }
+    }
+
+    private static void opUnario() {
+        if(currentToken.getLexema().equals("+")){
+            match("+");
+        } else if(currentToken.getLexema().equals("-")){
+            match("-");
+        } else if(currentToken.getLexema().equals("++")){
+            match("++");
+        } else if(currentToken.getLexema().equals("--")){
+            match("--");
+        } else if(currentToken.getLexema().equals("!")){
+            match("!");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operadores unarios. Se encontró " + currentToken.getLexema(),
+                    "opUnario");
+        }
+    }
+
+    private static void opMul() {
+        if(currentToken.getLexema().equals("*")){
+            match("*");
+        } else if(currentToken.getLexema().equals("/")){
+            match("/");
+        } else if(currentToken.getLexema().equals("%")){
+            match("%");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: *, / o %. Se encontró " + currentToken.getLexema(),
+                    "opMul");
+        }
+    }
+
+    private static void operando() {
+        if (currentToken.getLexema().equals("nil") ||
+                currentToken.getLexema().equals("true") ||
+                currentToken.getLexema().equals("false") ||
+                currentToken.getName().equals("int") ||
+                currentToken.getName().equals("str") ||
+                currentToken.getName().equals("char")){
+            literal();
+        }else if(currentToken.getLexema().equals("(") ||
+                currentToken.getLexema().equals("self") ||
+                currentToken.getLexema().equals("new") ||
+                currentToken.getName().equals("id") ||
+                currentToken.getName().equals("struct_name")){
+            primario();
+            operando1();
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "expUn");
+        }
+    }
+
+    private static void operando1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        }else if(currentToken.getLexema().equals("||")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals(")")||
+                currentToken.getLexema().equals(";")||
+                currentToken.getLexema().equals("]")||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("==") ||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("<") ||
+                currentToken.getLexema().equals(">") ||
+                currentToken.getLexema().equals("<=") ||
+                currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("*")){
+            // lambda
+
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "operando1");
+        }
+    }
+
+    private static void literal() {
+        if(currentToken.getLexema().equals("nil")){
+            match("nil");
+        } else if(currentToken.getLexema().equals("true")){
+            match("true");
+        } else if(currentToken.getLexema().equals("false")){
+            match("false");
+        } else if(currentToken.getName().equals("int")){
+            match("int");
+        } else if(currentToken.getName().equals("str")){
+            match("str");
+        } else if(currentToken.getName().equals("char")){
+            match("char");
+        } else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: literales, nil, true o false. Se encontró " + currentToken.getLexema(),
+                    "literal");
+        }
+    }
+
+    private static void primario() {
+    }
+
+    private static void encadenadoSimple() {
+    }
+
+    private static void encadenado() {
     }
 }
