@@ -340,7 +340,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("{") ||
                 currentToken.getLexema().equals("(")){
-                sentencias();
+            sentencias();
             match("}");
         } else if(currentToken.getLexema().equals("}")) {
             match("}");
@@ -553,7 +553,7 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("Int")){
             match("Int");
         } else if(currentToken.getLexema().equals("Char")){
-            match("Array");
+            match("Char");
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -756,7 +756,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void encadenadoSimple1() {
+    private static void encadenadoSimple() {
         match(".");
         match("id");
     }
@@ -1128,31 +1128,14 @@ public class AnalizadorSintactico {
             } else{
                 accesoVar();
             }
-        } else if(currentToken.getLexema().equals("||")||
-                currentToken.getLexema().equals("&&")||
-                currentToken.getLexema().equals(")")||
-                currentToken.getLexema().equals(";")||
-                currentToken.getLexema().equals("]")||
-                currentToken.getLexema().equals(",")||
-                currentToken.getLexema().equals("==") ||
-                currentToken.getLexema().equals("!=")||
-                currentToken.getLexema().equals("<") ||
-                currentToken.getLexema().equals(">") ||
-                currentToken.getLexema().equals("<=") ||
-                currentToken.getLexema().equals(">=")||
-                currentToken.getLexema().equals("+") ||
-                currentToken.getLexema().equals("-") ||
-                currentToken.getLexema().equals("/") ||
-                currentToken.getLexema().equals("%") ||
-                currentToken.getLexema().equals(".") ||
-                currentToken.getLexema().equals("*")){
+        } else if(currentToken.getName().equals("struct_name")){
             llamadaMetodoEstatico();
         } else if(currentToken.getLexema().equals("new")){
             llamadaConstructor();
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']', ',' o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: identificador, '(', self o new. Se encontró " + currentToken.getLexema(),
                     "primario");
         }
     }
@@ -1452,6 +1435,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("%") ||
                 currentToken.getLexema().equals("/") ||
                 currentToken.getLexema().equals("*")){
+            //lambda
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1466,6 +1450,82 @@ public class AnalizadorSintactico {
 
     }
     private static void argumentosActuales1() {
+        if (currentToken.getLexema().equals("new")||
+                currentToken.getLexema().equals("self")||
+                currentToken.getLexema().equals("(")||
+                currentToken.getName().equals("int") ||
+                currentToken.getName().equals("str") ||
+                currentToken.getName().equals("char")||
+                currentToken.getName().equals("id") ||
+                currentToken.getName().equals("struct_name")||
+                currentToken.getLexema().equals("false")||
+                currentToken.getLexema().equals("true") ||
+                currentToken.getLexema().equals("nil")||
+                currentToken.getLexema().equals("--") ||
+                currentToken.getLexema().equals("++") ||
+                currentToken.getLexema().equals("!") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+")){
+            listaExpresiones();
+            match(")");
+        } else if (currentToken.getLexema().equals(")")){
+            match(")");
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: literal, identificador, +, -, !, ++, --, nil, true, false, (, self o new . Se encontró " + currentToken.getLexema(),
+                    "argumentosActuales1");
+        }
+    }
+
+    private static void listaExpresiones() {
+        expAnd();
+        expresion1();
+        listaExpresiones1();
+    }
+
+    private static void listaExpresiones1() {
+        if (currentToken.getLexema().equals(",")){
+            match(",");
+            listaExpresiones();
+        } else if (currentToken.getLexema().equals(")")){
+            // lambda
+        }else {
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: ',' o ')' . Se encontró " + currentToken.getLexema(),
+                    "listaExpresiones1");
+        }
+    }
+
+    private static void encadenado() {
+        match(".");
+        encadenado1();
+    }
+
+    private static void encadenado1() {
+        if (currentToken.getName().equals("id")){
+            match("id");
+            flagMatch = true;
+            if(currentToken.getLexema().equals("(")){
+                llamadaMetodoEncadenado();
+            } else {
+                accesoVariableEncadenado();
+            }
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: identificador. Se encontró " + currentToken.getLexema(),
+                    "encadenado1");
+        }
+    }
+    private static void llamadaMetodoEncadenado() {
+        match("id");
+        argumentosActuales();
+        llamadaMetodoEncadenado1();
+    }
+
+    private static void llamadaMetodoEncadenado1() {
         if (currentToken.getLexema().equals(".")){
             match(".");
             flagMatch = true;
@@ -1491,37 +1551,90 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("%") ||
                 currentToken.getLexema().equals("/") ||
                 currentToken.getLexema().equals("*")){
+            //lambda
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
                     "Se esperaba: operador aritmetico, operador logico, ')' ,';' ,']' o ','. Se encontró " + currentToken.getLexema(),
-                    "llamadaConstructor2");
+                    " llamadaMetodoEncadenado2");
         }
     }
-
-
-    private static void listaExpresiones() {
-
-
+    private static void accesoVariableEncadenado() {
+        match("id");
+        accesoVariableEncadenado1();
     }
-    private static void encadenado1() {
+    private static void accesoVariableEncadenado1() {
+        if (currentToken.getLexema().equals(".")){
+            match(".");
+            flagMatch = true;
+            if(currentToken.getName().equals("id")){
+                encadenado();
+            } else {
+                //lambda
+            }
+        } else if(currentToken.getLexema().equals("[")){
+            match("[");
+            expresion();
+            match("]");
+            accesoVariableEncadenado2();
 
-
+        }else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals("*")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador aritmetico, operador logico, ')' ,';' ,'[',']' o ','. Se encontró " + currentToken.getLexema(),
+                    "accesoVariableEncadenado1");
+        }
     }
-    private static void llamadaMetodoencadenado1() {
-
-
-    }
-    private static void accesoVariableencadenado() {
-
-
-    }
-    private static void accesoVariableencadenado1() {
-
-
-    }
-    private static void accesoVariableencadenado2() {
-
-
+    private static void accesoVariableEncadenado2() {
+        if (currentToken.getLexema().equals(".")){
+            match(".");
+            flagMatch = true;
+            if(currentToken.getName().equals("id")){
+                encadenado();
+            } else {
+                //lambda
+            }
+        } else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals("*")){
+            // lambda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: operador aritmetico, operador logico, ')' ,';' ,']' o ','. Se encontró " + currentToken.getLexema(),
+                    "accesoVariableEncadenado2");
+        }
     }
 }

@@ -1,5 +1,5 @@
-struct Fibonacci {
-Int a;
-Int i;
+struct Hola {
+    pri Int A;
 }
-start{ }
+
+start{}
