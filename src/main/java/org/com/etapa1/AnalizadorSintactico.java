@@ -1473,7 +1473,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: literal, identificador, +, -, !, ++, --, nil, true, false, (, self o new . Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: ')' ó '+' ó '-' ó '!' ó '++' ó '--' ó 'nill' ó 'true' ó 'false' ó 'int' ó 'str' ó 'char' ó '(' ó 'self' ó id ó idstruct ó new. Se encontró " + currentToken.getLexema(),
                     "argumentosActuales1");
         }
     }
@@ -1493,7 +1493,7 @@ public class AnalizadorSintactico {
         }else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: ',' o ')' . Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: ',' ó ')' . Se encontró " + currentToken.getLexema(),
                     "listaExpresiones1");
         }
     }
