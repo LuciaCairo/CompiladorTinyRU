@@ -1118,12 +1118,12 @@ public class AnalizadorSintactico {
     private static void encadenado() {
     }
     private static void expresionParentizada() {
-        if(currentToken.getLexema().equals("(")){
-            match("(");
-            expresion();
-            match(")");
 
-        }
+        match("(");
+        expresion();
+        match(")");
+        expresionParentizada1();
+
     }
 
     private static void expresionParentizada1() {
@@ -1155,4 +1155,235 @@ public class AnalizadorSintactico {
                     "expresionParentizada1");
         }
     }
+    private static void accesoSelf() {
+        match("self"); // LUUU ESTA BIEN? ⟨AccesoSelf ⟩ ::= “self” ⟨AccesoSelf1⟩
+        accesoSelf1();
+
+    }
+    private static void accesoSelf1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        } else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") || //revisar porq primeros me da igual q siguientes
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "AccesoSelf1");
+        }
+
+
+    }
+    private static void accesoVar() {
+        match("id"); // este id es de variable?
+        accesoVar1();
+
+    }
+    private static void accesoVar1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        } else if (currentToken.getLexema().equals("[")){
+            match("[");
+            expresion();
+            match("]");
+            accesoVar2();
+
+        }else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") || //revisar porq primeros me da igual q siguientes
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "accesoVar1");
+        }
+
+    }
+    private static void accesoVar2() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        } else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") || //revisar porq primeros me da igual q siguientes
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "accesoVar2");
+        }
+    }
+    private static void llamadaMetodo() {
+        match("id"); // este id es de metodo?
+        argumentosActuales();
+        llamadaMetodo1();
+
+    }
+    private static void argumentosActuales() {
+        match("("); // este id es de metodo?
+        argumentosActuales1();
+
+    }
+    private static void llamadaMetodo1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        } else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") || //revisar porq primeros me da igual q siguientes
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "llamadaMetodo1");
+        }
+
+    }
+    private static void llamadaMetodoEstatico() {
+        match("struct_name"); // este id es de metodo?
+        match(".");
+        llamadaMetodo();
+        llamadaMetodoEstatico1();
+
+    }
+    private static void llamadaMetodoEstatico1() {
+        if (currentToken.getLexema().equals(".")){
+            encadenado();
+        } else if (currentToken.getLexema().equals(">=")||
+                currentToken.getLexema().equals("<=")||
+                currentToken.getLexema().equals(">")||
+                currentToken.getLexema().equals("<")||
+                currentToken.getLexema().equals("!=")||
+                currentToken.getLexema().equals("==")||
+                currentToken.getLexema().equals("&&")||
+                currentToken.getLexema().equals("||") ||
+                currentToken.getLexema().equals(",")||
+                currentToken.getLexema().equals("]") ||
+                currentToken.getLexema().equals(";") ||
+                currentToken.getLexema().equals(")") ||
+                currentToken.getLexema().equals("-")||
+                currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("%") ||
+                currentToken.getLexema().equals("/") ||
+                currentToken.getLexema().equals(".") || //revisar porq primeros me da igual q siguientes
+                currentToken.getLexema().equals("*")){
+            //lamda
+        }else{
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
+                    "llamadaMetodoEstatico1");
+        }
+
+    }
+    private static void llamadaConstructor() {
+        match("new");//aca tengo q poner el nombre del token?
+        llamadaConstructor1();
+    }
+    private static void llamadaConstructor1() {
+        if (currentToken.getLexema().equals("struct_name")){
+            argumentosActuales();
+            llamadaConstructor2();
+        }
+
+    }
+    private static void argumentosActuales1() {
+
+
+    }
+    private static void llamadaConstructor2() {
+
+
+    }
+    private static void listaExpresiones() {
+
+
+    }
+    private static void encadenado1() {
+
+
+    }
+    private static void llamadaMetodoencadenado1() {
+
+
+    }
+    private static void accesoVariableencadenado() {
+
+
+    }
+    private static void accesoVariableencadenado1() {
+
+
+    }
+    private static void accesoVariableencadenado2() {
+
+
+    }
+
+
+
+
 }
