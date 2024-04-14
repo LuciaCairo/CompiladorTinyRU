@@ -17,7 +17,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
         // Verificar existencia del archivo
         File file = new File(input);
         if (!file.exists()) {
@@ -652,7 +652,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores, literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operadores(+,-,++.--), nill, tipo primitivo(int,str,char,bool), ; , self, id ,idStruct o new. Se encontró " + currentToken.getLexema(),
                     "sentencia2");
         }
     }

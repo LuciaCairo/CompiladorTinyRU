@@ -1,12 +1,2 @@
-
-start{
-Fibonacci fib;
-Int n;
-fib = new Fibonacci();
-n = IO.in_int();
-(IO.out_int(fib.sucesion_fib(n)));
-}
-
-start{
-;
-}
+/? Se espera que dentro de start, se pueda incluir un bloque vacio {}
+/? Correcto Analisis Sintactico
