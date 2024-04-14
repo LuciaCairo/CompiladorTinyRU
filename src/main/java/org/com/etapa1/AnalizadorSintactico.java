@@ -655,7 +655,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores, literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operadores(+,-,++.--), nill, tipo primitivo(int,str,char,bool), ; , self, id ,idStruct o new. Se encontró " + currentToken.getLexema(),
                     "sentencia2");
         }
     }
