@@ -41,10 +41,13 @@ public class AnalizadorSintactico {
 
         try {
             l.analyzeFile(input);
-            currentToken = l.nextToken();
             // Comenzar el análisis sintáctico desde el símbolo inicial ⟨program⟩
+            if(l.countTokens() <= 0) { // No hay tokens
+                currentToken = new Token(0, 0, "EOF", "EOF");
+            } else {
+                currentToken = l.nextToken();
+            }
             program();
-
             System.out.println("CORRECTO: ANALISIS SINTACTICO \n");
 
         } catch (LexicalErrorException e) {
