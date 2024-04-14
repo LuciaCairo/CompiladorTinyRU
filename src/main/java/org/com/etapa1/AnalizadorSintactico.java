@@ -90,6 +90,7 @@ public class AnalizadorSintactico {
         if(l.countTokens() <= 0){ // No hay mas tokens
             // Aca nose bien que deberia pasar
             // Excepcion ??
+            currentToken = new Token(0, 0, "EOF", "EOF");
         } else {
             currentToken = l.nextToken();
         }
@@ -108,6 +109,7 @@ public class AnalizadorSintactico {
                     "Se esperaba: struct, impl o start. Se encontró: " + currentToken.getLexema(),
                     "program");
         }
+        match("EOF");
     }
 
     private static void start() {
