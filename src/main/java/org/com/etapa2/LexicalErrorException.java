@@ -1,4 +1,4 @@
-package org.com.etapa1;
+package org.com.etapa2;
 
 public class LexicalErrorException extends IllegalArgumentException {
     private int lineNumber;

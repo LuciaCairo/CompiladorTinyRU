@@ -1,7 +1,6 @@
-package org.com.etapa1;
+package org.com.etapa2;
 
 import java.io.File;
-import java.io.IOException;
 
 public class AnalizadorSintactico {
 
@@ -10,14 +9,14 @@ public class AnalizadorSintactico {
     private static boolean flagMatch = false;
 
     public static void main(String[] args) {
-        /*if (args.length < 1) {
+        if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
-            System.out.println("Uso: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
+            System.out.println("Uso: java -jar etapa2.jar <ARCHIVO_FUENTE> ");
             return;
-        }*/
+        }
 
-        //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
+        String input = args[0];
+        //String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa2\\prueba.ru";
 
         // Verificar existencia del archivo
         File file = new File(input);

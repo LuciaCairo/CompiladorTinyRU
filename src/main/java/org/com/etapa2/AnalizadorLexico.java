@@ -1,4 +1,4 @@
-package org.com.etapa1;
+package org.com.etapa2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
