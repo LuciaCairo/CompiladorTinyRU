@@ -595,7 +595,6 @@ public class AnalizadorSintactico {
             match("while");
             match("(");
             expresion();
-            System.out.println(currentToken.getLexema());
             match(")");
             sentencia();
         } else if (currentToken.getLexema().equals("{")){
@@ -1470,7 +1469,6 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("id")){
             match("id");
             flagMatch = true;
-
             if(currentToken.getLexema().equals("(")){
                 llamadaMetodoEncadenado();
             } else {

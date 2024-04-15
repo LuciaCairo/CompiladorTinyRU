@@ -1,28 +1,13 @@
-struct Mundo {
-pri Int a;
-Str b;
-}
-impl Mundo{
-.(){ a = 42;}
-fn get_a()-> Int { ret a; }
-st fn imprimo_algo()-> void {
-(IO.out_str("hola mundo"));
-}
-}
+/? |LINEA 3 | COLUMNA 49 | TOKEN INESPERADO: "TOKEN_OPEN_BRACE"|
 
-struct Prueba{
+/? |LINEA 3 | COLUMNA 0 | TOKEN INESPERADO: "TOKEN_KW_IMPL"|
 
-Mundo c;
-
-}
-impl Prueba{
-.(){
-c = new Mundo();
-y = c.b;
-z = c.a;
-(c.imprimo_algo());
-}
-}
 start{
+
 }
+impl A{
+    fn hola () -> void {}
+}
+
+
 
