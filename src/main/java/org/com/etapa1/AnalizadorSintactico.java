@@ -90,8 +90,6 @@ public class AnalizadorSintactico {
     // Método para avanzar al siguiente token
     private static void advance() {
         if(l.countTokens() <= 0){ // No hay mas tokens
-            // Aca nose bien que deberia pasar
-            // Excepcion ??
             currentToken = new Token(0, 0, "EOF", "EOF");
         } else {
             currentToken = l.nextToken();
@@ -185,7 +183,8 @@ public class AnalizadorSintactico {
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de Tipo, pri o '}'. Se encontró: " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct, pri o '}'. " +
+                            "Se encontró: " + currentToken.getLexema(),
                     "struct2");
         }
     }
@@ -209,7 +208,8 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de Tipo, pri o '}'. Se encontró: " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct, " +
+                            "pri o '}'. Se encontró: " + currentToken.getLexema(),
                     "atributos1");
         }
     }
@@ -285,7 +285,8 @@ public class AnalizadorSintactico {
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de Tipo o pri. Se encontró: " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct o pri. " +
+                            "Se encontró: " + currentToken.getLexema(),
                     "atributo");
         }
     }
@@ -351,7 +352,7 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de tipo " +
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct " +
                             ",de declaracion (;, if, while, ret, id, self, (, {)" +
                             "o '}'. Se encontró: " + currentToken.getLexema(),
                     "bloqueMetodo1");
@@ -374,7 +375,7 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: declaracion (;, if, while, ret, id, self, (, {)" +
+                    "Se esperaba: ;, if, while, ret, self, (, {)" +
                             "o '}'. Se encontró: " + currentToken.getLexema(),
                     "bloqueMetodo2");
         }
@@ -406,8 +407,8 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de tipo " +
-                            ",de declaracion (;, if, while, ret, id, self, (, {, }). " +
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct, id " +
+                            ",de sentencia (;, if, while, ret, self, (, {, }). " +
                             "Se encontró: " + currentToken.getLexema(),
                     "declaraciones1");
         }
@@ -483,7 +484,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: Identificador de Tipo o ')'. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array), idStruct o ')'. Se encontró " + currentToken.getLexema(),
                     "argumentosFormales1");
         }
     }
@@ -525,7 +526,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: identificador de tipo. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array, void) o idStruct. Se encontró " + currentToken.getLexema(),
                     "tipoMetodo");
         }
     }
@@ -544,7 +545,8 @@ public class AnalizadorSintactico {
         }else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba:'Tipo-Primitivo' o 'Arreglo' o 'IDStruc'. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array) o idStruct. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "tipo");
         }
     }
@@ -561,7 +563,8 @@ public class AnalizadorSintactico {
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba:'Tipo-Primitivo'. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: Identificador de Tipo (Str, Char, Int, Bool, Array). " +
+                            "Se encontró " + currentToken.getLexema(),
                     "tipo");
         }
     }
@@ -605,7 +608,8 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba:',', self, id, '(', '{', if, while o ret. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba:',', self, id, '(', '{', if, while o ret. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "sentencia");
         }
     }
@@ -625,7 +629,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: else, if, ';', self, id, '(', '{', while o ret. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: else, if, ';', self, id, '(', '{', while o ret. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "sentencia1");
         }
     }
@@ -654,7 +659,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores(+,-,++.--), nill, tipo primitivo(int,str,char,bool), ; , self, id ,idStruct o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operadores(+,-,++.--), nill, Identificador de Tipo (Str, Char, Int, Bool, Array), id, idStruct, " +
+                            "; , self, id , o new. Se encontró " + currentToken.getLexema(),
                     "sentencia2");
         }
     }
@@ -680,7 +686,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: ';', if, while, ret, id, self, '(', '{' o '}'. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: ';', if, while, ret, id, self, '(', '{' o '}'. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "bloque1");
         }
     }
@@ -789,7 +796,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: '||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: '||', ')', ';', ']' o ','. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "expresion1");
         }
     }
@@ -813,7 +821,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: '&&','||', ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: '&&','||', ')', ';', ']' o ','. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "expAnd1");
         }
     }
@@ -839,7 +848,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operador logico ('&&','||', '==','!='), ')', ';', ']' o ','. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "expIgual1");
         }
     }
@@ -869,7 +879,9 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operador logico ('&&','||', '==', '!=', '>','|>=', '<', '<='), " +
+                            "')', ';', ']' o ','. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "expCompuesta1");
         }
     }
@@ -901,7 +913,9 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, +, -, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "operador logico ('&&','||', '==', '!=', '>','|>=', '<', '<='), " +
+                            "+, -, ')', ';', ']' o ','. " +
+                            "Se encontró " + currentToken.getLexema(),
                     "expAd1");
         }
     }
@@ -936,7 +950,9 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operador logico ('&&','||', '==', '!=', '>','|>=', '<', '<='), " +
+                            "operador aritmetico ('+','-', '/', '*', '%'), " +
+                            "')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
                     "expMul1");
         }
     }
@@ -964,7 +980,8 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores, literales, self, id o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operador aritmetico ('+','-', '++', '--', '!'), " +
+                            "literales, self, id o new. Se encontró " + currentToken.getLexema(),
                     "expUn");
         }
     }
@@ -994,7 +1011,7 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores compuestos. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operadores compuestos ('>','>=', '<', '<='). Se encontró " + currentToken.getLexema(),
                     "literal");
         }
     }
@@ -1026,7 +1043,7 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operadores unarios. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operadores unarios ('+','-', '++', '--', '!'). Se encontró " + currentToken.getLexema(),
                     "opUnario");
         }
     }
@@ -1094,7 +1111,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: operador logico, operador aritmetico, ')', ';', ']', ',' o '.'. Se encontró " + currentToken.getLexema(),
                     "operando1");
         }
     }
@@ -1140,7 +1157,7 @@ public class AnalizadorSintactico {
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: identificador, '(', self o new. Se encontró " + currentToken.getLexema(),
+                    "Se esperaba: id, '(', self o new. Se encontró " + currentToken.getLexema(),
                     "primario");
         }
     }
