@@ -18,6 +18,7 @@ public class AnalizadorSintactico {
 
         //String input = args[0];
         String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa1\\prueba.ru";
+
         // Verificar existencia del archivo
         File file = new File(input);
         if (!file.exists()) {
@@ -64,8 +65,6 @@ public class AnalizadorSintactico {
 
     // Método para emparejar el token actual con un token esperado
     private static void match(String expectedToken) {
-        //System.out.print(currentToken.getLexema());
-        //System.out.print(currentToken.getName());
         if(!flagMatch){
             if(expectedToken.equals("idMetAt")){
                 if (currentToken.getName().equals("id") ||
@@ -177,7 +176,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("Bool") ||
                 currentToken.getLexema().equals("Int") ||
                 currentToken.getLexema().equals("Char") ||
-                currentToken.getLexema().equals("struct_name") ||
+                currentToken.getName().equals("struct_name") ||
                 currentToken.getLexema().equals("Array")) {
             atributos();
             match("}");
@@ -596,6 +595,7 @@ public class AnalizadorSintactico {
             match("while");
             match("(");
             expresion();
+            System.out.println(currentToken.getLexema());
             match(")");
             sentencia();
         } else if (currentToken.getLexema().equals("{")){
@@ -857,6 +857,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals(">=")){
             opCompuesto();
             expAd();
+
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -1154,13 +1155,7 @@ public class AnalizadorSintactico {
 
     private static void expresionParentizada1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         }else if(currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1193,13 +1188,7 @@ public class AnalizadorSintactico {
     }
     private static void accesoSelf1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1230,17 +1219,10 @@ public class AnalizadorSintactico {
     private static void accesoVar() {
         match("id");
         accesoVar1();
-
     }
     private static void accesoVar1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals("[")){
             match("[");
             expresion();
@@ -1274,13 +1256,7 @@ public class AnalizadorSintactico {
     }
     private static void accesoVar2() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1314,13 +1290,7 @@ public class AnalizadorSintactico {
     }
     private static void llamadaMetodo1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1356,13 +1326,7 @@ public class AnalizadorSintactico {
     }
     private static void llamadaMetodoEstatico1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1416,13 +1380,7 @@ public class AnalizadorSintactico {
 
     private static void llamadaConstructor2() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1512,6 +1470,7 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("id")){
             match("id");
             flagMatch = true;
+
             if(currentToken.getLexema().equals("(")){
                 llamadaMetodoEncadenado();
             } else {
@@ -1532,13 +1491,7 @@ public class AnalizadorSintactico {
 
     private static void llamadaMetodoEncadenado1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1570,13 +1523,7 @@ public class AnalizadorSintactico {
     }
     private static void accesoVariableEncadenado1() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if(currentToken.getLexema().equals("[")){
             match("[");
             expresion();
@@ -1610,13 +1557,7 @@ public class AnalizadorSintactico {
     }
     private static void accesoVariableEncadenado2() {
         if (currentToken.getLexema().equals(".")){
-            match(".");
-            flagMatch = true;
-            if(currentToken.getName().equals("id")){
-                encadenado();
-            } else {
-                //lambda
-            }
+            encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
