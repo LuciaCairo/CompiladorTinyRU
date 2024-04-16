@@ -63,15 +63,7 @@ public class AnalizadorSintactico {
     // Método para emparejar el token actual con un token esperado
     private static void match(String expectedToken) {
         if(!flagMatch){
-            if(expectedToken.equals("idMetAt")){
-                if (currentToken.getName().equals("id") ||
-                        currentToken.getName().equals("struct_name")) {
-                    advance();
-                } else {
-                    throw new SyntactErrorException(currentToken.getLine(), currentToken.getCol(),
-                            "Se esperaba: " + expectedToken + ". Se encontró: " + currentToken.getLexema(),"match");
-                }
-            } else if (currentToken.getLexema().equals(expectedToken) ||
+            if (currentToken.getLexema().equals(expectedToken) ||
                     currentToken.getName().equals(expectedToken)) {
                 advance();
             } else {
@@ -81,7 +73,6 @@ public class AnalizadorSintactico {
         }else{
             flagMatch = false;
         }
-
     }
 
     // Método para avanzar al siguiente token
@@ -292,14 +283,14 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("st")){
             formaMetodo();
             match("fn");
-            match("idMetAt");
+            match("id");
             argumentosFormales();
             match("->");
             tipoMetodo();
             bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
-            match("idMetAt");
+            match("id");
             argumentosFormales();
             match("->");
             tipoMetodo();
@@ -444,7 +435,7 @@ public class AnalizadorSintactico {
     }
 
     private static void listaDeclaracionVariables() {
-        match("idMetAt");
+        match("id");
         listaDeclaracionVariables1();
     }
 
@@ -507,7 +498,7 @@ public class AnalizadorSintactico {
 
     private static void argumentoFormal() {
         tipo();
-        match("idMetAt");
+        match("id");
     }
 
     private static void tipoMetodo() {
