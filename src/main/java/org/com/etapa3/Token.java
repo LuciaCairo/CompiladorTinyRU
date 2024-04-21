@@ -1,4 +1,4 @@
-package org.com.etapa2;
+package org.com.etapa3;
 
 public class Token {
     private final int line; // Numero de fila donde comienza el lexema

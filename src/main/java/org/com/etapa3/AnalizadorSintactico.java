@@ -1,4 +1,4 @@
-package org.com.etapa2;
+package org.com.etapa3;
 
 import java.io.File;
 
@@ -7,15 +7,17 @@ public class AnalizadorSintactico {
     private static AnalizadorLexico l;
     private static Token currentToken;
     private static boolean flagMatch = false;
+    //private static Map<String, Clase> tablaSimbolos = new HashMap<>();
 
     public static void main(String[] args) {
-        if (args.length < 1) {
+        /*if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
             System.out.println("Uso: java -jar etapa2.jar <ARCHIVO_FUENTE> ");
             return;
-        }
+        }*/
 
-        String input = args[0];
+        //String input = args[0];
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
 
         // Verificar existencia del archivo
         File file = new File(input);
@@ -47,7 +49,7 @@ public class AnalizadorSintactico {
                 currentToken = l.nextToken();
             }
             program();
-            System.out.println("CORRECTO: ANALISIS SINTACTICO \n");
+            System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
         } catch (LexicalErrorException e) {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
@@ -57,6 +59,9 @@ public class AnalizadorSintactico {
             System.out.println("ERROR: SINTACTICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
             System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
 
+        } catch (SemantErrorException e) {
+            System.out.println("ERROR: SEMANTICO - DECLARACIONES\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
+            System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
         }
     }
 
@@ -83,6 +88,42 @@ public class AnalizadorSintactico {
             currentToken = l.nextToken();
         }
     }
+
+    // ---------------------------------------- Semantico ----------------------------------------------------
+    // Método para verificar la existencia de una clase en la tabla de símbolos
+    private static boolean existeClase(String nombreClase) {
+        return tablaSimbolos.containsKey(nombreClase);
+    }
+
+    // Método para agregar una clase a la tabla de símbolos
+    private static void agregarClase(Clase clase) {
+        tablaSimbolos.put(clase.getNombre(), clase);
+    }
+
+    // Método para verificar la existencia de un método en una clase
+    private static boolean existeMetodoEnClase(String nombreMetodo, String nombreClase) {
+        if (existeClase(nombreClase)) {
+            return tablaSimbolos.get(nombreClase).existeMetodo(nombreMetodo);
+        }
+        return false;
+    }
+
+    // Método para verificar la existencia de un atributo en una clase
+    private static boolean existeAtributoEnClase(String nombreAtributo, String nombreClase) {
+        if (existeClase(nombreClase)) {
+            return tablaSimbolos.get(nombreClase).existeAtributo(nombreAtributo);
+        }
+        return false;
+    }
+
+    // Método para verificar la existencia de una clase o método
+    private static void verificarExistencia(String nombre, String tipo) {
+        if (!existeClase(nombre) && !existeMetodoEnClase(nombre, tipo)) {
+            throw new SemanticErrorException(currentToken.getLine(), currentToken.getCol(),
+                    "El " + tipo + " '" + nombre + "' no está definido.");
+        }
+    }
+    // --------------------------------------------------------------------------------------------
 
     private static void program() {
         if (currentToken.getLexema().equals("struct") ||

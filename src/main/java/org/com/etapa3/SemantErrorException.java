@@ -1,12 +1,12 @@
-package org.com.etapa2;
+package org.com.etapa3;
 
-public class SyntactErrorException extends IllegalArgumentException {
+public class SemantErrorException extends IllegalArgumentException {
     private int lineNumber;
     private int columnNumber;
     private String description;
     private String functionName;
 
-    public SyntactErrorException(int lineNumber, int columnNumber, String description, String functionName) {
+    public SemantErrorException(int lineNumber, int columnNumber, String description, String functionName) {
         //super("| LINEA " + lineNumber + " | COLUMNA " + columnNumber + " | " + description);
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
