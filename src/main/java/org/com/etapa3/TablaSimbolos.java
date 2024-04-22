@@ -21,6 +21,10 @@ public class TablaSimbolos {
         return currentStruct;
     }
 
+    public EntradaStruct getStruct(String nombre) {
+        return this.structs.get(nombre);
+    }
+
     public EntradaMetodo getCurrentMetod() {
         return currentMetod;
     }
@@ -42,6 +46,7 @@ public class TablaSimbolos {
         }
         this.structs.put(struct.getName(), struct);
     }
+
 
     public boolean searchStruct(String nombre){
         return this.structs.containsKey(nombre);

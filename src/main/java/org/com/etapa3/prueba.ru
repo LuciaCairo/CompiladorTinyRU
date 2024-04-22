@@ -1,9 +1,7 @@
+impl Clase{
+ st fn hola ()-> Int{}
+}
 struct Clase{
-    pri Array Str a;
-    Str b;
-}
+Int num;}
 
-struct Clas{
-    Int num;
-}
 start{}

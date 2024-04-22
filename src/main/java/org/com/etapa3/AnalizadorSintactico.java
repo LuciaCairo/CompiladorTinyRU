@@ -1,8 +1,5 @@
 package org.com.etapa3;
-import org.com.etapa3.ClasesSemantico.EntradaAtributo;
-import org.com.etapa3.ClasesSemantico.EntradaStart;
-import org.com.etapa3.ClasesSemantico.EntradaStruct;
-import org.com.etapa3.ClasesSemantico.EntradaMetodo;
+import org.com.etapa3.ClasesSemantico.*;
 
 import java.io.File;
 
@@ -11,7 +8,6 @@ public class AnalizadorSintactico {
     private static AnalizadorLexico l;
     private static Token currentToken;
     private static boolean flagMatch = false;
-    //private static Map<String, Clase> tablaSimbolos = new HashMap<>();
     private static TablaSimbolos ts;
     public static void main(String[] args) {
         /*if (args.length < 1) {
@@ -157,7 +153,7 @@ public class AnalizadorSintactico {
         if(!(ts.searchStruct(nombre))){
             e = new EntradaStruct(nombre);
         } else {
-            e = new EntradaStruct(nombre);
+            e = ts.getStruct(nombre);
         }
         ts.setCurrentStruct(e);
         struct1();
@@ -231,7 +227,15 @@ public class AnalizadorSintactico {
 
     private static void impl() {
         match("impl");
+        String nombre = currentToken.getLexema();
         match("struct_name");
+        EntradaStruct e;
+        if(!(ts.searchStruct(nombre))){
+            e = new EntradaStruct(nombre);
+        } else {
+            e = ts.getStruct(nombre);
+        }
+        ts.setCurrentStruct(e);
         match("{");
         miembros();
         match("}");
@@ -317,6 +321,9 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("st")){
             formaMetodo();
             match("fn");
+            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),true,0 );
+            ts.setCurrentMetod(e);
+            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e, currentToken);
             match("id");
             argumentosFormales();
             match("->");
@@ -324,6 +331,8 @@ public class AnalizadorSintactico {
             bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
+            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),false,0 );
+            ts.setCurrentMetod(e);
             match("id");
             argumentosFormales();
             match("->");

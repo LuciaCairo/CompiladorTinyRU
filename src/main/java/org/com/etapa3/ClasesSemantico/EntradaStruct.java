@@ -41,6 +41,14 @@ public class EntradaStruct {
         this.atributos.put(name, atributo);
     }
 
+    public void insertMetodo(String name, EntradaMetodo metodo, Token token) {
+        if(this.metodos.containsKey(name)){
+            throw new SemantErrorException(token.getLine(), token.getCol(),
+                    "Ya existe un metodo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
+        }
+        this.metodos.put(name, metodo);
+    }
+
     public String printJSON_Struct(){
         String json = "";
         json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": " +",";
@@ -52,6 +60,20 @@ public class EntradaStruct {
                 String key = entry.getKey();
                 EntradaAtributo value = entry.getValue();
                 jsonAtributos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeAtributo(num)+"\n\t}");
+                num += 1;
+            }
+            // Unir los JSONs de atributos en una cadena
+            json += String.join(",", jsonAtributos);
+            json += "\n\t],";
+        }
+        if(!metodos.isEmpty()){
+            json +="\n\t\"metodos\": [";
+            List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs
+            int num = 0; // Para la posicion
+            for (Map.Entry<String, EntradaMetodo> entry : metodos.entrySet()) {
+                String key = entry.getKey();
+                EntradaMetodo value = entry.getValue();
+                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeMetodo(num)+"\n\t}");
                 num += 1;
             }
             // Unir los JSONs de atributos en una cadena
