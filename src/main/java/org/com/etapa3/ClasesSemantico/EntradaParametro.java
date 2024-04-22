@@ -1,15 +1,12 @@
 package org.com.etapa3.ClasesSemantico;
 
-import java.util.List;
-import java.util.Hashtable;
-
-public class Parametro {
+public class EntradaParametro {
     private String nombre;
     private String tipo;
     private int pos;
 
     // Constructor
-    public Parametro(String nombre, String tipo, int pos){
+    public EntradaParametro(String nombre, String tipo, int pos){
         this.nombre = nombre;
         this.tipo = tipo;
         this.pos = pos;

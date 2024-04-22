@@ -1,4 +1,8 @@
 package org.com.etapa3;
+import org.com.etapa3.ClasesSemantico.EntradaAtributo;
+import org.com.etapa3.ClasesSemantico.EntradaStart;
+import org.com.etapa3.ClasesSemantico.EntradaStruct;
+import org.com.etapa3.ClasesSemantico.EntradaMetodo;
 
 import java.io.File;
 
@@ -8,7 +12,7 @@ public class AnalizadorSintactico {
     private static Token currentToken;
     private static boolean flagMatch = false;
     //private static Map<String, Clase> tablaSimbolos = new HashMap<>();
-
+    private static TablaSimbolos ts;
     public static void main(String[] args) {
         /*if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
@@ -39,7 +43,7 @@ public class AnalizadorSintactico {
         }
 
         l = new AnalizadorLexico();
-
+        ts = new TablaSimbolos();
         try {
             l.analyzeFile(input);
             // Comenzar el análisis sintáctico desde el símbolo inicial ⟨program⟩
@@ -50,6 +54,8 @@ public class AnalizadorSintactico {
             }
             program();
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
+            String json = ts.printJSON_Tabla();
+            ts.saveJSON(json, "archivo.json");
 
         } catch (LexicalErrorException e) {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
@@ -62,6 +68,9 @@ public class AnalizadorSintactico {
         } catch (SemantErrorException e) {
             System.out.println("ERROR: SEMANTICO - DECLARACIONES\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
             System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -89,43 +98,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    // ---------------------------------------- Semantico ----------------------------------------------------
-    // Método para verificar la existencia de una clase en la tabla de símbolos
-    private static boolean existeClase(String nombreClase) {
-        return tablaSimbolos.containsKey(nombreClase);
-    }
-
-    // Método para agregar una clase a la tabla de símbolos
-    private static void agregarClase(Clase clase) {
-        tablaSimbolos.put(clase.getNombre(), clase);
-    }
-
-    // Método para verificar la existencia de un método en una clase
-    private static boolean existeMetodoEnClase(String nombreMetodo, String nombreClase) {
-        if (existeClase(nombreClase)) {
-            return tablaSimbolos.get(nombreClase).existeMetodo(nombreMetodo);
-        }
-        return false;
-    }
-
-    // Método para verificar la existencia de un atributo en una clase
-    private static boolean existeAtributoEnClase(String nombreAtributo, String nombreClase) {
-        if (existeClase(nombreClase)) {
-            return tablaSimbolos.get(nombreClase).existeAtributo(nombreAtributo);
-        }
-        return false;
-    }
-
-    // Método para verificar la existencia de una clase o método
-    private static void verificarExistencia(String nombre, String tipo) {
-        if (!existeClase(nombre) && !existeMetodoEnClase(nombre, tipo)) {
-            throw new SemanticErrorException(currentToken.getLine(), currentToken.getCol(),
-                    "El " + tipo + " '" + nombre + "' no está definido.");
-        }
-    }
-    // --------------------------------------------------------------------------------------------
-
-    private static void program() {
+    private static void program() throws Exception {
         if (currentToken.getLexema().equals("struct") ||
                 currentToken.getLexema().equals("impl")){
             definiciones();
@@ -142,11 +115,12 @@ public class AnalizadorSintactico {
     }
 
     private static void start() {
+        EntradaStart e = new EntradaStart();
         match("start");
         bloqueMetodo();
     }
 
-    private static void definiciones() {
+    private static void definiciones() throws Exception {
         if (currentToken.getLexema().equals("struct")) {
             struct();
             definiciones1();
@@ -161,7 +135,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void definiciones1() {
+    private static void definiciones1() throws Exception {
         if (currentToken.getLexema().equals("struct") ||
                 currentToken.getLexema().equals("impl")) {
             definiciones();
@@ -175,18 +149,30 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void struct() {
+    private static void struct() throws Exception {
         match("struct");
+        String nombre = currentToken.getLexema();
         match("struct_name");
+        EntradaStruct e;
+        if(!(ts.searchStruct(nombre))){
+            e = new EntradaStruct(nombre);
+        } else {
+            e = new EntradaStruct(nombre);
+        }
+        ts.setCurrentStruct(e);
         struct1();
     }
 
-    private static void struct1() {
+    private static void struct1() throws Exception {
         if (currentToken.getLexema().equals(":")) {
-            herencia();
+            String nombre_ancestro = herencia();
+            ts.getCurrentStruct().setHerencia(nombre_ancestro);
+            ts.insertStruct(ts.getCurrentStruct(), currentToken);
             match("{");
             struct2();
         } else if (currentToken.getLexema().equals("{")) {
+            ts.getCurrentStruct().setHerencia("Object");
+            ts.insertStruct(ts.getCurrentStruct(), currentToken);
             match("{");
             struct2();
         } else {
@@ -271,9 +257,11 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void herencia() {
+    private static String herencia() {
         match(":");
+        String nombre = currentToken.getLexema();
         tipo();
+        return nombre;
     }
 
     private static void miembro() {
@@ -299,7 +287,9 @@ public class AnalizadorSintactico {
     private static void atributo() {
         if (currentToken.getLexema().equals("pri")){
             visibilidad();
-            tipo();
+            String tipo = tipo();
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false);
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
             listaDeclaracionVariables();
             match(";");
         } else if (currentToken.getLexema().equals("Str") ||
@@ -308,9 +298,12 @@ public class AnalizadorSintactico {
                     currentToken.getLexema().equals("Char") ||
                     currentToken.getLexema().equals("Array") ||
                     currentToken.getName().equals("struct_name")) {
-                tipo();
-                listaDeclaracionVariables();
-                match(";");
+            String tipo = currentToken.getLexema();
+            tipo();
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true);
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            listaDeclaracionVariables();
+            match(";");
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -560,17 +553,20 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void tipo() {
+    private static String tipo() {
         if (currentToken.getLexema().equals("Str") ||
                 currentToken.getLexema().equals("Bool") ||
                 currentToken.getLexema().equals("Int") ||
-                currentToken.getLexema().equals("Char"))
-                {
+                currentToken.getLexema().equals("Char")) {
+            String tipo = currentToken.getLexema();
             tipoPrimitivo();
+            return tipo;
         }else if(currentToken.getLexema().equals("Array")){
-            tipoArreglo();
+            return tipoArreglo();
         }else if(currentToken.getName().equals("struct_name")){
+            String tipo = currentToken.getLexema();
             tipoReferencia();
+            return tipo;
         }else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -601,9 +597,11 @@ public class AnalizadorSintactico {
     private static void tipoReferencia() {
         match("struct_name");
     }
-    private static void tipoArreglo() {
+    private static String tipoArreglo() {
         match("Array");
+        String tipo = currentToken.getLexema();
         tipoPrimitivo();
+        return "Array " + tipo;
     }
 
     private static void sentencia() {

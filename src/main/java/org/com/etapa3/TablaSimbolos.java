@@ -1,96 +1,77 @@
 package org.com.etapa3;
+import org.com.etapa3.ClasesSemantico.EntradaStruct;
+import org.com.etapa3.ClasesSemantico.EntradaMetodo;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TablaSimbolos {
+    private Hashtable<String,EntradaStruct> structs;
+    private EntradaStruct currentStruct;
+    private EntradaMetodo currentMetod;
 
-    private Hashtable<String,EntradaClase> clases;
-    private EntradaClase claseActual;
-    private EntradaMetodo metodoActual;
-
-    public TablaDeSimbolos (){
-        this.clases = new Hashtable<>();
-        this.clases.put("Int", new EntradaClase("Int","Object",0,0));
-        this.clases.put("Bool", new EntradaClase("Bool","Object",0,0));
-        this.clases.put("Char", new EntradaClase("Char","Object",0,0));
-        this.clases.put("String", stringClass());
-        this.clases.put("IO", ioClass());
-        this.clases.put("Object", new EntradaClase("Object",null,0,0));
+    public TablaSimbolos (){
+        this.structs = new Hashtable<>();
     }
 
-    public EntradaClase stringClass(){
-        EntradaClase claseString = new EntradaClase("String","Object",0,0);
-        claseString.insertaMetodo("length", "Int");
-        claseString.insertaMetodo("concat","String");
-        claseString.getMetodo("concat").insertaParametro("String","s",0,0);
-        claseString.insertaMetodo("substr", "String");
-        claseString.getMetodo("substr").insertaParametro("String","i",0,0);
-        claseString.getMetodo("substr").insertaParametro("String","l",0,0);
-        return claseString;
+    // Getters
+    public EntradaStruct getCurrentStruct() {
+        return currentStruct;
     }
 
-    /**
-     * ioClass
-     * retorna la clase IO en formato EntradaClase con todos sus metodos
-     * @return la clase IO para insertar en la hashTable de la tds
-     *
-     */
-    public EntradaClase ioClass(){
-        EntradaClase claseIO = new EntradaClase("IO","Object",0,0);
-        claseIO.insertaMetodo("out_string", "void");
-        claseIO.getMetodo("out_string").insertaParametro("String","s",0,0);
-        claseIO.insertaMetodo("out_int","void");
-        claseIO.getMetodo("out_int").insertaParametro("Int","i",0,0);
-        claseIO.insertaMetodo("out_bool", "void");
-        claseIO.getMetodo("out_bool").insertaParametro("Bool","b",0,0);
-        claseIO.insertaMetodo("out_char", "void");
-        claseIO.getMetodo("out_char").insertaParametro("Char","c",0,0);
-        claseIO.insertaMetodo("in_string", "String");
-        claseIO.insertaMetodo("in_int", "Int");
-        claseIO.insertaMetodo("in_bool", "Bool");
-        claseIO.insertaMetodo("in_char", "Char");
-        return claseIO;
+    public EntradaMetodo getCurrentMetod() {
+        return currentMetod;
     }
 
-    public void insertaClase(EntradaClase claseNueva) throws Exception{
-        if(!this.clases.containsKey(claseNueva.getNombre())){
-            this.clases.put(claseNueva.getNombre(), claseNueva);
-        }else{
-            throw new ExcepcionSemantica(claseNueva.getFila(),claseNueva.getColumna(),"Clase declarada anteriormente",claseNueva.getHerencia(),true);
+    // Setters
+    public void setCurrentStruct(EntradaStruct currentStruct) {
+        this.currentStruct = currentStruct;
+    }
+
+    public void setCurrentMetod(EntradaMetodo currentMetod) {
+        this.currentMetod = currentMetod;
+    }
+
+    // Functions
+    public void insertStruct(EntradaStruct struct, Token token){
+        if(this.structs.containsKey(struct.getName())){
+            throw new SemantErrorException(token.getLine(), token.getCol(),
+                    "Ya existe un struct con el nombre \"" + struct.getName() + "\" ","insertStruct");
         }
+        this.structs.put(struct.getName(), struct);
     }
 
-    public void setClaseActual(EntradaClase claseActual) {
-        this.claseActual = claseActual;
+    public boolean searchStruct(String nombre){
+        return this.structs.containsKey(nombre);
     }
 
-    public void setMetodoActual(EntradaMetodo metodoActual) {
-        this.metodoActual = metodoActual;
-    }
-
-    public EntradaMetodo getMetodoActual() {
-        return metodoActual;
-    }
-
-    public EntradaClase getClaseActual() {
-        return claseActual;
-    }
-
-    public Hashtable<String, EntradaClase> getClases() {
-        return clases;
-    }
-
-    public String imprimeTS(){
+    public String printJSON_Tabla(){
         String json = "{\n";
-        json += "\"Clases\":[\n";
-        for(Map.Entry<String, EntradaClase> entry : clases.entrySet()) {
+        json += "\"structs\": [\n";
+        for(Map.Entry<String, EntradaStruct> entry : structs.entrySet()) {
             String key = entry.getKey();
-            EntradaClase value = entry.getValue();
-            json +="{\""+ value.getNombre() + "\": {\n"+ value.imprimirEC()+"\n}\n},";
+            EntradaStruct value = entry.getValue();
+            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_Struct()+"\n}\n],";
         }
+        json += "\n\"start\": {";
+        json +="\n\t\"nombre\": \"start\",\n\t\"retorno\": \"void\",\n\t\"posicion\": 0, \n},";
+
         json = json.substring(0,json.length()-1);
-        json += "]\n}";
+        json += "\n}";
         return json;
+    }
+
+    // Método para guardar el JSON en un archivo
+    public void saveJSON(String json, String nombreArchivo) {
+        String rutaArchivo = System.getProperty("user.dir") + "\\src\\main\\java\\org\\com\\etapa3\\" + nombreArchivo;
+        try (FileWriter fileWriter = new FileWriter(rutaArchivo)) {
+            fileWriter.write(json);
+            System.out.println("JSON guardado exitosamente en " + rutaArchivo);
+        } catch (IOException e) {
+            System.out.println("Error al guardar el JSON");
+            e.printStackTrace();
+        }
     }
 }

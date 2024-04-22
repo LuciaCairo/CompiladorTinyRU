@@ -1,0 +1,41 @@
+{
+"structs": [
+{
+	"nombre": "Clase",
+	"heredaDe": "Object",
+	"constructor": ,
+	"atributos": [
+	{
+		"nombre": "b",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "a",
+		"tipo": "Array Str",
+		"public": false,
+		"posicion": 1
+	}
+	],
+}
+],{
+	"nombre": "Clas",
+	"heredaDe": "Object",
+	"constructor": ,
+	"atributos": [
+	{
+		"nombre": "num",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 0
+	}
+	],
+}
+],
+"start": {
+	"nombre": "start",
+	"retorno": "void",
+	"posicion": 0, 
+}
+}
