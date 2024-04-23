@@ -1,7 +1,18 @@
+
+
+struct Clase{Int a; Int b;}
+
 impl Clase{
- st fn hola ()-> Int{}
+ fn met ()-> Int{}
+ st fn met1 ()-> Array Int{}
 }
-struct Clase{
-Int num;}
+impl Clase{
+}
+
+
+
+
+
+
 
 start{}

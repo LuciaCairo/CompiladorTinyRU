@@ -1,6 +1,7 @@
 package org.com.etapa3;
 import org.com.etapa3.ClasesSemantico.*;
 
+import javax.sound.midi.SysexMessage;
 import java.io.File;
 
 public class AnalizadorSintactico {
@@ -163,12 +164,14 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals(":")) {
             String nombre_ancestro = herencia();
             ts.getCurrentStruct().setHerencia(nombre_ancestro);
-            ts.insertStruct(ts.getCurrentStruct(), currentToken);
+            ts.insertStruct_struct(ts.getCurrentStruct(), currentToken);
+            ts.getCurrentStruct().sethaveStruct(true);
             match("{");
             struct2();
         } else if (currentToken.getLexema().equals("{")) {
             ts.getCurrentStruct().setHerencia("Object");
-            ts.insertStruct(ts.getCurrentStruct(), currentToken);
+            ts.insertStruct_struct(ts.getCurrentStruct(), currentToken);
+            ts.getCurrentStruct().sethaveStruct(true);
             match("{");
             struct2();
         } else {
@@ -236,6 +239,8 @@ public class AnalizadorSintactico {
             e = ts.getStruct(nombre);
         }
         ts.setCurrentStruct(e);
+        ts.insertStruct_impl(ts.getCurrentStruct(), currentToken);
+        ts.getCurrentStruct().sethaveImpl(true);
         match("{");
         miembros();
         match("}");
@@ -333,6 +338,7 @@ public class AnalizadorSintactico {
             match("fn");
             EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),false,0 );
             ts.setCurrentMetod(e);
+            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e, currentToken);
             match("id");
             argumentosFormales();
             match("->");

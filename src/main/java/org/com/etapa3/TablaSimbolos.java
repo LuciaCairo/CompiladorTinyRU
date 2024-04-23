@@ -39,14 +39,29 @@ public class TablaSimbolos {
     }
 
     // Functions
-    public void insertStruct(EntradaStruct struct, Token token){
-        if(this.structs.containsKey(struct.getName())){
-            throw new SemantErrorException(token.getLine(), token.getCol(),
-                    "Ya existe un struct con el nombre \"" + struct.getName() + "\" ","insertStruct");
+    public void insertStruct_struct(EntradaStruct struct, Token token){
+        if(struct.gethaveImpl() && !struct.gethaveStruct()){
+            this.structs.put(struct.getName(), struct);
+        } else {
+            if(this.structs.containsKey(struct.getName())){
+                throw new SemantErrorException(token.getLine(), token.getCol(),
+                        "Ya existe un struct con el nombre \"" + struct.getName() + "\" ","insertStruct");
+            }
+            this.structs.put(struct.getName(), struct);
         }
-        this.structs.put(struct.getName(), struct);
     }
 
+    public void insertStruct_impl(EntradaStruct struct, Token token){
+        if(struct.gethaveStruct() && !struct.gethaveImpl()){
+            this.structs.put(struct.getName(), struct);
+        } else {
+            if(this.structs.containsKey(struct.getName())){
+                throw new SemantErrorException(token.getLine(), token.getCol(),
+                        "Ya existe un impl para el struct \"" + struct.getName() + "\" ","insertStruct");
+            }
+            this.structs.put(struct.getName(), struct);
+        }
+    }
 
     public boolean searchStruct(String nombre){
         return this.structs.containsKey(nombre);
