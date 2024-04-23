@@ -79,15 +79,16 @@ public class TablaSimbolos {
 
     public String printJSON_Tabla(){
         String json = "{\n";
+        json += "\"nombre\": \""+ "\",\n";
         json += "\"structs\": [\n";
         for(Map.Entry<String, EntradaStruct> entry : structs.entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
-            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_Struct()+"\n}\n],";
+            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_Struct()+"\n}\n";
         }
+        json += "],";
         json += "\n\"start\": {";
         json +="\n\t\"nombre\": \"start\",\n\t\"retorno\": \"void\",\n\t\"posicion\": 0, \n},";
-
         json = json.substring(0,json.length()-1);
         json += "\n}";
         return json;

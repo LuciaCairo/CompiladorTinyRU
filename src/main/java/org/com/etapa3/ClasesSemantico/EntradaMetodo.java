@@ -24,12 +24,17 @@ public class EntradaMetodo {
         return nombre;
     }
 
+    // Setters
+    public void setRet(String ret) {
+        this.ret = ret;
+    }
+
     // Functions
     public String imprimeMetodo(int num){
         return "\t\t\"static\": \""+this.isStatic+"\"," +
-                "\n\t\t\"retorno\": "+ this.ret +","+
-                "\n\t\t\"posicion\": "+ num +
-                "\n\t\t\"paramF\": ";
+                "\n\t\t\"retorno\": \""+ this.ret +"\","+
+                "\n\t\t\"posicion\": "+ num +"," +
+                "\n\t\t\"paramF\": [" +"]";
     }
 
 }

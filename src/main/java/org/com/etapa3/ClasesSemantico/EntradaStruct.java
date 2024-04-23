@@ -34,6 +34,9 @@ public class EntradaStruct {
     public Boolean gethaveImpl() {
         return haveImpl;
     }
+    public EntradaMetodo getMetodo(String nombre) {
+        return this.metodos.get(nombre);
+    }
 
     // Setters
     public void setHerencia(String herencia) {
@@ -79,6 +82,8 @@ public class EntradaStruct {
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonAtributos);
             json += "\n\t],";
+        } else{
+            json +="\n\t\"atributos\": [ ],";
         }
         if(!metodos.isEmpty()){
             json +="\n\t\"metodos\": [";
@@ -92,7 +97,9 @@ public class EntradaStruct {
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonMetodos);
-            json += "\n\t],";
+            json += "\n\t]";
+        } else{
+            json +="\n\t\"metodos\": [ ],";
         }
         return json;
     }

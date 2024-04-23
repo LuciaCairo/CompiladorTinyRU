@@ -334,7 +334,8 @@ public class AnalizadorSintactico {
             match("id");
             argumentosFormales();
             match("->");
-            tipoMetodo();
+            String ret = tipoMetodo();
+            ts.getCurrentMetod().setRet(ret);
             bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
@@ -344,7 +345,8 @@ public class AnalizadorSintactico {
             match("id");
             argumentosFormales();
             match("->");
-            tipoMetodo();
+            String ret = tipoMetodo();
+            ts.getCurrentMetod().setRet(ret);
             bloqueMetodo();
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
@@ -554,16 +556,17 @@ public class AnalizadorSintactico {
         match("id");
     }
 
-    private static void tipoMetodo() {
+    private static String tipoMetodo() {
         if (currentToken.getLexema().equals("Str") ||
                 currentToken.getLexema().equals("Bool") ||
                 currentToken.getLexema().equals("Int") ||
                 currentToken.getLexema().equals("Char") ||
                 currentToken.getLexema().equals("Array") ||
                 currentToken.getName().equals("struct_name")){
-            tipo();
+            return tipo();
         }else if(currentToken.getLexema().equals("void")){
             match("void");
+            return "void";
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
