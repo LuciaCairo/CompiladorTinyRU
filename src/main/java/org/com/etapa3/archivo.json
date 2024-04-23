@@ -18,22 +18,6 @@
 		"posicion": 1
 	}
 	],
-	"metodos": [
-	{
-		"nombre": "met1",
-		"static": "true",
-		"retorno": null,
-		"posicion": 0
-		"paramF": 
-	},
-	{
-		"nombre": "met",
-		"static": "false",
-		"retorno": null,
-		"posicion": 1
-		"paramF": 
-	}
-	],
 }
 ],
 "start": {

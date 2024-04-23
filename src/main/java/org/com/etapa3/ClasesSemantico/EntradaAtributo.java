@@ -13,6 +13,17 @@ public class EntradaAtributo {
         this.isPublic = isPublic;
     }
 
+    // Getters
+    public String getType() {
+        return type;
+    }
+    public boolean getPublic() {
+        return isPublic;
+    }
+
+    // Setters
+
+
     public String imprimeAtributo(int num){
         return "\t\t\"tipo\": \""+this.type+"\"," +
                 "\n\t\t\"public\": "+ this.isPublic +","+

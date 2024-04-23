@@ -146,7 +146,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void struct() throws Exception {
+    private static void struct(){
         match("struct");
         String nombre = currentToken.getLexema();
         match("struct_name");
@@ -160,7 +160,7 @@ public class AnalizadorSintactico {
         struct1();
     }
 
-    private static void struct1() throws Exception {
+    private static void struct1() {
         if (currentToken.getLexema().equals(":")) {
             String nombre_ancestro = herencia();
             ts.getCurrentStruct().setHerencia(nombre_ancestro);
@@ -299,6 +299,7 @@ public class AnalizadorSintactico {
             String tipo = tipo();
             EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false);
             ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            ts.setCurrentVar(e);
             listaDeclaracionVariables();
             match(";");
         } else if (currentToken.getLexema().equals("Str") ||
@@ -311,6 +312,7 @@ public class AnalizadorSintactico {
             tipo();
             EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true);
             ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            ts.setCurrentVar(e);
             listaDeclaracionVariables();
             match(";");
         } else {
@@ -491,6 +493,8 @@ public class AnalizadorSintactico {
     private static void listaDeclaracionVariables1() {
         if(currentToken.getLexema().equals(",")){
             match(",");
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentVar().getType(), ts.getCurrentVar().getPublic());
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
             listaDeclaracionVariables();
         }else if(currentToken.getLexema().equals(";")){
             //lambda

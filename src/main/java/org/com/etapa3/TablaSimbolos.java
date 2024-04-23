@@ -1,6 +1,7 @@
 package org.com.etapa3;
 import org.com.etapa3.ClasesSemantico.EntradaStruct;
 import org.com.etapa3.ClasesSemantico.EntradaMetodo;
+import org.com.etapa3.ClasesSemantico.EntradaAtributo;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.io.IOException;
 public class TablaSimbolos {
     private Hashtable<String,EntradaStruct> structs;
     private EntradaStruct currentStruct;
+    private EntradaAtributo currentVar;
     private EntradaMetodo currentMetod;
 
     public TablaSimbolos (){
@@ -29,6 +31,10 @@ public class TablaSimbolos {
         return currentMetod;
     }
 
+    public EntradaAtributo getCurrentVar() {
+        return currentVar;
+    }
+
     // Setters
     public void setCurrentStruct(EntradaStruct currentStruct) {
         this.currentStruct = currentStruct;
@@ -36,6 +42,10 @@ public class TablaSimbolos {
 
     public void setCurrentMetod(EntradaMetodo currentMetod) {
         this.currentMetod = currentMetod;
+    }
+
+    public void setCurrentVar(EntradaAtributo currentVar) {
+        this.currentVar = currentVar;
     }
 
     // Functions
