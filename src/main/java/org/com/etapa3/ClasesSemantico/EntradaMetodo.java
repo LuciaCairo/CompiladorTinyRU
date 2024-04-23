@@ -30,7 +30,10 @@ public class EntradaMetodo {
         return nombre;
     }
 
-
+    // Setters
+    public void setRet(String ret) {
+        this.ret = ret;
+    }
     // Functions
 
     public void insertParametro(String name, EntradaParametro parametro, Token token) {

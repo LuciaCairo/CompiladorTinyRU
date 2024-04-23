@@ -34,6 +34,9 @@ public class EntradaStruct {
     public Boolean gethaveImpl() {
         return haveImpl;
     }
+    public EntradaMetodo getMetodo(String nombre) {
+        return this.metodos.get(nombre);
+    }
 
     // Setters
     public void setHerencia(String herencia) {
