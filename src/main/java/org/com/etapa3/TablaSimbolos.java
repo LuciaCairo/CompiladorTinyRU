@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class TablaSimbolos {
     private Hashtable<String,EntradaStruct> structs;
+    private EntradaStruct start;
     private EntradaStruct currentStruct;
     private EntradaAtributo currentVar;
     private EntradaMetodo currentMetod;
@@ -78,6 +79,7 @@ public class TablaSimbolos {
     }
 
     public String printJSON_Tabla(){
+        this.start = this.structs.remove("start");
         String json = "{\n";
         json += "\"nombre\": \""+ "\",\n";
         json += "\"structs\": [\n";
@@ -88,7 +90,7 @@ public class TablaSimbolos {
         }
         json += "],";
         json += "\n\"start\": {";
-        json +="\n\t\"nombre\": \"start\",\n\t\"retorno\": \"void\",\n\t\"posicion\": 0, \n},";
+        json +="\n\t\"nombre\": \"start\",\n\t\"retorno\": \"void\",\n\t\"posicion\": 0," + this.start.printJSON_Start() +"\n},";
         json = json.substring(0,json.length()-1);
         json += "\n}";
         return json;

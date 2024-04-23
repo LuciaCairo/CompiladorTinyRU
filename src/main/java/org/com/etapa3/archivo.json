@@ -2,47 +2,60 @@
 "nombre": "",
 "structs": [
 {
-	"nombre": "Clase",
+	"nombre": "Base",
 	"heredaDe": "Object",
 	"constructor": {
-		"paramF":  [
-			{
-			"nombre": "vector",
-			"tipo": "Array Int",
-			"posicion": 0
-			}
-		]
+		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "b",
+		"nombre": "a",
 		"tipo": "Int",
-		"public": true,
+		"public": false,
 		"posicion": 0
 	},
 	{
-		"nombre": "a",
+		"nombre": "s",
 		"tipo": "Str",
-		"public": false,
+		"public": true,
 		"posicion": 1
 	}
 	],
 	"metodos": [
 	{
-		"nombre": "met",
+		"nombre": "m1",
 		"static": "false",
-		"retorno": "Int",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ]
+	}
+	]
+}
+{
+	"nombre": "Derivada",
+	"heredaDe": "Base",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "x",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 0
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m2",
+		"static": "false",
+		"retorno": "void",
 		"posicion": 0,
 		"paramF":  [
 			{
-			"nombre": "vector",
-			"tipo": "Array Int",
-			"posicion": 0
-			},
-			{
-			"nombre": "k",
+			"nombre": "a",
 			"tipo": "Str",
-			"posicion": 1
+			"posicion": 0
 			}
 		]
 	}
@@ -52,6 +65,13 @@
 "start": {
 	"nombre": "start",
 	"retorno": "void",
-	"posicion": 0, 
+	"posicion": 0,
+	"atributos": [
+	{
+		"nombre": "b1",
+		"tipo": "Base",
+		"posicion": 0
+	}
+	]
 }
 }

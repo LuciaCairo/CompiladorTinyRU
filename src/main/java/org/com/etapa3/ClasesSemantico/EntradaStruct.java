@@ -24,6 +24,12 @@ public class EntradaStruct {
         this.atributos = new Hashtable<>();
     }
 
+    public EntradaStruct() {
+        this.name= "start";
+        this.atributos = new Hashtable<>();
+        this.metodos = new Hashtable<>();
+    }
+
     // Getters
     public String getName() {
         return name;
@@ -33,9 +39,6 @@ public class EntradaStruct {
     }
     public Boolean gethaveImpl() {
         return haveImpl;
-    }
-    public EntradaMetodo getMetodo(String nombre) {
-        return this.metodos.get(nombre);
     }
 
     // Setters
@@ -52,6 +55,10 @@ public class EntradaStruct {
     // Functions
     public void insertAtributo(String name, EntradaAtributo atributo, Token token) {
         if(this.atributos.containsKey(name)){
+            if(this.name == "start"){
+                throw new SemantErrorException(token.getLine(), token.getCol(),
+                        "Ya existe una variable con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
+            }
             throw new SemantErrorException(token.getLine(), token.getCol(),
                     "Ya existe un atributo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
         }
@@ -74,6 +81,10 @@ public class EntradaStruct {
     public String printJSON_Struct(){
         String json = "";
         this.constructor = this.metodos.remove("constructor");
+        if(this.constructor == null){
+            throw new SemantErrorException(0, 0,
+                    "No se definio un constructor para la clase \"" + this.name + "\"","printJasonTabla");
+        }
         json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": {"+ constructor.printJSON_Const() +"\n\t},";
         if(!atributos.isEmpty()){
             json +="\n\t\"atributos\": [";
@@ -88,6 +99,8 @@ public class EntradaStruct {
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonAtributos);
             json += "\n\t],";
+        } else {
+            json +="\n\t\"atributos\": [ ],";
         }
         if(!metodos.isEmpty()){
             json +="\n\t\"metodos\": [";
@@ -103,8 +116,27 @@ public class EntradaStruct {
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonMetodos);
             json += "\n\t]";
+        }else {
+            json +="\n\t\"metodos\": [ ]";
         }
+        return json;
+    }
 
+    public String printJSON_Start(){
+        String json = "";
+        if(!atributos.isEmpty()){
+            json +="\n\t\"atributos\": [";
+            List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs de atributos
+            int num = 0; // Para la posicion
+            for (Map.Entry<String, EntradaAtributo> entry : atributos.entrySet()) {
+                String key = entry.getKey();
+                EntradaAtributo value = entry.getValue();
+                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeVar(num)+"\n\t}");
+                num += 1;
+            }
+            json += String.join(",", jsonAtributos);
+            json += "\n\t]";
+        }
         return json;
     }
 

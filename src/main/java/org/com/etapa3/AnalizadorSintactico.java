@@ -50,9 +50,9 @@ public class AnalizadorSintactico {
                 currentToken = l.nextToken();
             }
             program();
-            System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
             String json = ts.printJSON_Tabla();
             ts.saveJSON(json, "archivo.json");
+            System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
         } catch (LexicalErrorException e) {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
@@ -112,7 +112,9 @@ public class AnalizadorSintactico {
     }
 
     private static void start() {
-        EntradaStart e = new EntradaStart();
+        EntradaStruct e = new EntradaStruct();
+        ts.setCurrentStruct(e);
+        ts.insertStruct_struct(e, currentToken);
         match("start");
         bloqueMetodo();
     }
@@ -485,7 +487,10 @@ public class AnalizadorSintactico {
     }
 
     private static void declVarLocales() {
-        tipo();
+        String tipo = tipo();
+        EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false);
+        ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+        ts.setCurrentVar(e);
         listaDeclaracionVariables();
         match(";");
     }
