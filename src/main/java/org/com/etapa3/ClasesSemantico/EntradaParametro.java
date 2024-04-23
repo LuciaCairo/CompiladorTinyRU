@@ -11,4 +11,9 @@ public class EntradaParametro {
         this.tipo = tipo;
         this.pos = pos;
     }
+    public String imprimeParametro(int num){
+        return
+                "\t\t\t\"tipo\": "+ this.tipo +","+
+                "\n\t\t\t\"posicion\": "+ num ;
+    }
 }
