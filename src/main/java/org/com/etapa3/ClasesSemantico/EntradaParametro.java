@@ -13,7 +13,7 @@ public class EntradaParametro {
     }
     public String imprimeParametro(int num){
         return
-                "\t\t\t\"tipo\": "+ this.tipo +","+
+                "\t\t\t\"tipo\": \""+ this.tipo +"\","+
                 "\n\t\t\t\"posicion\": "+ num ;
     }
 }

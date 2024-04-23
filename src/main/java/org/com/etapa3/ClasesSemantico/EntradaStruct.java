@@ -13,7 +13,7 @@ public class EntradaStruct {
     private String herencia = "Object";
     private Hashtable<String, EntradaAtributo> atributos;
     private Hashtable<String, EntradaMetodo> metodos;
-    private EntradaMetodo constructor = null;
+    private EntradaMetodo constructor;
     boolean haveImpl = false;
     boolean haveStruct = false;
 
@@ -60,15 +60,21 @@ public class EntradaStruct {
 
     public void insertMetodo(String name, EntradaMetodo metodo, Token token) {
         if(this.metodos.containsKey(name)){
-            throw new SemantErrorException(token.getLine(), token.getCol(),
+            if(name.equals("constructor")){
+                throw new SemantErrorException(token.getLine(), token.getCol(),
+                        "Ya existe un metodo constructor en la clase \"" + this.name + "\"","insertAtributo");
+            }else{
+                throw new SemantErrorException(token.getLine(), token.getCol(),
                     "Ya existe un metodo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
+            }
         }
         this.metodos.put(name, metodo);
     }
 
     public String printJSON_Struct(){
         String json = "";
-        json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": " +",";
+        this.constructor = this.metodos.remove("constructor");
+        json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": {"+ constructor.printJSON_Const() +"\n\t},";
         if(!atributos.isEmpty()){
             json +="\n\t\"atributos\": [";
             List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs de atributos
@@ -96,7 +102,7 @@ public class EntradaStruct {
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonMetodos);
-            json += "\n\t],";
+            json += "\n\t]";
         }
 
         return json;

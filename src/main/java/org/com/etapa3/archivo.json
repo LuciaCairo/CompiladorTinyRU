@@ -4,55 +4,49 @@
 {
 	"nombre": "Clase",
 	"heredaDe": "Object",
-	"constructor": ,
-	"atributos": [ ],
-	"metodos": [
+	"constructor": {
+		"paramF":  [
+			{
+			"nombre": "vector",
+			"tipo": "Array Int",
+			"posicion": 0
+			}
+		]
+	},
+	"atributos": [
 	{
-		"nombre": "met1",
-		"static": "true",
-		"retorno": "Array Str",
-		"posicion": 0,
-		"paramF": []
+		"nombre": "b",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "a",
+		"tipo": "Str",
+		"public": false,
+		"posicion": 1
 	}
-	]
-}
-{
-	"nombre": "B",
-	"heredaDe": "Object",
-	"constructor": ,
-	"atributos": [ ],
+	],
 	"metodos": [
-	{
-		"nombre": "met2",
-		"static": "false",
-		"retorno": "void",
-		"posicion": 0,
-		"paramF": []
-	},
-	{
-		"nombre": "met1",
-		"static": "true",
-		"retorno": "Array Str",
-		"posicion": 1,
-		"paramF": []
-	},
 	{
 		"nombre": "met",
 		"static": "false",
 		"retorno": "Int",
-		"posicion": 2,
-		"paramF": []
+		"posicion": 0,
+		"paramF":  [
+			{
+			"nombre": "vector",
+			"tipo": "Array Int",
+			"posicion": 0
+			},
+			{
+			"nombre": "k",
+			"tipo": "Str",
+			"posicion": 1
+			}
+		]
 	}
-	],
-	"metodos": [
-	{
-		"nombre": "met",
-		"static": "false",
-		"retorno": null,
-		"posicion": 0
-		"paramF":
-	}
-	],
+	]
 }
 ],
 "start": {

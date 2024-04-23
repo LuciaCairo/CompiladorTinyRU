@@ -1,17 +1,11 @@
 
+struct Clase{ Int b; pri Str a;}
 
-struct Clase{}
-impl Clase{
- st fn met1 ()-> Array Str {}
-}
-impl B{
- fn met ()-> Int{}
- st fn met1 ()-> Array Str {}
- fn met2 ()-> void {}
-}
 impl Clase {
-    fn met (Str k, Int cont, Array Int vector)-> Int{}
+    .(Array Int vector){
+        this.vector= vector; }
+    .()
+    fn met (Str k, Array Int vector)-> Int{}
 }
-
 
 start{}

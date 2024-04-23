@@ -25,6 +25,11 @@ public class EntradaMetodo {
         this.parametros = new Hashtable<>();
     }
 
+    public EntradaMetodo(){
+        this.nombre = "contructor";
+        this.parametros = new Hashtable<>();
+    }
+
     // Getters
     public String getName() {
         return nombre;
@@ -47,8 +52,8 @@ public class EntradaMetodo {
     public String printJSON_Parm(int num){
         String json = "";
         json += "\t\t\"static\": \""+this.isStatic+"\"," +
-                "\n\t\t\"retorno\": "+ this.ret +","+
-                "\n\t\t\"posicion\": "+ num +
+                "\n\t\t\"retorno\": \""+ this.ret +"\","+
+                "\n\t\t\"posicion\": "+ num + ","+
                 "\n\t\t\"paramF\": " ;
         if(!parametros.isEmpty()){
             json +=" [";
@@ -62,7 +67,31 @@ public class EntradaMetodo {
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonParametro);
-            json += "\n\t\t],";
+            json += "\n\t\t]";
+        } else {
+            json +="[ ]";
+        }
+        return json;
+    }
+
+    public String printJSON_Const(){
+        String json = "";
+        json += "\n\t\t\"paramF\": " ;
+        if(!parametros.isEmpty()){
+            json +=" [";
+            List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs
+            int num = 0; // Para la posicion
+            for (Map.Entry<String, EntradaParametro> entry : parametros.entrySet()) {
+                String key = entry.getKey();
+                EntradaParametro value = entry.getValue();
+                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro(num)+"\n\t\t\t}");
+                num += 1;
+            }
+            // Unir los JSONs de atributos en una cadena
+            json += String.join(",", jsonParametro);
+            json += "\n\t\t]";
+        } else {
+            json +="[ ]";
         }
         return json;
     }
