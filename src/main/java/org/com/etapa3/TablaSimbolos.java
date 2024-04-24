@@ -99,6 +99,10 @@ public class TablaSimbolos {
         return currentStruct;
     }
 
+    public Hashtable<String,EntradaStruct> getTableStructs() {
+        return structs;
+    }
+
     public EntradaStruct getStruct(String nombre) {
         return this.structs.get(nombre);
     }

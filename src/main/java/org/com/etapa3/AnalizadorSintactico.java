@@ -6,6 +6,7 @@ import java.io.File;
 public class AnalizadorSintactico {
 
     private static AnalizadorLexico l;
+    private static AnalizadorSemantico s;
     private static Token currentToken;
     private static boolean flagMatch = false;
     private static boolean isStart = false;
@@ -53,6 +54,8 @@ public class AnalizadorSintactico {
             }
             program();
             String json = ts.printJSON_Tabla();
+            s = new AnalizadorSemantico(ts);
+            s.checkDecl();
             ts.saveJSON(json, "archivo.json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
