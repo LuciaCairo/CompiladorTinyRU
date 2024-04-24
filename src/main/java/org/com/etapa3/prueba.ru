@@ -11,7 +11,7 @@ pri Int a;
 }
 impl Base{
 .(){}
-fn m1()->void{ }
+fn m1()->void{ Int b1; }
 }
 start{
 Base b1;

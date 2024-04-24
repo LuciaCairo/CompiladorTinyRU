@@ -109,7 +109,7 @@ public class EntradaStruct {
             for (Map.Entry<String, EntradaMetodo> entry : metodos.entrySet()) {
                 String key = entry.getKey();
                 EntradaMetodo value = entry.getValue();
-                jsonMetodos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.printJSON_Parm(num)+"\n\t}");
+                jsonMetodos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.printJSON_Parm()+"\n\t}");
                 num += 1;
 
             }

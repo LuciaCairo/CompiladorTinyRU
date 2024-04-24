@@ -1,7 +1,5 @@
 package org.com.etapa3;
-import org.com.etapa3.ClasesSemantico.EntradaStruct;
-import org.com.etapa3.ClasesSemantico.EntradaMetodo;
-import org.com.etapa3.ClasesSemantico.EntradaAtributo;
+import org.com.etapa3.ClasesSemantico.*;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,6 +8,7 @@ import java.io.IOException;
 
 public class TablaSimbolos {
     private Hashtable<String,EntradaStruct> structs;
+    private Hashtable<String, EntradaStructPredef> structsPred;
     private EntradaStruct start;
     private EntradaStruct currentStruct;
     private EntradaAtributo currentVar;
@@ -17,6 +16,82 @@ public class TablaSimbolos {
 
     public TablaSimbolos (){
         this.structs = new Hashtable<>();
+        this.structsPred = new Hashtable<>();
+        this.structsPred.put("Object",new EntradaStructPredef("Object"));
+        this.structsPred.put("IO", newIO());
+        this.structsPred.put("Array", newArray());
+        this.structsPred.put("Int",new EntradaStructPredef("Int"));
+        this.structsPred.put("Str", newStr());
+        this.structsPred.put("Bool",new EntradaStructPredef("Bool"));
+        this.structsPred.put("Char",new EntradaStructPredef("Char"));
+    }
+
+    // Funciones para crear clases predefinidas
+
+    // Struct Predefinida Str
+    public EntradaStructPredef newStr(){
+        EntradaStructPredef e = new EntradaStructPredef("Array");
+        // fn length()->Int
+        e = insertPred(e, false,"length", "Int", 0);
+        // fn concat(Str s)->Str.
+        e = insertPred(e, false,"concat", "Str", 0, "s", "String");
+
+        return e;
+    }
+
+    // Struct Predefinida Array
+    public EntradaStructPredef newArray(){
+        EntradaStructPredef e = new EntradaStructPredef("Array");
+        // fn length()->Int
+        e = insertPred(e, false,"length", "Int", 0);
+
+        return e;
+    }
+
+    // Struct Predefinida IO
+    public EntradaStructPredef newIO(){
+        EntradaStructPredef e = new EntradaStructPredef("IO");
+
+        // st fn out_str(Str s)->void: imprime el argumento.
+        e = insertPred(e, true,"out_str", "void", 0, "s", "Str");
+        // st fn out_int(Int i)->void: imprime el argumento
+        e = insertPred(e, true,"out_int", "void", 1, "i", "Int");
+        // st fn out_bool(Bool b)->void: imprime el argumento.
+        e = insertPred(e, true,"out_bool", "void", 2, "b", "Bool");
+        // st fn out char(Char c)->void: imprime el argumento.
+        e = insertPred(e, true,"out_char", "void", 3, "c", "Char");
+        // st fn out array int(Array a)->void: imprime cada elemento del arreglo de tipo Int.
+        e = insertPred(e, true,"out_array_int", "void", 4, "a", "Array");
+        // st fn out array str(Array a)->void: imprime cada elemento del arreglo de tipo Int.
+        e = insertPred(e, true,"out_array_str", "void", 5, "a", "Array");
+        // st fn out array bool(Array a)->void: imprime cada elemento del arreglo de tipo Int.
+        e = insertPred(e, true,"out_array_bool", "void", 6, "a", "Array");
+        // st fn out array char(Array a)->void: imprime cada elemento del arreglo de tipo Int.
+        e = insertPred(e, true,"out_array_char", "void", 7, "a", "Array");
+        // st fn in_str()->Str: lee una cadena de la entrada est´andar, sin incluir un car´acter de nueval´ınea.
+        e = insertPred(e, true,"in_str", "Str", 8);
+        // st fn in_int()->Int: lee una cadena de la entrada est´andar, sin incluir un car´acter de nueval´ınea.
+        e = insertPred(e, true,"in_int", "Int", 9);
+        // st fn in_bool()->Bool: lee una cadena de la entrada est´andar, sin incluir un car´acter de nueval´ınea.
+        e = insertPred(e, true,"in_bool", "Bool", 10);
+        // st fn in_char()->Char: lee una cadena de la entrada est´andar, sin incluir un car´acter de nueval´ınea.
+        e = insertPred(e, true,"in_char", "Char", 11);
+
+        return e;
+    }
+
+    public EntradaStructPredef insertPred(EntradaStructPredef e, Boolean st, String name, String ret, int pos, String param, String tipo){
+        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos);
+        EntradaParametro p = new EntradaParametro(param, tipo, 0);
+        m.insertParametroPred(param,p);
+        e.insertMetodoPred(name,m);
+        return e;
+    }
+
+    public EntradaStructPredef insertPred(EntradaStructPredef e, Boolean st, String name, String ret, int pos){
+        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos);
+        e.insertMetodoPred(name,m);
+        return e;
     }
 
     // Getters
@@ -83,12 +158,18 @@ public class TablaSimbolos {
         String json = "{\n";
         json += "\"nombre\": \""+ "\",\n";
         json += "\"structs\": [\n";
+        for(Map.Entry<String, EntradaStructPredef> entry : structsPred.entrySet()) {
+            String key = entry.getKey();
+            EntradaStructPredef value = entry.getValue();
+            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_StructPredef()+"\n},\n";
+        }
         for(Map.Entry<String, EntradaStruct> entry : structs.entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
-            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_Struct()+"\n}\n";
+            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_Struct()+"\n},\n";
         }
-        json += "],";
+        json = json.substring(0,json.length()-2);
+        json += "\n],";
         json += "\n\"start\": {";
         json +="\n\t\"nombre\": \"start\",\n\t\"retorno\": \"void\",\n\t\"posicion\": 0," + this.start.printJSON_Start() +"\n},";
         json = json.substring(0,json.length()-1);

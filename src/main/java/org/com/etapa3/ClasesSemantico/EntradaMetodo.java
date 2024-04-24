@@ -25,6 +25,14 @@ public class EntradaMetodo {
         this.parametros = new Hashtable<>();
     }
 
+    public EntradaMetodo(String nombre, boolean isStatic, String ret, int pos){
+        this.nombre = nombre;
+        this.isStatic = isStatic;
+        this.ret = ret;
+        this.pos = pos;
+        this.parametros = new Hashtable<>();
+    }
+
     public EntradaMetodo(){
         this.nombre = "contructor";
         this.parametros = new Hashtable<>();
@@ -49,21 +57,23 @@ public class EntradaMetodo {
         this.parametros.put(name, parametro);
     }
 
-    public String printJSON_Parm(int num){
+    public void insertParametroPred(String name, EntradaParametro parametro) {
+        this.parametros.put(name, parametro);
+    }
+
+    public String printJSON_Parm(){
         String json = "";
         json += "\t\t\"static\": \""+this.isStatic+"\"," +
                 "\n\t\t\"retorno\": \""+ this.ret +"\","+
-                "\n\t\t\"posicion\": "+ num + ","+
+                "\n\t\t\"posicion\": "+ this.pos + ","+
                 "\n\t\t\"paramF\": " ;
         if(!parametros.isEmpty()){
             json +=" [";
             List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs
-             num = 0; // Para la posicion
             for (Map.Entry<String, EntradaParametro> entry : parametros.entrySet()) {
                 String key = entry.getKey();
                 EntradaParametro value = entry.getValue();
-                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro(num)+"\n\t\t\t}");
-                num += 1;
+                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro()+"\n\t\t\t}");
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonParametro);
@@ -84,7 +94,7 @@ public class EntradaMetodo {
             for (Map.Entry<String, EntradaParametro> entry : parametros.entrySet()) {
                 String key = entry.getKey();
                 EntradaParametro value = entry.getValue();
-                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro(num)+"\n\t\t\t}");
+                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro()+"\n\t\t\t}");
                 num += 1;
             }
             // Unir los JSONs de atributos en una cadena
