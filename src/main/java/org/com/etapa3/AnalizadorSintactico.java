@@ -9,6 +9,8 @@ public class AnalizadorSintactico {
     private static AnalizadorLexico l;
     private static Token currentToken;
     private static boolean flagMatch = false;
+    private static boolean isStart = false;
+    private static boolean isLocal = false;
     private static TablaSimbolos ts;
     public static void main(String[] args) {
         /*if (args.length < 1) {
@@ -99,8 +101,10 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("struct") ||
                 currentToken.getLexema().equals("impl")){
             definiciones();
+            isStart = true;
             start();
         } else if(currentToken.getLexema().equals("start")) {
+            isStart = true;
             start();
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
@@ -488,11 +492,15 @@ public class AnalizadorSintactico {
 
     private static void declVarLocales() {
         String tipo = tipo();
-        EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false);
-        ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
-        ts.setCurrentVar(e);
+        if(isStart){
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false);
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            ts.setCurrentVar(e);
+        }
+        isLocal = true;
         listaDeclaracionVariables();
         match(";");
+        isLocal = false;
     }
 
     private static void listaDeclaracionVariables() {
@@ -503,8 +511,10 @@ public class AnalizadorSintactico {
     private static void listaDeclaracionVariables1() {
         if(currentToken.getLexema().equals(",")){
             match(",");
-            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentVar().getType(), ts.getCurrentVar().getPublic());
-            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            if(isStart || (!isLocal) ) {
+                EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentVar().getType(), ts.getCurrentVar().getPublic());
+                ts.getCurrentStruct().insertAtributo(currentToken.getLexema(), e, currentToken);
+            }
             listaDeclaracionVariables();
         }else if(currentToken.getLexema().equals(";")){
             //lambda

@@ -205,12 +205,6 @@
 		"posicion": 0
 	},
 	{
-		"nombre": "b1",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 0
-	},
-	{
 		"nombre": "s",
 		"tipo": "Str",
 		"public": true,
