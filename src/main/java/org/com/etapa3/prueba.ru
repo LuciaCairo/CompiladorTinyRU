@@ -14,7 +14,7 @@ fn m1()->void{
     Char b1,e;}
 .(){}}
 
-struct Agus {
+struct Agus:Derivada {
 Str k;
 pri Int count,more;
 }

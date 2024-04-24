@@ -1,9 +1,11 @@
 package org.com.etapa3.ClasesSemantico;
 
+import org.com.etapa3.SemantErrorException;
 import org.com.etapa3.TablaSimbolos;
 
+import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Hashtable;
 public class AnalizadorSemantico {
     TablaSimbolos ts;
 
@@ -19,21 +21,27 @@ public class AnalizadorSemantico {
 
     }
     public void consolidacion() {
+        Map<String, Boolean> structsVisitados = new HashMap<>();
         for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
             System.out.println(value.getName());
             ts.setCurrentStruct(value);
-            consolidarAtributosHeredados(value);
+            consolidarAtributosHeredados(value, structsVisitados);
         }
     }
+    //Arreglar la fila y la columna, ya que puse cualquier numero
+    public void consolidarAtributosHeredados( EntradaStruct struct, Map<String, Boolean> structsVisitados) {
+        if (structsVisitados.containsKey(struct.getName())) {
+            throw new SemantErrorException(1, 2, "Herencia Ciclica","Analizador Semantico");
 
-    public void consolidarAtributosHeredados(EntradaStruct struct) {
+        }
+        structsVisitados.put(struct.getName(), true);
         String herencia = struct.getHerencia();
-        if (!"Object".equals(herencia)) {
+        if (!herencia.equals("Object")) {
             EntradaStruct structHeredada = ts.getStruct(herencia);
             if (structHeredada != null) {
-                consolidarAtributosHeredados(structHeredada);
+                consolidarAtributosHeredados(structHeredada,structsVisitados);
                 for (Map.Entry<String, EntradaAtributo> entryAtrib : structHeredada.getAtributos().entrySet()) {
                     String keyAtr = entryAtrib.getKey();
                     EntradaAtributo valueAtr = entryAtrib.getValue();
