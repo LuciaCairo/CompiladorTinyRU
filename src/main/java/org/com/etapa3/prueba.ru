@@ -11,7 +11,8 @@ pri Int a;
 }
 impl Base{
 .(){}
-fn m1()->void{ Int b1; }
+fn m1()->void{ /? ARREGLAR ACA SE ESTA HACIENDO COMO ATRIBUTO Int b1;
+    Int b1;}
 }
 start{
 Base b1;

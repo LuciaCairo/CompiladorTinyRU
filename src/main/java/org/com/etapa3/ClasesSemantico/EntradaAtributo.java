@@ -27,12 +27,12 @@ public class EntradaAtributo {
     public String imprimeAtributo(int num){
         return "\t\t\"tipo\": \""+this.type+"\"," +
                 "\n\t\t\"public\": "+ this.isPublic +","+
-                "\n\t\t\"posicion\": "+ num ;
+                "\n\t\t\"posicion\": "+ this.pos ;
     }
 
     public String imprimeVar(int num){
         return "\t\t\"tipo\": \""+this.type+"\"," +
-                "\n\t\t\"posicion\": "+ num ;
+                "\n\t\t\"posicion\": "+ this.pos ;
     }
 
 }
