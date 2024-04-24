@@ -805,6 +805,8 @@ public class AnalizadorLexico {
                         } else{
                             addToken(new Token(numeroLinea, i - iterToken.length() + 1, "EOF", current));
                         }
+                    } else if (currentChar == 9) {
+                        // tab
                     } else{
                         if(flag == "CharBlackSlash" || flag == "iterChar"){
                             isChar(flag,nextChar,numeroLinea,i,current);
