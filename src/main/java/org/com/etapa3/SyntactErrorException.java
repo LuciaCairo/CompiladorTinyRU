@@ -1,15 +1,17 @@
-package org.com.etapa2;
+package org.com.etapa3;
 
-public class LexicalErrorException extends IllegalArgumentException {
+public class SyntactErrorException extends IllegalArgumentException {
     private int lineNumber;
     private int columnNumber;
     private String description;
+    private String functionName;
 
-    public LexicalErrorException(int lineNumber, int columnNumber, String description) {
+    public SyntactErrorException(int lineNumber, int columnNumber, String description, String functionName) {
         //super("| LINEA " + lineNumber + " | COLUMNA " + columnNumber + " | " + description);
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.description = description;
+        this.functionName = functionName;
     }
 
     public int getLineNumber() {
@@ -23,5 +25,7 @@ public class LexicalErrorException extends IllegalArgumentException {
     public String getDescription() {
         return description;
     }
+
+    public String functionName() { return functionName;}
 }
 

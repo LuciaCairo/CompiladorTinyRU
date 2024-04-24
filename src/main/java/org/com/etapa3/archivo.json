@@ -1,0 +1,306 @@
+{
+"nombre": "",
+"structs": [
+{
+	"nombre": "IO",
+	"metodos": [
+	{
+		"nombre": "out_str",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "s",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_int",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 1,
+		"paramF": [
+		{
+			"nombre": "i",
+			"tipo": "Int",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_bool",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 2,
+		"paramF": [
+		{
+			"nombre": "b",
+			"tipo": "Bool",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_char",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 3,
+		"paramF": [
+		{
+			"nombre": "c",
+			"tipo": "Char",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_array_int",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 4,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Array",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_array_str",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 5,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Array",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_array_bool",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 6,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Array",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "out_array_char",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 7,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Array",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "in_str",
+		"static": "true",
+		"retorno": "Str",
+		"posicion": 8,
+		"paramF": [ ]
+	},
+	{
+		"nombre": "in_int",
+		"static": "true",
+		"retorno": "Int",
+		"posicion": 9,
+		"paramF": [ ]
+	},
+	{
+		"nombre": "in_bool",
+		"static": "true",
+		"retorno": "Bool",
+		"posicion": 10,
+		"paramF": [ ]
+	},
+	{
+		"nombre": "in_char",
+		"static": "true",
+		"retorno": "Char",
+		"posicion": 11,
+		"paramF": [ ]
+	}
+	]
+},
+{
+	"nombre": "Char",
+	"metodos": [ ]
+},
+{
+	"nombre": "Object",
+	"metodos": [ ]
+},
+{
+	"nombre": "Array",
+	"metodos": [
+	{
+		"nombre": "length",
+		"static": "false",
+		"retorno": "Int",
+		"posicion": 0,
+		"paramF": [ ]
+	},
+	{
+		"nombre": "concat",
+		"static": "false",
+		"retorno": "Str",
+		"posicion": 1,
+		"paramF": [
+		{
+			"nombre": "s",
+			"tipo": "String",
+			"posicion": 0
+		}
+		]
+	}
+	]
+},
+{
+	"nombre": "Array",
+	"metodos": [
+	{
+		"nombre": "length",
+		"static": "false",
+		"retorno": "Int",
+		"posicion": 0,
+		"paramF": [ ]
+	}
+	]
+},
+{
+	"nombre": "Int",
+	"metodos": [ ]
+},
+{
+	"nombre": "Bool",
+	"metodos": [ ]
+},
+{
+	"nombre": "Base",
+	"heredaDe": "Object",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "s",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
+		"nombre": "m",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m1",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ]
+	}
+	]
+},
+{
+	"nombre": "Derivada",
+	"heredaDe": "Base",
+	"constructor": {
+		"paramF": [
+		{
+			"nombre": "h",
+			"tipo": "Str",
+			"posicion": 0
+		},
+		{
+			"nombre": "a",
+			"tipo": "Int",
+			"posicion": 1
+		}
+		]
+	},
+	"atributos": [
+	{
+		"nombre": "x",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 0
+	},
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
+		"nombre": "b",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m2",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		]
+	}
+	]
+}
+],
+"start": {
+	"nombre": "start",
+	"retorno": "void",
+	"posicion": 0,
+	"atributos": [
+	{
+		"nombre": "b1",
+		"tipo": "Base",
+		"posicion": 0
+	},
+	{
+		"nombre": "b",
+		"tipo": "Int",
+		"posicion": 1
+	},
+	{
+		"nombre": "q",
+		"tipo": "Int",
+		"posicion": 2
+	}
+	]
+}
+}
