@@ -193,11 +193,17 @@
 },
 {
 	"nombre": "Base",
-	"heredaDe": "Object",
+	"heredaDe": "Agus",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
+	{
+		"nombre": "k",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
 	{
 		"nombre": "s",
 		"tipo": "Str",
@@ -211,7 +217,55 @@
 		"posicion": 1
 	},
 	{
+		"nombre": "count",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
 		"nombre": "m",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	},
+	{
+		"nombre": "more",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m1",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ]
+	}
+	]
+},
+{
+	"nombre": "Agus",
+	"heredaDe": "Object",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "k",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "count",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
+		"nombre": "more",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 2
@@ -252,13 +306,43 @@
 		"posicion": 0
 	},
 	{
+		"nombre": "k",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "s",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
 		"nombre": "a",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 1
 	},
 	{
+		"nombre": "count",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
+		"nombre": "m",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	},
+	{
 		"nombre": "b",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	},
+	{
+		"nombre": "more",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 2

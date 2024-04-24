@@ -18,8 +18,31 @@ public class AnalizadorSemantico {
     public void checkEnt() {
 
     }
-
     public void consolidacion() {
+        for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
+            String key = entry.getKey();
+            EntradaStruct value = entry.getValue();
+            System.out.println(value.getName());
+            ts.setCurrentStruct(value);
+            consolidarAtributosHeredados(value);
+        }
+    }
+
+    public void consolidarAtributosHeredados(EntradaStruct struct) {
+        String herencia = struct.getHerencia();
+        if (!"Object".equals(herencia)) {
+            EntradaStruct structHeredada = ts.getStruct(herencia);
+            if (structHeredada != null) {
+                consolidarAtributosHeredados(structHeredada);
+                for (Map.Entry<String, EntradaAtributo> entryAtrib : structHeredada.getAtributos().entrySet()) {
+                    String keyAtr = entryAtrib.getKey();
+                    EntradaAtributo valueAtr = entryAtrib.getValue();
+                    struct.insertAtributoHeredado(keyAtr, valueAtr);
+                }
+            }
+        }
+    }
+    public void consolidacion8() {
         for(Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();

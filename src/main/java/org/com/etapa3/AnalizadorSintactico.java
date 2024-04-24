@@ -21,7 +21,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
 
         // Verificar existencia del archivo
         File file = new File(input);
@@ -53,9 +53,10 @@ public class AnalizadorSintactico {
                 currentToken = l.nextToken();
             }
             program();
-            String json = ts.printJSON_Tabla();
+
             s = new AnalizadorSemantico(ts);
             s.checkDecl();
+            String json = ts.printJSON_Tabla();
             ts.saveJSON(json, "archivo.json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
