@@ -34,7 +34,7 @@ public class TablaSimbolos {
         // fn length()->Int
         e = insertPred(e, false,"length", "Int", 0);
         // fn concat(Str s)->Str.
-        e = insertPred(e, false,"concat", "Str", 0, "s", "String");
+        e = insertPred(e, false,"concat", "Str", 1, "s", "String");
 
         return e;
     }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Comparator;
 
 public class EntradaMetodo {
     private String nombre;
@@ -42,6 +43,12 @@ public class EntradaMetodo {
     public String getName() {
         return nombre;
     }
+    public int getPos() {
+        return pos;
+    }
+    public Hashtable<String, EntradaParametro> getParametros() {
+        return parametros;
+    }
 
     // Setters
     public void setRet(String ret) {
@@ -68,12 +75,13 @@ public class EntradaMetodo {
                 "\n\t\t\"posicion\": "+ this.pos + ","+
                 "\n\t\t\"paramF\": " ;
         if(!parametros.isEmpty()){
-            json +=" [";
-            List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs
-            for (Map.Entry<String, EntradaParametro> entry : parametros.entrySet()) {
-                String key = entry.getKey();
-                EntradaParametro value = entry.getValue();
-                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro()+"\n\t\t\t}");
+            // Obtener una lista de parametros ordenados por su posición
+            List<EntradaParametro> parametrosOrdenados = new ArrayList<>(parametros.values());
+            parametrosOrdenados.sort(Comparator.comparingInt(EntradaParametro::getPos));
+            json +="[";
+            List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs de atributos
+            for (EntradaParametro parametro : parametrosOrdenados) {
+                jsonParametro.add("\n\t\t{\n\t\t\t\"nombre\": \"" + parametro.getName() + "\",\n" + parametro.imprimeParametro() + "\n\t\t}");
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonParametro);
@@ -88,14 +96,13 @@ public class EntradaMetodo {
         String json = "";
         json += "\n\t\t\"paramF\": " ;
         if(!parametros.isEmpty()){
-            json +=" [";
-            List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs
-            int num = 0; // Para la posicion
-            for (Map.Entry<String, EntradaParametro> entry : parametros.entrySet()) {
-                String key = entry.getKey();
-                EntradaParametro value = entry.getValue();
-                jsonParametro.add("\n\t\t\t{\n\t\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeParametro()+"\n\t\t\t}");
-                num += 1;
+            // Obtener una lista de parametros ordenados por su posición
+            List<EntradaParametro> parametrosOrdenados = new ArrayList<>(parametros.values());
+            parametrosOrdenados.sort(Comparator.comparingInt(EntradaParametro::getPos));
+            json +="[";
+            List<String> jsonParametro = new ArrayList<>(); // Lista para almacenar JSONs de atributos
+            for (EntradaParametro parametro : parametrosOrdenados) {
+                jsonParametro.add("\n\t\t{\n\t\t\t\"nombre\": \"" + parametro.getName() + "\",\n" + parametro.imprimeParametro() + "\n\t\t}");
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonParametro);

@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 public class EntradaStruct {
     private String name;
@@ -39,6 +40,14 @@ public class EntradaStruct {
     }
     public Boolean gethaveImpl() {
         return haveImpl;
+    }
+
+    public Hashtable<String, EntradaMetodo> getMetodos() {
+        return this.metodos;
+    }
+
+    public Hashtable<String, EntradaAtributo> getAtributos() {
+        return this.atributos;
     }
 
     // Setters
@@ -87,14 +96,13 @@ public class EntradaStruct {
         }
         json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": {"+ constructor.printJSON_Const() +"\n\t},";
         if(!atributos.isEmpty()){
+            // Obtener una lista de atributos ordenados por su posición
+            List<EntradaAtributo> atributosOrdenados = new ArrayList<>(atributos.values());
+            atributosOrdenados.sort(Comparator.comparingInt(EntradaAtributo::getPos));
             json +="\n\t\"atributos\": [";
             List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs de atributos
-            int num = 0; // Para la posicion
-            for (Map.Entry<String, EntradaAtributo> entry : atributos.entrySet()) {
-                String key = entry.getKey();
-                EntradaAtributo value = entry.getValue();
-                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeAtributo(num)+"\n\t}");
-                num += 1;
+            for (EntradaAtributo atributo : atributosOrdenados) {
+                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \"" + atributo.getName() + "\",\n" + atributo.imprimeAtributo() + "\n\t}");
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonAtributos);
@@ -103,15 +111,13 @@ public class EntradaStruct {
             json +="\n\t\"atributos\": [ ],";
         }
         if(!metodos.isEmpty()){
+            // Obtener una lista de métodos ordenados por su posición
+            List<EntradaMetodo> metodosOrdenados = new ArrayList<>(metodos.values());
+            metodosOrdenados.sort(Comparator.comparingInt(EntradaMetodo::getPos));
             json +="\n\t\"metodos\": [";
             List<String> jsonMetodos = new ArrayList<>(); // Lista para almacenar JSONs
-            int num = 0; // Para la posicion
-            for (Map.Entry<String, EntradaMetodo> entry : metodos.entrySet()) {
-                String key = entry.getKey();
-                EntradaMetodo value = entry.getValue();
-                jsonMetodos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.printJSON_Parm()+"\n\t}");
-                num += 1;
-
+            for (EntradaMetodo metodo : metodosOrdenados) {
+                jsonMetodos.add("\n\t{\n\t\t\"nombre\": \"" + metodo.getName() + "\",\n" + metodo.printJSON_Parm() + "\n\t}");
             }
             // Unir los JSONs de atributos en una cadena
             json += String.join(",", jsonMetodos);
@@ -125,14 +131,13 @@ public class EntradaStruct {
     public String printJSON_Start(){
         String json = "";
         if(!atributos.isEmpty()){
+            // Obtener una lista de atributos ordenados por su posición
+            List<EntradaAtributo> atributosOrdenados = new ArrayList<>(atributos.values());
+            atributosOrdenados.sort(Comparator.comparingInt(EntradaAtributo::getPos));
             json +="\n\t\"atributos\": [";
             List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs de atributos
-            int num = 0; // Para la posicion
-            for (Map.Entry<String, EntradaAtributo> entry : atributos.entrySet()) {
-                String key = entry.getKey();
-                EntradaAtributo value = entry.getValue();
-                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \""+ key + "\",\n"+value.imprimeVar(num)+"\n\t}");
-                num += 1;
+            for (EntradaAtributo atributo : atributosOrdenados) {
+                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \"" + atributo.getName() + "\",\n" + atributo.imprimeVar() + "\n\t}");
             }
             json += String.join(",", jsonAtributos);
             json += "\n\t]";

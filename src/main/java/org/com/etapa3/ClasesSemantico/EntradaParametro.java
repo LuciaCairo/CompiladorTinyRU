@@ -11,6 +11,14 @@ public class EntradaParametro {
         this.tipo = tipo;
         this.pos = pos;
     }
+
+    public int getPos() {
+        return pos;
+    }
+    public String getName() {
+        return nombre;
+    }
+
     public String imprimeParametro(){
         return
                 "\t\t\t\"tipo\": \""+ this.tipo +"\","+
