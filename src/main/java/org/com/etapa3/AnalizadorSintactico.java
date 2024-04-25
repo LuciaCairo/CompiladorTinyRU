@@ -6,6 +6,7 @@ import java.io.File;
 public class AnalizadorSintactico {
 
     private static AnalizadorLexico l;
+    private static AnalizadorSemantico s;
     private static Token currentToken;
     private static boolean flagMatch = false;
     private static boolean isStart = false;
@@ -43,6 +44,7 @@ public class AnalizadorSintactico {
 
         l = new AnalizadorLexico();
         ts = new TablaSimbolos();
+        s = new AnalizadorSemantico(ts);
         try {
             l.analyzeFile(input);
             // Comenzar el análisis sintáctico desde el símbolo inicial ⟨program⟩
@@ -51,7 +53,8 @@ public class AnalizadorSintactico {
             } else {
                 currentToken = l.nextToken();
             }
-            program();
+            program();      // Analisis Sintactico y Tabla de Simbolos
+            s.checkDecl();  // Chequeo de Declaraciones
             String json = ts.printJSON_Tabla();
             ts.saveJSON(json, "archivo.json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");

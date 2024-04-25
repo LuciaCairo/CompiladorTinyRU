@@ -208,7 +208,7 @@
 },
 {
 	"nombre": "Base",
-	"heredaDe": "Object",
+	"heredaDe": "Agus",
 	"constructor": {
 		"paramF": [ ]
 	},
@@ -260,6 +260,54 @@
 	]
 },
 {
+	"nombre": "Agus",
+	"heredaDe": "Derivada",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "k",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "count",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 1
+	},
+	{
+		"nombre": "more",
+		"tipo": "Int",
+		"public": false,
+		"posicion": 2
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m1",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [
+		{
+			"nombre": "b1",
+			"tipo": "Char",
+			"posicion": 0
+		},
+		{
+			"nombre": "e",
+			"tipo": "Char",
+			"posicion": 1
+		}
+		]
+	}
+	]
+},
+{
 	"nombre": "Derivada",
 	"heredaDe": "Base",
 	"constructor": {
@@ -270,7 +318,7 @@
 			"posicion": 0
 		},
 		{
-			"nombre": "a",
+			"nombre": "d",
 			"tipo": "Int",
 			"posicion": 1
 		}
@@ -308,6 +356,11 @@
 			"nombre": "a",
 			"tipo": "Int",
 			"posicion": 0
+		},
+		{
+			"nombre": "b",
+			"tipo": "Int",
+			"posicion": 1
 		}
 		]
 	}

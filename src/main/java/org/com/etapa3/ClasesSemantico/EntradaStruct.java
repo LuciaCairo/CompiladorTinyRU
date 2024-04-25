@@ -19,6 +19,7 @@ public class EntradaStruct {
     private int col, line;
     boolean haveImpl = false;
     boolean haveStruct = false;
+    boolean check = false;
 
     // Constructor
     public EntradaStruct(String name, int line, int col) {
@@ -43,6 +44,9 @@ public class EntradaStruct {
     public String getName() {
         return name;
     }
+    public String getHerencia() {
+        return herencia;
+    }
     public int getLine() {
         return line;
     }
@@ -55,9 +59,11 @@ public class EntradaStruct {
     public Boolean gethaveImpl() {
         return haveImpl;
     }
+
     public Hashtable<String, EntradaMetodo> getMetodos() {
         return this.metodos;
     }
+
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
@@ -75,6 +81,9 @@ public class EntradaStruct {
     public void sethaveImpl(Boolean haveImpl) {
         this.haveImpl= haveImpl;
     }
+    public void setCheck(Boolean check) {
+        this.check= check;
+    }
 
     // Functions
     public void insertAtributo(String name, EntradaAtributo atributo) {
@@ -82,6 +91,10 @@ public class EntradaStruct {
             throw new SemantErrorException(atributo.getLine(), atributo.getCol(),
                     "Ya existe un atributo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
         }
+        this.atributos.put(name, atributo);
+    }
+
+    public void insertAtributoHeredado(String name, EntradaAtributo atributo) {
         this.atributos.put(name, atributo);
     }
 
