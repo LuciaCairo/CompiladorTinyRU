@@ -14,23 +14,30 @@ public class EntradaStruct {
     private String herencia = "Object";
     private Hashtable<String, EntradaAtributo> atributos;
     private Hashtable<String, EntradaMetodo> metodos;
+    private Hashtable<String, EntradaVariable> variables;
     private EntradaMetodo constructor;
+    private int col, line;
     boolean haveImpl = false;
     boolean haveStruct = false;
-
     boolean check = false;
 
     // Constructor
-    public EntradaStruct(String name) {
+    public EntradaStruct(String name, int line, int col) {
         this.name = name;
+        this.col = col;
+        this.line = line;
         this.metodos = new Hashtable<>();
         this.atributos = new Hashtable<>();
+        this.variables = new Hashtable<>();
     }
 
-    public EntradaStruct() {
+    public EntradaStruct(int line, int col) {
         this.name= "start";
+        this.col = col;
+        this.line = line;
         this.atributos = new Hashtable<>();
         this.metodos = new Hashtable<>();
+        this.variables = new Hashtable<>();
     }
 
     // Getters
@@ -39,6 +46,12 @@ public class EntradaStruct {
     }
     public String getHerencia() {
         return herencia;
+    }
+    public int getLine() {
+        return line;
+    }
+    public int getCol() {
+        return col;
     }
     public Boolean gethaveStruct() {
         return haveStruct;
@@ -53,6 +66,9 @@ public class EntradaStruct {
 
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
+    }
+    public Hashtable<String, EntradaVariable> getVariables() {
+        return this.variables;
     }
 
     // Setters
@@ -70,13 +86,9 @@ public class EntradaStruct {
     }
 
     // Functions
-    public void insertAtributo(String name, EntradaAtributo atributo, Token token) {
+    public void insertAtributo(String name, EntradaAtributo atributo) {
         if(this.atributos.containsKey(name)){
-            if(this.name == "start"){
-                throw new SemantErrorException(token.getLine(), token.getCol(),
-                        "Ya existe una variable con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
-            }
-            throw new SemantErrorException(token.getLine(), token.getCol(),
+            throw new SemantErrorException(atributo.getLine(), atributo.getCol(),
                     "Ya existe un atributo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
         }
         this.atributos.put(name, atributo);
@@ -86,13 +98,21 @@ public class EntradaStruct {
         this.atributos.put(name, atributo);
     }
 
-    public void insertMetodo(String name, EntradaMetodo metodo, Token token) {
+    public void insertVariable(String name, EntradaVariable variable) {
+        if(this.variables.containsKey(name)){
+            throw new SemantErrorException(variable.getLine(), variable.getCol(),
+                        "Ya existe una variable con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
+        }
+        this.variables.put(name, variable);
+    }
+
+    public void insertMetodo(String name, EntradaMetodo metodo) {
         if(this.metodos.containsKey(name)){
             if(name.equals("constructor")){
-                throw new SemantErrorException(token.getLine(), token.getCol(),
+                throw new SemantErrorException(metodo.getLine(), metodo.getCol(),
                         "Ya existe un metodo constructor en la clase \"" + this.name + "\"","insertAtributo");
             }else{
-                throw new SemantErrorException(token.getLine(), token.getCol(),
+                throw new SemantErrorException(metodo.getLine(), metodo.getCol(),
                     "Ya existe un metodo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
             }
         }
@@ -142,16 +162,15 @@ public class EntradaStruct {
 
     public String printJSON_Start(){
         String json = "";
-        if(!atributos.isEmpty()){
-            // Obtener una lista de atributos ordenados por su posición
-            List<EntradaAtributo> atributosOrdenados = new ArrayList<>(atributos.values());
-            atributosOrdenados.sort(Comparator.comparingInt(EntradaAtributo::getPos));
-            json +="\n\t\"atributos\": [";
-            List<String> jsonAtributos = new ArrayList<>(); // Lista para almacenar JSONs de atributos
-            for (EntradaAtributo atributo : atributosOrdenados) {
-                jsonAtributos.add("\n\t{\n\t\t\"nombre\": \"" + atributo.getName() + "\",\n" + atributo.imprimeVar() + "\n\t}");
+        if(!variables.isEmpty()){
+            List<EntradaVariable> variablesOrdenados = new ArrayList<>(variables.values());
+            variablesOrdenados.sort(Comparator.comparingInt(EntradaVariable::getPos));
+            json +="\n\t\"variables\": [";
+            List<String> jsonVariables = new ArrayList<>();
+            for (EntradaVariable variable : variablesOrdenados) {
+                jsonVariables.add("\n\t{\n\t\t\"nombre\": \"" + variable.getName() + "\",\n" + variable.imprimeVar() + "\n\t}");
             }
-            json += String.join(",", jsonAtributos);
+            json += String.join(",", jsonVariables);
             json += "\n\t]";
         }
         return json;
