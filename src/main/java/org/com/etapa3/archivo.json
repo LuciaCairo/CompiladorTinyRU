@@ -15,7 +15,8 @@
 			"tipo": "Str",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_int",
@@ -28,7 +29,8 @@
 			"tipo": "Int",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_bool",
@@ -41,7 +43,8 @@
 			"tipo": "Bool",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_char",
@@ -54,7 +57,8 @@
 			"tipo": "Char",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_array_int",
@@ -67,7 +71,8 @@
 			"tipo": "Array",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_array_str",
@@ -80,7 +85,8 @@
 			"tipo": "Array",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_array_bool",
@@ -93,7 +99,8 @@
 			"tipo": "Array",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "out_array_char",
@@ -106,35 +113,40 @@
 			"tipo": "Array",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	},
 	{
 		"nombre": "in_str",
 		"static": "true",
 		"retorno": "Str",
 		"posicion": 8,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	},
 	{
 		"nombre": "in_int",
 		"static": "true",
 		"retorno": "Int",
 		"posicion": 9,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	},
 	{
 		"nombre": "in_bool",
 		"static": "true",
 		"retorno": "Bool",
 		"posicion": 10,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	},
 	{
 		"nombre": "in_char",
 		"static": "true",
 		"retorno": "Char",
 		"posicion": 11,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	}
 	]
 },
@@ -154,7 +166,8 @@
 		"static": "false",
 		"retorno": "Int",
 		"posicion": 0,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	},
 	{
 		"nombre": "concat",
@@ -167,7 +180,8 @@
 			"tipo": "String",
 			"posicion": 0
 		}
-		]
+		],
+		"variables": [ ]
 	}
 	]
 },
@@ -179,7 +193,8 @@
 		"static": "false",
 		"retorno": "Int",
 		"posicion": 0,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [ ]
 	}
 	]
 },
@@ -223,7 +238,24 @@
 		"static": "false",
 		"retorno": "void",
 		"posicion": 0,
-		"paramF": [ ]
+		"paramF": [ ],
+		"variables": [
+		{
+			"nombre": "b1",
+			"tipo": "Char",
+			"posicion": 0
+		},
+		{
+			"nombre": "e",
+			"tipo": "Char",
+			"posicion": 1
+		},
+		{
+			"nombre": "c",
+			"tipo": "Char",
+			"posicion": 2
+		}
+		]
 	}
 	]
 },
@@ -256,12 +288,6 @@
 		"tipo": "Int",
 		"public": false,
 		"posicion": 1
-	},
-	{
-		"nombre": "b",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 2
 	}
 	],
 	"metodos": [
@@ -276,6 +302,13 @@
 			"tipo": "Str",
 			"posicion": 0
 		}
+		],
+		"variables": [
+		{
+			"nombre": "a",
+			"tipo": "Int",
+			"posicion": 0
+		}
 		]
 	}
 	]
@@ -285,7 +318,7 @@
 	"nombre": "start",
 	"retorno": "void",
 	"posicion": 0,
-	"atributos": [
+	"variables": [
 	{
 		"nombre": "b1",
 		"tipo": "Base",
