@@ -53,8 +53,8 @@ public class AnalizadorSintactico {
             } else {
                 currentToken = l.nextToken();
             }
-            program();
-            //s.checkDecl();
+            program();      // Analisis Sintactico y Tabla de Simbolos
+            s.checkDecl();  // Chequeo de Declaraciones
             String json = ts.printJSON_Tabla();
             ts.saveJSON(json, "archivo.json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
