@@ -37,9 +37,5 @@ public class EntradaAtributo {
                 "\n\t\t\"posicion\": "+ this.pos ;
     }
 
-    public String imprimeVar(){
-        return "\t\t\"tipo\": \""+this.type+"\"," +
-                "\n\t\t\"posicion\": "+ this.pos ;
-    }
 
 }

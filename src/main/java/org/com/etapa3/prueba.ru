@@ -11,7 +11,8 @@ pri Int a,m;
 }
 impl Base{
 fn m1()->void{
-    Char b1,e;}
+    Char b1,e,c;
+    ret a;}
 .(){}}
 start{
 Base b1;

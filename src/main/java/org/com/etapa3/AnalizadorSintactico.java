@@ -310,7 +310,7 @@ public class AnalizadorSintactico {
             String tipo = tipo();
             EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false, ts.getCurrentStruct().getAtributos().size());
             ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
-            ts.setCurrentVar(e);
+            ts.setCurrentAtr(e);
             listaDeclaracionVariables();
             match(";");
         } else if (currentToken.getLexema().equals("Str") ||
@@ -323,7 +323,7 @@ public class AnalizadorSintactico {
             tipo();
             EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true, ts.getCurrentStruct().getAtributos().size());
             ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
-            ts.setCurrentVar(e);
+            ts.setCurrentAtr(e);
             listaDeclaracionVariables();
             match(";");
         } else {
@@ -495,8 +495,14 @@ public class AnalizadorSintactico {
     private static void declVarLocales() {
         String tipo = tipo();
         if(isStart){
-            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false, ts.getCurrentStruct().getAtributos().size());
-            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            EntradaVariable e = new EntradaVariable(currentToken.getLexema(), tipo,
+                    ts.getCurrentStruct().getVariables().size(), currentToken.getLine(), currentToken.getCol());
+            ts.getCurrentStruct().insertVariable(currentToken.getLexema(),e);
+            ts.setCurrentVar(e);
+        } else{
+            EntradaVariable e = new EntradaVariable(currentToken.getLexema(), tipo,
+                    ts.getCurrentMetod().getVariables().size(), currentToken.getLine(), currentToken.getCol());
+            ts.getCurrentMetod().insertVariable(currentToken.getLexema(),e);
             ts.setCurrentVar(e);
         }
         isLocal = true;
@@ -513,9 +519,17 @@ public class AnalizadorSintactico {
     private static void listaDeclaracionVariables1() {
         if(currentToken.getLexema().equals(",")){
             match(",");
-            if(isStart || (!isLocal) ) {
-                EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentVar().getType(), ts.getCurrentVar().getPublic(),ts.getCurrentStruct().getAtributos().size());
+            if(isStart){
+                EntradaVariable e = new EntradaVariable(currentToken.getLexema(), ts.getCurrentVar().getType(),
+                        ts.getCurrentStruct().getVariables().size(), currentToken.getLine(), currentToken.getCol());
+                ts.getCurrentStruct().insertVariable(currentToken.getLexema(), e);
+            } else if(!isLocal) {
+                EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentAtr().getType(), ts.getCurrentAtr().getPublic(),ts.getCurrentStruct().getAtributos().size());
                 ts.getCurrentStruct().insertAtributo(currentToken.getLexema(), e, currentToken);
+            } else {
+                EntradaVariable e = new EntradaVariable(currentToken.getLexema(), ts.getCurrentVar().getType(),
+                        ts.getCurrentMetod().getVariables().size(), currentToken.getLine(), currentToken.getCol());
+                ts.getCurrentMetod().insertVariable(currentToken.getLexema(), e);
             }
             listaDeclaracionVariables();
         }else if(currentToken.getLexema().equals(";")){

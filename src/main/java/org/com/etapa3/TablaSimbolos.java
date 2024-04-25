@@ -11,7 +11,8 @@ public class TablaSimbolos {
     private Hashtable<String, EntradaStructPredef> structsPred;
     private EntradaStruct start;
     private EntradaStruct currentStruct;
-    private EntradaAtributo currentVar;
+    private EntradaVariable currentVar;
+    private EntradaAtributo currentAtr;
     private EntradaMetodo currentMetod;
 
     public TablaSimbolos (){
@@ -107,8 +108,11 @@ public class TablaSimbolos {
         return currentMetod;
     }
 
-    public EntradaAtributo getCurrentVar() {
+    public EntradaVariable getCurrentVar() {
         return currentVar;
+    }
+    public EntradaAtributo getCurrentAtr() {
+        return currentAtr;
     }
 
     // Setters
@@ -120,8 +124,12 @@ public class TablaSimbolos {
         this.currentMetod = currentMetod;
     }
 
-    public void setCurrentVar(EntradaAtributo currentVar) {
+    public void setCurrentVar(EntradaVariable currentVar) {
         this.currentVar = currentVar;
+    }
+
+    public void setCurrentAtr(EntradaAtributo currentAtr) {
+        this.currentAtr = currentAtr;
     }
 
     // Functions
