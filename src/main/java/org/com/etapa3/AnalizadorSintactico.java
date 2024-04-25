@@ -116,7 +116,7 @@ public class AnalizadorSintactico {
     }
 
     private static void start() {
-        EntradaStruct e = new EntradaStruct();
+        EntradaStruct e = new EntradaStruct(currentToken.getLine(), currentToken.getCol());
         ts.setCurrentStruct(e);
         ts.insertStruct_struct(e, currentToken);
         match("start");
@@ -158,7 +158,7 @@ public class AnalizadorSintactico {
         match("struct_name");
         EntradaStruct e;
         if(!(ts.searchStruct(nombre))){
-            e = new EntradaStruct(nombre);
+            e = new EntradaStruct(nombre, currentToken.getLine(), currentToken.getCol());
         } else {
             e = ts.getStruct(nombre);
         }
@@ -240,7 +240,7 @@ public class AnalizadorSintactico {
         match("struct_name");
         EntradaStruct e;
         if(!(ts.searchStruct(nombre))){
-            e = new EntradaStruct(nombre);
+            e = new EntradaStruct(nombre, currentToken.getLine(), currentToken.getCol());
         } else {
             e = ts.getStruct(nombre);
         }
@@ -295,9 +295,9 @@ public class AnalizadorSintactico {
 
     private static void constructor() {
         match(".");
-        EntradaMetodo e = new EntradaMetodo();
+        EntradaMetodo e = new EntradaMetodo(currentToken.getLine(), currentToken.getCol());
         ts.setCurrentMetod(e);
-        ts.getCurrentStruct().insertMetodo("constructor",e, currentToken);
+        ts.getCurrentStruct().insertMetodo("constructor",e);
         isConstr = 1;
         argumentosFormales();
         bloqueMetodo();
@@ -308,8 +308,9 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("pri")){
             visibilidad();
             String tipo = tipo();
-            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false, ts.getCurrentStruct().getAtributos().size());
-            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, false,
+                    ts.getCurrentStruct().getAtributos().size(), currentToken.getLine(), currentToken.getCol());
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e);
             ts.setCurrentAtr(e);
             listaDeclaracionVariables();
             match(";");
@@ -321,8 +322,9 @@ public class AnalizadorSintactico {
                     currentToken.getName().equals("struct_name")) {
             String tipo = currentToken.getLexema();
             tipo();
-            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true, ts.getCurrentStruct().getAtributos().size());
-            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e, currentToken);
+            EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true, ts.getCurrentStruct().getAtributos().size(),
+                    currentToken.getLine(), currentToken.getCol());
+            ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e);
             ts.setCurrentAtr(e);
             listaDeclaracionVariables();
             match(";");
@@ -339,9 +341,10 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("st")){
             formaMetodo();
             match("fn");
-            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),true,ts.getCurrentStruct().getMetodos().size()- isConstr);
+            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),true,ts.getCurrentStruct().getMetodos().size()- isConstr,
+                    currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
-            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e, currentToken);
+            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
             match("id");
             argumentosFormales();
             match("->");
@@ -350,9 +353,10 @@ public class AnalizadorSintactico {
             bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
-            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),false,ts.getCurrentStruct().getMetodos().size() - isConstr);
+            EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),false,ts.getCurrentStruct().getMetodos().size() - isConstr,
+                    currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
-            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e, currentToken);
+            ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
             match("id");
             argumentosFormales();
             match("->");
@@ -524,8 +528,9 @@ public class AnalizadorSintactico {
                         ts.getCurrentStruct().getVariables().size(), currentToken.getLine(), currentToken.getCol());
                 ts.getCurrentStruct().insertVariable(currentToken.getLexema(), e);
             } else if(!isLocal) {
-                EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentAtr().getType(), ts.getCurrentAtr().getPublic(),ts.getCurrentStruct().getAtributos().size());
-                ts.getCurrentStruct().insertAtributo(currentToken.getLexema(), e, currentToken);
+                EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), ts.getCurrentAtr().getType(), ts.getCurrentAtr().getPublic(),ts.getCurrentStruct().getAtributos().size(),
+                        currentToken.getLine(), currentToken.getCol());
+                ts.getCurrentStruct().insertAtributo(currentToken.getLexema(), e);
             } else {
                 EntradaVariable e = new EntradaVariable(currentToken.getLexema(), ts.getCurrentVar().getType(),
                         ts.getCurrentMetod().getVariables().size(), currentToken.getLine(), currentToken.getCol());
@@ -587,8 +592,9 @@ public class AnalizadorSintactico {
 
     private static void argumentoFormal() {
         String tipo = tipo();
-        EntradaParametro e = new EntradaParametro(currentToken.getLexema(), tipo, ts.getCurrentMetod().getParametros().size());
-        ts.getCurrentMetod().insertParametro(currentToken.getLexema(),e, currentToken);
+        EntradaParametro e = new EntradaParametro(currentToken.getLexema(), tipo, ts.getCurrentMetod().getParametros().size(),
+                currentToken.getLine(), currentToken.getCol());
+        ts.getCurrentMetod().insertParametro(currentToken.getLexema(),e);
         match("id");
     }
 

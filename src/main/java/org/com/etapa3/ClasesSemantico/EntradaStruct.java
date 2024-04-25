@@ -16,19 +16,24 @@ public class EntradaStruct {
     private Hashtable<String, EntradaMetodo> metodos;
     private Hashtable<String, EntradaVariable> variables;
     private EntradaMetodo constructor;
+    private int col, line;
     boolean haveImpl = false;
     boolean haveStruct = false;
 
     // Constructor
-    public EntradaStruct(String name) {
+    public EntradaStruct(String name, int line, int col) {
         this.name = name;
+        this.col = col;
+        this.line = line;
         this.metodos = new Hashtable<>();
         this.atributos = new Hashtable<>();
         this.variables = new Hashtable<>();
     }
 
-    public EntradaStruct() {
+    public EntradaStruct(int line, int col) {
         this.name= "start";
+        this.col = col;
+        this.line = line;
         this.atributos = new Hashtable<>();
         this.metodos = new Hashtable<>();
         this.variables = new Hashtable<>();
@@ -37,6 +42,12 @@ public class EntradaStruct {
     // Getters
     public String getName() {
         return name;
+    }
+    public int getLine() {
+        return line;
+    }
+    public int getCol() {
+        return col;
     }
     public Boolean gethaveStruct() {
         return haveStruct;
@@ -66,9 +77,9 @@ public class EntradaStruct {
     }
 
     // Functions
-    public void insertAtributo(String name, EntradaAtributo atributo, Token token) {
+    public void insertAtributo(String name, EntradaAtributo atributo) {
         if(this.atributos.containsKey(name)){
-            throw new SemantErrorException(token.getLine(), token.getCol(),
+            throw new SemantErrorException(atributo.getLine(), atributo.getCol(),
                     "Ya existe un atributo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
         }
         this.atributos.put(name, atributo);
@@ -82,13 +93,13 @@ public class EntradaStruct {
         this.variables.put(name, variable);
     }
 
-    public void insertMetodo(String name, EntradaMetodo metodo, Token token) {
+    public void insertMetodo(String name, EntradaMetodo metodo) {
         if(this.metodos.containsKey(name)){
             if(name.equals("constructor")){
-                throw new SemantErrorException(token.getLine(), token.getCol(),
+                throw new SemantErrorException(metodo.getLine(), metodo.getCol(),
                         "Ya existe un metodo constructor en la clase \"" + this.name + "\"","insertAtributo");
             }else{
-                throw new SemantErrorException(token.getLine(), token.getCol(),
+                throw new SemantErrorException(metodo.getLine(), metodo.getCol(),
                     "Ya existe un metodo con el nombre \"" + name + "\" en la clase \"" + this.name + "\"","insertAtributo");
             }
         }

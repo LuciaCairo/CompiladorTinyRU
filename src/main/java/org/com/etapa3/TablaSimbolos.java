@@ -82,15 +82,15 @@ public class TablaSimbolos {
     }
 
     public EntradaStructPredef insertPred(EntradaStructPredef e, Boolean st, String name, String ret, int pos, String param, String tipo){
-        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos);
-        EntradaParametro p = new EntradaParametro(param, tipo, 0);
+        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos,0,0);
+        EntradaParametro p = new EntradaParametro(param, tipo, 0,0,0);
         m.insertParametroPred(param,p);
         e.insertMetodoPred(name,m);
         return e;
     }
 
     public EntradaStructPredef insertPred(EntradaStructPredef e, Boolean st, String name, String ret, int pos){
-        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos);
+        EntradaMetodo m = new EntradaMetodo(name,st,ret,pos,0,0);
         e.insertMetodoPred(name,m);
         return e;
     }

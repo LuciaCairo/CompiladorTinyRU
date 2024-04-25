@@ -1,9 +1,9 @@
 struct Derivada : Base{
-pri Int x,a, b;
+pri Int x,a;
 }
 impl Derivada{
-fn m2(Str a)-> void{ }
-.(Str h, Int a){}
+fn m2(Str a)-> void{ Int a,b;}
+.(Str h, Int d){}
 }
 struct Base {
 Str s;

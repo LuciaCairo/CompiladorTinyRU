@@ -288,12 +288,6 @@
 		"tipo": "Int",
 		"public": false,
 		"posicion": 1
-	},
-	{
-		"nombre": "b",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 2
 	}
 	],
 	"metodos": [
@@ -309,7 +303,13 @@
 			"posicion": 0
 		}
 		],
-		"variables": [ ]
+		"variables": [
+		{
+			"nombre": "a",
+			"tipo": "Int",
+			"posicion": 0
+		}
+		]
 	}
 	]
 }

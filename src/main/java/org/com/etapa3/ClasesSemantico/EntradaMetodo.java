@@ -13,32 +13,38 @@ public class EntradaMetodo {
     private String nombre;
     private boolean isStatic = false;
     private String ret;
-    private int pos;
+    private int pos, line, col;
     private Hashtable<String, EntradaParametro> parametros;
     private Hashtable<String, EntradaVariable> variables;
 
 
     // Constructor
-    public EntradaMetodo(String nombre, boolean isStatic, int pos){
+    public EntradaMetodo(String nombre, boolean isStatic, int pos, int line, int col){
         this.nombre = nombre;
         this.isStatic = isStatic;
         this.ret = null;
         this.pos = pos;
+        this.line = line;
+        this.col = col;
         this.parametros = new Hashtable<>();
         this.variables = new Hashtable<>();
     }
 
-    public EntradaMetodo(String nombre, boolean isStatic, String ret, int pos){
+    public EntradaMetodo(String nombre, boolean isStatic, String ret, int pos, int line, int col){
         this.nombre = nombre;
         this.isStatic = isStatic;
         this.ret = ret;
         this.pos = pos;
+        this.line = line;
+        this.col = col;
         this.parametros = new Hashtable<>();
         this.variables = new Hashtable<>();
     }
 
-    public EntradaMetodo(){
+    public EntradaMetodo(int line, int col){
         this.nombre = "contructor";
+        this.line = line;
+        this.col = col;
         this.parametros = new Hashtable<>();
         this.variables = new Hashtable<>();
     }
@@ -49,6 +55,12 @@ public class EntradaMetodo {
     }
     public int getPos() {
         return pos;
+    }
+    public int getLine() {
+        return line;
+    }
+    public int getCol() {
+        return col;
     }
     public Hashtable<String, EntradaParametro> getParametros() {
         return parametros;
@@ -63,9 +75,9 @@ public class EntradaMetodo {
     }
     // Functions
 
-    public void insertParametro(String name, EntradaParametro parametro, Token token) {
+    public void insertParametro(String name, EntradaParametro parametro) {
         if(this.parametros.containsKey(name)){
-            throw new SemantErrorException(token.getLine(), token.getCol(),
+            throw new SemantErrorException(parametro.getLine(), parametro.getCol(),
                     "Ya existe un parametro con el nombre \"" + name + "\" en el metodo \"" + this.nombre + "\"","insertParametro");
         }
         this.parametros.put(name, parametro);
