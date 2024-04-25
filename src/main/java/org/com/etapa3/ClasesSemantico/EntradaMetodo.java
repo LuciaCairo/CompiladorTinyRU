@@ -84,6 +84,10 @@ public class EntradaMetodo {
     }
 
     public void insertVariable(String name, EntradaVariable variable) {
+        if(this.parametros.containsKey(name)){
+            throw new SemantErrorException(variable.getLine(), variable.getCol(),
+                    "No se puede redefinir el parametro \""+ name + "\" en el metodo \"" + this.nombre + "\"","insertVariable");
+        }
         if(this.variables.containsKey(name)){
             throw new SemantErrorException(variable.getLine(), variable.getCol(),
                     "Ya existe una variable con el nombre \"" + name + "\" en el metodo \"" + this.nombre + "\"","insertVariable");

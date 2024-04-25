@@ -1,8 +1,7 @@
-struct A:B{
+struct A{
+Int a;
 }
 impl A{
-fn m() ->void{}
-.(){}
 }
 
 struct B{

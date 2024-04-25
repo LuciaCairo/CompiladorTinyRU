@@ -1,6 +1,7 @@
 package org.com.etapa3.ClasesSemantico;
 
 import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.SyntactErrorException;
 import org.com.etapa3.Token;
 
 import java.util.Hashtable;
@@ -78,6 +79,11 @@ public class EntradaStruct {
 
     // Setters
     public void setHerencia(String herencia) {
+        if (herencia.equals("Str") || herencia.equals("Bool") || herencia.equals("Int") ||
+                herencia.equals("Char") || herencia.equals("Array") || herencia.equals("IO")) {
+            throw new SemantErrorException(this.getLine(), this.getCol(),
+                    "No esta permitido heredar de la clase predefinida " + herencia, "setHerencia");
+        }
         this.herencia = herencia;
     }
     public void sethaveStruct(Boolean haveStruct) {

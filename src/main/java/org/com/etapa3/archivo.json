@@ -7,7 +7,14 @@
 	"constructor": {
 		"paramF": [ ]
 	},
-	"atributos": [ ],
+	"atributos": [
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 0
+	}
+	],
 	"metodos": [ ]
 },
 {
