@@ -3,12 +3,74 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "Object",
+	"heredaDe": "B",
 	"constructor": {
 		"paramF": [ ]
 	},
-	"atributos": [ ],
-	"metodos": [ ]
+	"atributos": [
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "b",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 1
+	},
+	{
+		"nombre": "c",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 1
+	},
+	{
+		"nombre": "coun",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 2
+	},
+	{
+		"nombre": "count",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 3
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	},
+	{
+		"nombre": "m2",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		],
+		"variables": [ ]
+	},
+	{
+		"nombre": "contructor",
+		"static": "false",
+		"retorno": "null",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	}
+	]
 },
 {
 	"nombre": "C",
@@ -21,12 +83,60 @@
 },
 {
 	"nombre": "B",
-	"heredaDe": "Object",
+	"heredaDe": "C",
 	"constructor": {
 		"paramF": [ ]
 	},
-	"atributos": [ ],
-	"metodos": [ ]
+	"atributos": [
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "c",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 1
+	},
+	{
+		"nombre": "coun",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 2
+	},
+	{
+		"nombre": "count",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 3
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "m2",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		],
+		"variables": [ ]
+	},
+	{
+		"nombre": "contructor",
+		"static": "false",
+		"retorno": "null",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	}
+	]
 }
 ],
 "start": {

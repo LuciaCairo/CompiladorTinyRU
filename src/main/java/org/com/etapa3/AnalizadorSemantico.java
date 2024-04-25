@@ -1,10 +1,13 @@
 package org.com.etapa3;
 
 import org.com.etapa3.ClasesSemantico.EntradaAtributo;
+import org.com.etapa3.ClasesSemantico.EntradaMetodo;
+import org.com.etapa3.ClasesSemantico.EntradaParametro;
 import org.com.etapa3.ClasesSemantico.EntradaStruct;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Hashtable;
 public class AnalizadorSemantico {
@@ -16,11 +19,13 @@ public class AnalizadorSemantico {
 
     // Funcion para el chequeo de Declaraciones
     public void checkDecl() {
-        Map<String, Boolean> structsVisitados = new HashMap<>();
+
+        HashSet<String> enProgreso = new HashSet<>();
+        HashSet<String> visitados = new HashSet<>();
         for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
-
+            ts.setCurrentStruct(value);
             // Verifico que todas las clases esten declaradas con struct
             if(!value.gethaveStruct()){
                 throw new SemantErrorException(value.getLine(), value.getCol(),
@@ -39,51 +44,65 @@ public class AnalizadorSemantico {
                         "No se definio un constructor para la clase \"" + value.getName() + "\"","printJasonTabla");
             }
 
-            // AGUS ACA ESTA LO QUE ESTABAS HACIENDO VOS -------------------
-            System.out.println(value.getName());
-            ts.setCurrentStruct(value);
-            consolidarAtributosHeredados(value, structsVisitados);
+            // Consolidar los atributos y verificar herencia ciclica
+            consolidarAtributosHeredados(value, visitados,enProgreso);
+
         }
     }
 
 
-    public void consolidarAtributosHeredados( EntradaStruct struct, Map<String, Boolean> structsVisitados) {
-        if (structsVisitados.containsKey(struct.getName())) {
-            throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia Ciclica","Analizador Semantico");
+    //Arreglar la fila y la columna, ya que puse cualquier numero
+    public void consolidarAtributosHeredados( EntradaStruct struct, HashSet<String> visitados ,HashSet<String> enProgreso ) {
+
+        String nombreStruct = struct.getName();
+        if (enProgreso.contains(nombreStruct)) {
+            throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia Cíclica", "Analizador Semántico");
         }
-        structsVisitados.put(struct.getName(), true);
-        String herencia = struct.getHerencia();
-        if (!herencia.equals("Object")) {
-            EntradaStruct structHeredada = ts.getStruct(herencia);
-            if (structHeredada != null) {
-                consolidarAtributosHeredados(structHeredada,structsVisitados);
-                for (Map.Entry<String, EntradaAtributo> entryAtrib : structHeredada.getAtributos().entrySet()) {
-                    String keyAtr = entryAtrib.getKey();
-                    EntradaAtributo valueAtr = entryAtrib.getValue();
-                    struct.insertAtributoHeredado(keyAtr, valueAtr);
+
+        if (!visitados.contains(nombreStruct)) {
+            enProgreso.add(nombreStruct);
+
+            String herencia = struct.getHerencia();
+
+            if (!herencia.equals("Object")) {
+                EntradaStruct structHeredada = ts.getStruct(herencia);
+                //ver si un struct hereda de otro struct que no existe
+                if (ts.getStruct(herencia)== null){
+                    throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia de struct inexistente. El struct '"+ struct.getName()+
+                            "' hereda del struct inexistente: '"+herencia+"' .Primero defina '"+herencia+ "' para poder utilizarlo.", "Analizador Semántico");
+                }
+                if (structHeredada != null) {
+                    consolidarAtributosHeredados(structHeredada, visitados, enProgreso);
+                    //inserta los atributos del struct heredado
+                    for (EntradaAtributo atributo : structHeredada.getAtributos().values()) {
+                            struct.insertAtributoHeredado(atributo.getName(), atributo);
+
+                    }
+                    //inserta los metodos del struc heredado
+                    for (EntradaMetodo metodo : structHeredada.getMetodos().values()) {
+                        if (struct.isMetodo(metodo) == true){
+                            for(EntradaParametro parametro: metodo.getParametros().values()){
+                                //if(parametro.getName() == struct.){
+
+                                //}
+                            }
+                        }
+                        struct.insertMetodoHeredado(metodo.getName(), metodo);
+
+                    }
+
                 }
             }
-        }
-    }
-    public void consolidacion8() {
-        for(Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
-            String key = entry.getKey();
-            EntradaStruct value = entry.getValue();
-            System.out.println(value.getName());
-            ts.setCurrentStruct(value);
-            String h = value.getHerencia();
-            System.out.println(h);
-            if(h != "Object"){
-                EntradaStruct b = ts.getStruct(h);
-                for(Map.Entry<String, EntradaAtributo> entryAtrib : b.getAtributos().entrySet()) {
-                    String keyAtr = entry.getKey();
-                    EntradaAtributo valueAtr = entryAtrib.getValue();
-                    ts.getCurrentStruct().insertAtributoHeredado(keyAtr,valueAtr);
-                }
-            } else{
 
-            }
+            visitados.add(nombreStruct);
+            enProgreso.remove(nombreStruct);
         }
+
+
+
     }
+
+
+
 
 }

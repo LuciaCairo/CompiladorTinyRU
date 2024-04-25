@@ -72,6 +72,7 @@ public class EntradaStruct {
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
+
     public Hashtable<String, EntradaVariable> getVariables() {
         return this.variables;
     }
@@ -94,6 +95,12 @@ public class EntradaStruct {
     }
 
     // Functions
+    public boolean isMetodo(EntradaMetodo metodo){
+        if (this.metodos.containsKey(metodo.getName())){
+            return true;
+        }
+        return false;
+    }
     public void insertAtributo(String name, EntradaAtributo atributo) {
         if(this.atributos.containsKey(name)){
             throw new SemantErrorException(atributo.getLine(), atributo.getCol(),
@@ -106,6 +113,9 @@ public class EntradaStruct {
         this.atributos.put(name, atributo);
     }
 
+    public void insertMetodoHeredado(String name, EntradaMetodo metodo){
+        this.metodos.put(name, metodo);
+    }
     public void insertVariable(String name, EntradaVariable variable) {
         if(this.variables.containsKey(name)){
             throw new SemantErrorException(variable.getLine(), variable.getCol(),
