@@ -1,7 +1,8 @@
-package org.com.etapa3.ClasesSemantico;
+package org.com.etapa3;
 
-import org.com.etapa3.SemantErrorException;
-import org.com.etapa3.TablaSimbolos;
+import org.com.etapa3.ClasesSemantico.EntradaAtributo;
+import org.com.etapa3.ClasesSemantico.EntradaStruct;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,28 +14,42 @@ public class AnalizadorSemantico {
         this.ts = ts;
     }
 
+    // Funcion para el chequeo de Declaraciones
     public void checkDecl() {
-        consolidacion();
-    }
-
-    public void checkEnt() {
-
-    }
-    public void consolidacion() {
         Map<String, Boolean> structsVisitados = new HashMap<>();
         for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
+
+            // Verifico que todas las clases esten declaradas con struct
+            if(!value.gethaveStruct()){
+                throw new SemantErrorException(value.getLine(), value.getCol(),
+                        "Definicion de estructura incompleta. No se declaro un struct para la clase \"" + value.getName() + "\" ","consolidacion");
+            }
+
+            // Verifico que todas las clases tengan impl
+            if(!value.gethaveImpl()){
+                throw new SemantErrorException(value.getLine(), value.getCol(),
+                        "Definicion de estructura incompleta. No se declaro un impl para la clase \"" + value.getName() + "\" ","consolidacion");
+            }
+
+            // Verifico que todas las clases tengan un constructor
+            if(!value.gethaveConst()){
+                throw new SemantErrorException(value.getLine(), value.getCol(),
+                        "No se definio un constructor para la clase \"" + value.getName() + "\"","printJasonTabla");
+            }
+
+            // AGUS ACA ESTA LO QUE ESTABAS HACIENDO VOS -------------------
             System.out.println(value.getName());
             ts.setCurrentStruct(value);
             consolidarAtributosHeredados(value, structsVisitados);
         }
     }
-    //Arreglar la fila y la columna, ya que puse cualquier numero
+
+
     public void consolidarAtributosHeredados( EntradaStruct struct, Map<String, Boolean> structsVisitados) {
         if (structsVisitados.containsKey(struct.getName())) {
-            throw new SemantErrorException(1, 2, "Herencia Ciclica","Analizador Semantico");
-
+            throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia Ciclica","Analizador Semantico");
         }
         structsVisitados.put(struct.getName(), true);
         String herencia = struct.getHerencia();

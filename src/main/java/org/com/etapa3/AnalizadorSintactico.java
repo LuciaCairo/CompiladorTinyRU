@@ -301,6 +301,7 @@ public class AnalizadorSintactico {
         EntradaMetodo e = new EntradaMetodo(currentToken.getLine(), currentToken.getCol());
         ts.setCurrentMetod(e);
         ts.getCurrentStruct().insertMetodo("constructor",e);
+        ts.getCurrentStruct().setHaveConst(true);
         isConstr = 1;
         argumentosFormales();
         bloqueMetodo();

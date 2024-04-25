@@ -1,30 +1,19 @@
-struct Derivada : Base{
-pri Int x,a;
+struct A:B{
 }
-impl Derivada{
-fn m2(Str a)-> void{ Int a,b;}
-.(Str h, Int d){}
+impl A{
+fn m() ->void{}
+.(){}
 }
-struct Base:Agus {
-Str s;
-pri Int a,m;
+
+struct B{
 }
-impl Base{
-fn m1()->void{
-    Char b1,e,c;
-    ret a;}
+impl B{
 .(){}}
 
-struct Agus:Derivada {
-Str k;
-pri Int count,more;
+struct C{
 }
-impl Agus{
-fn m1()->void{
-    Char b1,e;}
+impl C{
 .(){}}
-start{
-Base b1;
-Int b,q;
-b1 = new Derivada();
-}
+
+
+start{}

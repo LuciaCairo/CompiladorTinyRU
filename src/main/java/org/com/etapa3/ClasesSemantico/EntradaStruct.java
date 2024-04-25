@@ -19,6 +19,7 @@ public class EntradaStruct {
     private int col, line;
     boolean haveImpl = false;
     boolean haveStruct = false;
+    boolean haveConst = false;
     boolean check = false;
 
     // Constructor
@@ -35,6 +36,9 @@ public class EntradaStruct {
         this.name= "start";
         this.col = col;
         this.line = line;
+        this.haveImpl = true;
+        this.haveStruct = true;
+        this.haveConst = true;
         this.atributos = new Hashtable<>();
         this.metodos = new Hashtable<>();
         this.variables = new Hashtable<>();
@@ -59,11 +63,12 @@ public class EntradaStruct {
     public Boolean gethaveImpl() {
         return haveImpl;
     }
-
+    public Boolean gethaveConst() {
+        return haveConst;
+    }
     public Hashtable<String, EntradaMetodo> getMetodos() {
         return this.metodos;
     }
-
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
@@ -80,6 +85,9 @@ public class EntradaStruct {
     }
     public void sethaveImpl(Boolean haveImpl) {
         this.haveImpl= haveImpl;
+    }
+    public void setHaveConst(Boolean haveConst) {
+        this.haveConst= haveConst;
     }
     public void setCheck(Boolean check) {
         this.check= check;
@@ -122,10 +130,6 @@ public class EntradaStruct {
     public String printJSON_Struct(){
         String json = "";
         this.constructor = this.metodos.remove("constructor");
-        if(this.constructor == null){
-            throw new SemantErrorException(0, 0,
-                    "No se definio un constructor para la clase \"" + this.name + "\"","printJasonTabla");
-        }
         json += "\t\"heredaDe\": \""+this.herencia+"\",\n\t\"constructor\": {"+ constructor.printJSON_Const() +"\n\t},";
         if(!atributos.isEmpty()){
             // Obtener una lista de atributos ordenados por su posición

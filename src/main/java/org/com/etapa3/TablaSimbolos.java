@@ -18,13 +18,13 @@ public class TablaSimbolos {
     public TablaSimbolos (){
         this.structs = new Hashtable<>();
         this.structsPred = new Hashtable<>();
-        this.structsPred.put("Object",new EntradaStructPredef("Object"));
+        /*this.structsPred.put("Object",new EntradaStructPredef("Object"));
         this.structsPred.put("IO", newIO());
         this.structsPred.put("Array", newArray());
         this.structsPred.put("Int",new EntradaStructPredef("Int"));
         this.structsPred.put("Str", newStr());
         this.structsPred.put("Bool",new EntradaStructPredef("Bool"));
-        this.structsPred.put("Char",new EntradaStructPredef("Char"));
+        this.structsPred.put("Char",new EntradaStructPredef("Char"));*/
     }
 
     // Funciones para crear clases predefinidas
