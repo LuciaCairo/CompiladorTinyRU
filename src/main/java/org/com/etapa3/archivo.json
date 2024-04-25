@@ -199,12 +199,6 @@
 	},
 	"atributos": [
 	{
-		"nombre": "k",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 0
-	},
-	{
 		"nombre": "s",
 		"tipo": "Str",
 		"public": true,
@@ -217,19 +211,7 @@
 		"posicion": 1
 	},
 	{
-		"nombre": "count",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 1
-	},
-	{
 		"nombre": "m",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 2
-	},
-	{
-		"nombre": "more",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 2
@@ -247,7 +229,7 @@
 },
 {
 	"nombre": "Agus",
-	"heredaDe": "Object",
+	"heredaDe": "Derivada",
 	"constructor": {
 		"paramF": [ ]
 	},
@@ -306,43 +288,13 @@
 		"posicion": 0
 	},
 	{
-		"nombre": "k",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 0
-	},
-	{
-		"nombre": "s",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 0
-	},
-	{
 		"nombre": "a",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 1
 	},
 	{
-		"nombre": "count",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 1
-	},
-	{
-		"nombre": "m",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 2
-	},
-	{
 		"nombre": "b",
-		"tipo": "Int",
-		"public": false,
-		"posicion": 2
-	},
-	{
-		"nombre": "more",
 		"tipo": "Int",
 		"public": false,
 		"posicion": 2
