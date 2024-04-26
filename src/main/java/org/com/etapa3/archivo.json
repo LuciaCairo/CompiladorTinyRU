@@ -3,7 +3,7 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "B",
+	"heredaDe": "Object",
 	"constructor": {
 		"paramF": [ ]
 	},

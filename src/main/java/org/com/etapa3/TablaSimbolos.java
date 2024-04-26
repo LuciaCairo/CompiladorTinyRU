@@ -18,13 +18,13 @@ public class TablaSimbolos {
     public TablaSimbolos (){
         this.structs = new Hashtable<>();
         this.structsPred = new Hashtable<>();
-        /*this.structsPred.put("Object",new EntradaStructPredef("Object"));
+        this.structsPred.put("Object",new EntradaStructPredef("Object"));
         this.structsPred.put("IO", newIO());
         this.structsPred.put("Array", newArray());
         this.structsPred.put("Int",new EntradaStructPredef("Int"));
         this.structsPred.put("Str", newStr());
         this.structsPred.put("Bool",new EntradaStructPredef("Bool"));
-        this.structsPred.put("Char",new EntradaStructPredef("Char"));*/
+        this.structsPred.put("Char",new EntradaStructPredef("Char"));
     }
 
     // Funciones para crear clases predefinidas
@@ -170,11 +170,11 @@ public class TablaSimbolos {
         String json = "{\n";
         json += "\"nombre\": \""+ "\",\n";
         json += "\"structs\": [\n";
-        for(Map.Entry<String, EntradaStructPredef> entry : structsPred.entrySet()) {
+        /*for(Map.Entry<String, EntradaStructPredef> entry : structsPred.entrySet()) {
             String key = entry.getKey();
             EntradaStructPredef value = entry.getValue();
             json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_StructPredef()+"\n},\n";
-        }
+        }*/
         for(Map.Entry<String, EntradaStruct> entry : structs.entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
