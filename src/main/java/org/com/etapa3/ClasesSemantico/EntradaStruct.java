@@ -73,6 +73,7 @@ public class EntradaStruct {
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
+
     public Hashtable<String, EntradaVariable> getVariables() {
         return this.variables;
     }
@@ -95,11 +96,14 @@ public class EntradaStruct {
     public void setHaveConst(Boolean haveConst) {
         this.haveConst= haveConst;
     }
-    public void setCheck(Boolean check) {
-        this.check= check;
-    }
 
     // Functions
+    public boolean isMetodo(EntradaMetodo metodo){
+        if (this.metodos.containsKey(metodo.getName())){
+            return true;
+        }
+        return false;
+    }
     public void insertAtributo(String name, EntradaAtributo atributo) {
         if(this.atributos.containsKey(name)){
             throw new SemantErrorException(atributo.getLine(), atributo.getCol(),
@@ -108,10 +112,18 @@ public class EntradaStruct {
         this.atributos.put(name, atributo);
     }
 
-    public void insertAtributoHeredado(String name, EntradaAtributo atributo) {
+    public void insertAtributoHeredado(String name, EntradaAtributo atributo, String hereda) {
+        if(this.atributos.containsKey(name)){
+            throw new SemantErrorException(this.atributos.get(name).getLine(), this.atributos.get(name).getCol(),
+                    "No se puede redefinir el atributo \"" + name + "\" en la clase \"" + this.name + "\". Ya que es un atributo heredado de \"" +hereda+"\""
+                    ,"insertAtributo");
+        }
         this.atributos.put(name, atributo);
     }
 
+    public void insertMetodoHeredado(String name, EntradaMetodo metodo){
+        this.metodos.put(name, metodo);
+    }
     public void insertVariable(String name, EntradaVariable variable) {
         if(this.variables.containsKey(name)){
             throw new SemantErrorException(variable.getLine(), variable.getCol(),
@@ -172,16 +184,18 @@ public class EntradaStruct {
 
     public String printJSON_Start(){
         String json = "";
+        json +="\n\t\"variables\": [";
         if(!variables.isEmpty()){
             List<EntradaVariable> variablesOrdenados = new ArrayList<>(variables.values());
             variablesOrdenados.sort(Comparator.comparingInt(EntradaVariable::getPos));
-            json +="\n\t\"variables\": [";
             List<String> jsonVariables = new ArrayList<>();
             for (EntradaVariable variable : variablesOrdenados) {
                 jsonVariables.add("\n\t{\n\t\t\"nombre\": \"" + variable.getName() + "\",\n" + variable.imprimeVar() + "\n\t}");
             }
             json += String.join(",", jsonVariables);
             json += "\n\t]";
+        } else {
+            json +=" ]";
         }
         return json;
     }

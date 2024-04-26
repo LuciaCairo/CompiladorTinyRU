@@ -3,28 +3,40 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "Object",
+	"heredaDe": "B",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "a",
-		"tipo": "Int",
+		"nombre": "b",
+		"tipo": "Str",
 		"public": true,
 		"posicion": 0
+	},
+	{
+		"nombre": "c",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 1
+	},
+	{
+		"nombre": "a",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 2
 	}
 	],
-	"metodos": [ ]
-},
-{
-	"nombre": "C",
-	"heredaDe": "Object",
-	"constructor": {
-		"paramF": [ ]
-	},
-	"atributos": [ ],
-	"metodos": [ ]
+	"metodos": [
+	{
+		"nombre": "contructor",
+		"static": "false",
+		"retorno": "null",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	}
+	]
 },
 {
 	"nombre": "B",
@@ -32,7 +44,26 @@
 	"constructor": {
 		"paramF": [ ]
 	},
-	"atributos": [ ],
+	"atributos": [
+	{
+		"nombre": "b",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "c",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 1
+	},
+	{
+		"nombre": "a",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 2
+	}
+	],
 	"metodos": [ ]
 }
 ],
@@ -40,5 +71,6 @@
 	"nombre": "start",
 	"retorno": "void",
 	"posicion": 0,
+	"variables": [ ]
 }
 }

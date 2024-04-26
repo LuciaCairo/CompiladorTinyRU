@@ -38,7 +38,9 @@ public class EntradaAtributo {
     }
 
     // Setters
-
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
 
     public String imprimeAtributo(){
         return "\t\t\"tipo\": \""+this.type+"\"," +

@@ -1,17 +1,16 @@
-struct A{
+struct A:B{
 Int a;
-}
-impl A{
 }
 
 struct B{
+Str b,c,a;
 }
-impl B{
-.(){}}
 
-struct C{
+impl A{
+.(){}
 }
-impl C{
+
+impl B{
 .(){}}
 
 
