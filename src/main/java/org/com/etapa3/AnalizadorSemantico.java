@@ -6,13 +6,14 @@ import org.com.etapa3.ClasesSemantico.EntradaParametro;
 import org.com.etapa3.ClasesSemantico.EntradaStruct;
 
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Hashtable;
 public class AnalizadorSemantico {
     TablaSimbolos ts;
+    HashSet<String> enProgreso = new HashSet<>();
+    HashSet<String> visitados = new HashSet<>();
 
+    // Constructor
     public AnalizadorSemantico(TablaSimbolos ts){
         this.ts = ts;
     }
@@ -20,12 +21,12 @@ public class AnalizadorSemantico {
     // Funcion para el chequeo de Declaraciones
     public void checkDecl() {
 
-        HashSet<String> enProgreso = new HashSet<>();
-        HashSet<String> visitados = new HashSet<>();
         for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
+
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
             ts.setCurrentStruct(value);
+
             // Verifico que todas las clases esten declaradas con struct
             if(!value.gethaveStruct()){
                 throw new SemantErrorException(value.getLine(), value.getCol(),
@@ -44,41 +45,48 @@ public class AnalizadorSemantico {
                         "No se definio un constructor para la clase \"" + value.getName() + "\"","printJasonTabla");
             }
 
-            // Consolidar los atributos y verificar herencia ciclica
-            consolidarAtributosHeredados(value, visitados,enProgreso);
+            // Consolidar la Tabla de Simbolos
+            consolidacion(value,value);
 
         }
     }
 
-
-    //Arreglar la fila y la columna, ya que puse cualquier numero
-    public void consolidarAtributosHeredados( EntradaStruct struct, HashSet<String> visitados ,HashSet<String> enProgreso ) {
+    // Funcion para consolidar atributos
+    public void consolidacion(EntradaStruct struct, EntradaStruct last) {
 
         String nombreStruct = struct.getName();
+        String herencia = struct.getHerencia();
+
+        // Verifico la herencia circular
         if (enProgreso.contains(nombreStruct)) {
-            throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia Cíclica", "Analizador Semántico");
+            throw new SemantErrorException(last.getLine(), last.getCol(), "Herencia Cíclica en la clase " + last.getName(), "AS");
         }
 
         if (!visitados.contains(nombreStruct)) {
             enProgreso.add(nombreStruct);
 
-            String herencia = struct.getHerencia();
-
             if (!herencia.equals("Object")) {
-                EntradaStruct structHeredada = ts.getStruct(herencia);
-                //ver si un struct hereda de otro struct que no existe
-                if (ts.getStruct(herencia)== null){
-                    throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia de struct inexistente. El struct '"+ struct.getName()+
-                            "' hereda del struct inexistente: '"+herencia+"' .Primero defina '"+herencia+ "' para poder utilizarlo.", "Analizador Semántico");
-                }
-                if (structHeredada != null) {
-                    consolidarAtributosHeredados(structHeredada, visitados, enProgreso);
-                    //inserta los atributos del struct heredado
-                    for (EntradaAtributo atributo : structHeredada.getAtributos().values()) {
-                            struct.insertAtributoHeredado(atributo.getName(), atributo);
 
+                EntradaStruct structHeredada = ts.getStruct(herencia);
+
+                // Verifico si un struct hereda de otro struct que no existe
+                if (structHeredada == null){
+                    throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia de struct inexistente. El struct \""+ struct.getName()+
+                            "\" hereda del struct inexistente: \""+herencia+"\" .Primero defina \""+herencia+ "\" para poder utilizarlo.", "Analizador Semántico");
+
+                } else {
+
+                    consolidacion(structHeredada, struct); // Se recorre hasta que se llega a la clase que hereda de "Object"
+
+                    // Inserta los atributos del struct heredado
+                    for (EntradaAtributo a : struct.getAtributos().values()) { // Primero redefino las posiciones
+                        a.setPos(a.getPos()+ structHeredada.getAtributos().size());
                     }
-                    //inserta los metodos del struc heredado
+                    for (EntradaAtributo atributo : structHeredada.getAtributos().values()) {
+                            struct.insertAtributoHeredado(atributo.getName(), atributo,structHeredada.getName());
+                    }
+
+                    // Inserta los metodos del struct heredado
                     for (EntradaMetodo metodo : structHeredada.getMetodos().values()) {
                         if (struct.isMetodo(metodo) == true){
                             for(EntradaParametro parametro: metodo.getParametros().values()){

@@ -1,18 +1,16 @@
 struct A:B{
-}
-impl A{
-fn m() ->void{}
-.(){}
+Int a;
 }
 
 struct B{
+Str b,c,a;
 }
-impl B{
-.(){}}
 
-struct C{
+impl A{
+.(){}
 }
-impl C{
+
+impl B{
 .(){}}
 
 

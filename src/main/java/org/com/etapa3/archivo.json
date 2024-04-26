@@ -3,65 +3,31 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "Object",
+	"heredaDe": "B",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "a",
-		"tipo": "Int",
+		"nombre": "b",
+		"tipo": "Str",
 		"public": true,
 		"posicion": 0
 	},
 	{
-		"nombre": "b",
-		"tipo": "Int",
-		"public": true,
-		"posicion": 1
-	},
-	{
 		"nombre": "c",
-		"tipo": "Int",
+		"tipo": "Str",
 		"public": true,
 		"posicion": 1
 	},
 	{
-		"nombre": "coun",
+		"nombre": "a",
 		"tipo": "Str",
 		"public": true,
 		"posicion": 2
-	},
-	{
-		"nombre": "count",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 3
 	}
 	],
 	"metodos": [
-	{
-		"nombre": "m",
-		"static": "false",
-		"retorno": "void",
-		"posicion": 0,
-		"paramF": [ ],
-		"variables": [ ]
-	},
-	{
-		"nombre": "m2",
-		"static": "false",
-		"retorno": "void",
-		"posicion": 0,
-		"paramF": [
-		{
-			"nombre": "a",
-			"tipo": "Str",
-			"posicion": 0
-		}
-		],
-		"variables": [ ]
-	},
 	{
 		"nombre": "contructor",
 		"static": "false",
@@ -71,77 +37,40 @@
 		"variables": [ ]
 	}
 	]
-},
-{
-	"nombre": "C",
-	"heredaDe": "Object",
-	"constructor": {
-		"paramF": [ ]
-	},
-	"atributos": [ ],
-	"metodos": [ ]
 },
 {
 	"nombre": "B",
-	"heredaDe": "C",
+	"heredaDe": "Object",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "a",
-		"tipo": "Int",
+		"nombre": "b",
+		"tipo": "Str",
 		"public": true,
 		"posicion": 0
 	},
 	{
 		"nombre": "c",
-		"tipo": "Int",
+		"tipo": "Str",
 		"public": true,
 		"posicion": 1
 	},
 	{
-		"nombre": "coun",
+		"nombre": "a",
 		"tipo": "Str",
 		"public": true,
 		"posicion": 2
-	},
-	{
-		"nombre": "count",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 3
 	}
 	],
-	"metodos": [
-	{
-		"nombre": "m2",
-		"static": "false",
-		"retorno": "void",
-		"posicion": 0,
-		"paramF": [
-		{
-			"nombre": "a",
-			"tipo": "Str",
-			"posicion": 0
-		}
-		],
-		"variables": [ ]
-	},
-	{
-		"nombre": "contructor",
-		"static": "false",
-		"retorno": "null",
-		"posicion": 0,
-		"paramF": [ ],
-		"variables": [ ]
-	}
-	]
+	"metodos": [ ]
 }
 ],
 "start": {
 	"nombre": "start",
 	"retorno": "void",
 	"posicion": 0,
+	"variables": [ ]
 }
 }
