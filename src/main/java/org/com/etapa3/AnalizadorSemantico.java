@@ -128,6 +128,7 @@ public class AnalizadorSemantico {
                             };
                         }
                     }
+                    // Ahora si inserta los metodos heredados
                     for (EntradaMetodo metodo : structHeredada.getMetodos().values()) {
                         String nameMetodoHeredado = metodo.getName();
 
@@ -189,7 +190,7 @@ public class AnalizadorSemantico {
                         if(!m.getName().equals("constructor")){
                             String[] palabras = m.getRet().split(" ");
                             String isArray = palabras[0];
-                            if((!ts.getTableStructs().containsKey(m.getRet()) // Verificar que las declaraciones de retorno
+                            if((!ts.getTableStructs().containsKey(m.getRet()) // Verificar las declaraciones de retorno
                                     && !ts.getStructsPred().containsKey(m.getRet()))
                                     && !m.getRet().equals("void")
                                     && !isArray.equals("Array")){
