@@ -7,6 +7,7 @@ import org.com.etapa3.ClasesSemantico.EntradaStruct;
 
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 public class AnalizadorSemantico {
     TablaSimbolos ts;
@@ -87,15 +88,48 @@ public class AnalizadorSemantico {
                     }
 
                     // Inserta los metodos del struct heredado
+                    //ejemplo A:B (metodo igual es pepe)
+                    //Creo metodosStrcut para guardar los metodos que tiene el struct que estoy analizando (A)
+                    Hashtable<String, EntradaMetodo> metodosStrcut= struct.getMetodos();
+                    // Para cada uno de los metodos del struct del que heredo (B)
                     for (EntradaMetodo metodo : structHeredada.getMetodos().values()) {
-                        if (struct.isMetodo(metodo) == true){
-                            for(EntradaParametro parametro: metodo.getParametros().values()){
-                                //if(parametro.getName() == struct.){
+                        //Pregunto si el metodo heredado existe en el struct actual (A)
+                        if (struct.isMetodo(metodo)){ //si el metodo esta en el struc q estoy revisando (si el metodo esta en A)
+                            //Creo una entradaMetodo para almacenar el metodo del struct actual (pepe)
+                            EntradaMetodo metodoSTRCUT= metodosStrcut.get(metodo.getName());
+                            //Creo una hash de parametros, para guardar todos los parametros que tiene el metodo PEPE en la clase A
+                            Hashtable<String, EntradaParametro> parametrosMetodo =  metodoSTRCUT.getParametros();
+                            System.out.println(metodoSTRCUT);
+                            // Recorro todos los parametros que contiene el metodo Pepe de la clase B
+                            for(EntradaParametro parametro: metodo.getParametros().values()){ //para cada parametro del metodo heredado
+                                //Si los parametros de Pepe de la clase A contienen al parametro que estoy analizando del metodo Pepe de B
+                                if (parametrosMetodo.get(parametro)!= null){
 
+                                    EntradaParametro parametro1 = parametrosMetodo.get(parametro);
+                                    //Analizo los tipos
+                                    if (parametro1.getTipo() == parametro.getTipo()){
+                                        continue;
+                                    } else{
+                                        throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia1", "Analizador Semántico");
+                                    }
+
+
+                                }else{// quiere decir que el metodo de la Clase A, no contiene los mismos parametros que B
+                                    throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia2", "Analizador Semántico");
+                                }
+
+
+                                //if (.getParametros().get(parametro).getTipo() == parametro.getTipo()  ){
+
+                                //} else{
+                                  //  throw new SemantErrorException(struct.getLine(), struct.getCol(), "Herencia", "Analizador Semántico");
                                 //}
                             }
+                            struct.insertMetodoHeredado(metodo.getName(), metodo); // Si termina es porq esta todo ok, netonces inserto
+                        }else{
+                            struct.insertMetodoHeredado(metodo.getName(), metodo); //si el metodo no tiene la misma firma, inserto
                         }
-                        struct.insertMetodoHeredado(metodo.getName(), metodo);
+
 
                     }
 

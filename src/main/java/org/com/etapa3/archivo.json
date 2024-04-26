@@ -9,25 +9,57 @@
 	},
 	"atributos": [
 	{
-		"nombre": "b",
-		"tipo": "Str",
+		"nombre": "p",
+		"tipo": "Int",
 		"public": true,
 		"posicion": 0
 	},
 	{
 		"nombre": "c",
-		"tipo": "Str",
+		"tipo": "Int",
 		"public": true,
 		"posicion": 1
 	},
 	{
-		"nombre": "a",
+		"nombre": "coun",
 		"tipo": "Str",
 		"public": true,
 		"posicion": 2
+	},
+	{
+		"nombre": "count",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 3
+	},
+	{
+		"nombre": "a",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 4
+	},
+	{
+		"nombre": "b",
+		"tipo": "Int",
+		"public": true,
+		"posicion": 5
+	},
+	{
+		"nombre": "count5",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 6
 	}
 	],
 	"metodos": [
+	{
+		"nombre": "m",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	},
 	{
 		"nombre": "contructor",
 		"static": "false",
@@ -39,32 +71,64 @@
 	]
 },
 {
-	"nombre": "B",
+	"nombre": "C",
 	"heredaDe": "Object",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [ ],
+	"metodos": [ ]
+},
+{
+	"nombre": "B",
+	"heredaDe": "C",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "b",
-		"tipo": "Str",
+		"nombre": "p",
+		"tipo": "Int",
 		"public": true,
 		"posicion": 0
 	},
 	{
 		"nombre": "c",
-		"tipo": "Str",
+		"tipo": "Int",
 		"public": true,
 		"posicion": 1
 	},
 	{
-		"nombre": "a",
+		"nombre": "coun",
 		"tipo": "Str",
 		"public": true,
 		"posicion": 2
+	},
+	{
+		"nombre": "count",
+		"tipo": "Str",
+		"public": true,
+		"posicion": 3
 	}
 	],
-	"metodos": [ ]
+	"metodos": [
+	{
+		"nombre": "m",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	},
+	{
+		"nombre": "contructor",
+		"static": "false",
+		"retorno": "null",
+		"posicion": 0,
+		"paramF": [ ],
+		"variables": [ ]
+	}
+	]
 }
 ],
 "start": {

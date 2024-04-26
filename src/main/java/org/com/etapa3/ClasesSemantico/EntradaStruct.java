@@ -98,6 +98,8 @@ public class EntradaStruct {
     }
 
     // Functions
+
+
     public boolean isMetodo(EntradaMetodo metodo){
         if (this.metodos.containsKey(metodo.getName())){
             return true;

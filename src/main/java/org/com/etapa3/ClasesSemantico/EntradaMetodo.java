@@ -75,6 +75,9 @@ public class EntradaMetodo {
     }
     // Functions
 
+
+    //Metodo para definir si un parametro se encuentra en la lista de parametros
+
     public void insertParametro(String name, EntradaParametro parametro) {
         if(this.parametros.containsKey(name)){
             throw new SemantErrorException(parametro.getLine(), parametro.getCol(),

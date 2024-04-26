@@ -20,12 +20,17 @@ public class EntradaParametro {
     public String getName() {
         return nombre;
     }
+    public String getTipo(){
+        return tipo;
+    }
     public int getLine() {
         return line;
     }
     public int getCol() {
         return col;
     }
+
+
 
     public String imprimeParametro(){
         return
