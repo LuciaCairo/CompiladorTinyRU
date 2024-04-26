@@ -77,7 +77,11 @@ public class AnalizadorSemantico {
                         a.setPos(a.getPos()+ structHeredada.getAtributos().size());
 
                         // Verificar que las declaraciones de atributos esten correctas
-                        if(!ts.getTableStructs().containsKey(a.getType()) && !ts.getStructsPred().containsKey(a.getType())){
+                        String[] palabras = a.getType().split(" ");
+                        String isArray = palabras[0];
+                        if(!ts.getTableStructs().containsKey(a.getType())
+                                && !ts.getStructsPred().containsKey(a.getType())
+                                && !isArray.equals("Array")){
                             throw new SemantErrorException(a.getLine(), a.getCol(), "Tipo no definido: \"" + a.getType() + "\" no esta definido", "AS");
                         };
                     }
@@ -104,14 +108,22 @@ public class AnalizadorSemantico {
 
                         // Ver que declaracion de parametros este bien en metodos (por ejemplo Base b, ver que Base exista)
                         for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
-                            if(!ts.getTableStructs().containsKey(p.getType()) && !ts.getStructsPred().containsKey(p.getType())){
+                            String[] palabras = p.getType().split(" ");
+                            String isArray = palabras[0];
+                            if(!ts.getTableStructs().containsKey(p.getType())
+                                    && !ts.getStructsPred().containsKey(p.getType())
+                                    && !isArray.equals("Array")){
                                 throw new SemantErrorException(p.getLine(), p.getCol(), "Tipo de parametro no definido: \"" + p.getType() + "\" no esta definido", "AS");
                             };
                         }
 
                         // Ver que declaracion de variables este bien en metodos (por ejemplo Base b, ver que Base exista)
                         for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
-                            if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())){
+                            String[] palabras = v.getType().split(" ");
+                            String isArray = palabras[0];
+                            if(!ts.getTableStructs().containsKey(v.getType())
+                                    && !ts.getStructsPred().containsKey(v.getType())
+                                    && !isArray.equals("Array")){
                                 throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo de variable no definido: \"" + v.getType() + "\" no esta definido", "AS");
                             };
                         }
@@ -128,7 +140,8 @@ public class AnalizadorSemantico {
                                 // Si hay un metodo redefinido verifica que la firma sea igual a la del metodo heredado
                                 igualFirma(struct.getMetodos().get(nameMetodoHeredado),metodo);
                                 // Si el metodo tiene la misma firma, entonces no se agrega el metodo ancestro.
-                                // Solo se deja el redefinido ya que tiene prioridad.
+                                // Solo se deja el redefinido ya que tiene prioridad. Pero le cambio la posicion
+                                struct.getMetodos().get(nameMetodoHeredado).setPos(metodo.getPos());
 
                             } else{
                                 // Inserta los metodos del struct heredado que no estan redefinidos
@@ -147,7 +160,10 @@ public class AnalizadorSemantico {
                     // Para start solo hay que verificar si la declaracion de variables es correcta
                     // (por ejemplo: Base b, ver que Base exista)
                     for (EntradaVariable v : struct.getVariables().values()) {
-                        if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())){
+                        String[] palabras = v.getType().split(" ");
+                        String isArray = palabras[0];
+                        if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
+                                && !isArray.equals("Array")){
                             throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo no definido: el tipo \"" + v.getType() +
                                     "\" de la variable \"" + v.getName() + "\" no esta definido", "AS");
                         };
@@ -156,7 +172,10 @@ public class AnalizadorSemantico {
 
                     // Verificar que las declaraciones de atributos esten correctas
                     for (EntradaAtributo a : struct.getAtributos().values()) {
-                        if(!ts.getTableStructs().containsKey(a.getType()) && !ts.getStructsPred().containsKey(a.getType())){
+                        String[] palabras = a.getType().split(" ");
+                        String isArray = palabras[0];
+                        if(!ts.getTableStructs().containsKey(a.getType()) && !ts.getStructsPred().containsKey(a.getType())
+                                && !isArray.equals("Array")){
                             throw new SemantErrorException(a.getLine(), a.getCol(), "Tipo no definido: el tipo \"" + a.getType() +
                                     "\" del atributo \"" + a.getName() +"\" no esta definido", "AS");
                         };
@@ -173,7 +192,7 @@ public class AnalizadorSemantico {
                             if((!ts.getTableStructs().containsKey(m.getRet()) // Verificar que las declaraciones de retorno
                                     && !ts.getStructsPred().containsKey(m.getRet()))
                                     && !m.getRet().equals("void")
-                                    && isArray.equals("Array")){
+                                    && !isArray.equals("Array")){
                                 throw new SemantErrorException(m.getLine(), m.getCol(), "Tipo no definido: el tipo \"" + m.getRet() +
                                         "\" de retorno no esta definido", "AS");
                             };
@@ -181,14 +200,20 @@ public class AnalizadorSemantico {
 
                         // Ver que declaracion de parametros en metodos esten correctas (por ejemplo Base b, ver que Base exista)
                         for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
-                            if(!ts.getTableStructs().containsKey(p.getType()) && !ts.getStructsPred().containsKey(p.getType())){
+                            String[] palabras = p.getType().split(" ");
+                            String isArray = palabras[0];
+                            if(!ts.getTableStructs().containsKey(p.getType()) && !ts.getStructsPred().containsKey(p.getType())
+                                    && !isArray.equals("Array")){
                                 throw new SemantErrorException(p.getLine(), p.getCol(), "Tipo de parametro no definido: \"" + p.getType() + "\" no esta definido", "AS");
                             };
                         }
 
                         // Ver que declaracion de variables este bien en metodos (por ejemplo Base b, ver que Base exista)
                         for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
-                            if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())){
+                            String[] palabras = v.getType().split(" ");
+                            String isArray = palabras[0];
+                            if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
+                                    && isArray.equals("Array")){
                                 throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo de variable no definido: \"" + v.getType() + "\" no esta definido", "AS");
                             };
                         }

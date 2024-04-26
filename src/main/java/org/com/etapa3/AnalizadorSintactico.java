@@ -324,8 +324,7 @@ public class AnalizadorSintactico {
                     currentToken.getLexema().equals("Char") ||
                     currentToken.getLexema().equals("Array") ||
                     currentToken.getName().equals("struct_name")) {
-            String tipo = currentToken.getLexema();
-            tipo();
+            String tipo = tipo();
             EntradaAtributo e = new EntradaAtributo(currentToken.getLexema(), tipo, true, ts.getCurrentStruct().getAtributos().size(),
                     currentToken.getLine(), currentToken.getCol());
             ts.getCurrentStruct().insertAtributo(currentToken.getLexema(),e);
