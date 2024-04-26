@@ -104,6 +104,10 @@ public class TablaSimbolos {
         return structs;
     }
 
+    public Hashtable<String,EntradaStructPredef> getStructsPred() {
+        return structsPred;
+    }
+
     public EntradaStruct getStruct(String nombre) {
         return this.structs.get(nombre);
     }
