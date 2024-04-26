@@ -42,7 +42,7 @@ public class EntradaMetodo {
     }
 
     public EntradaMetodo(int line, int col){
-        this.nombre = "contructor";
+        this.nombre = "constructor";
         this.line = line;
         this.col = col;
         this.parametros = new Hashtable<>();
@@ -62,6 +62,9 @@ public class EntradaMetodo {
     public int getCol() {
         return col;
     }
+    public String getRet() {
+        return ret;
+    }
     public Hashtable<String, EntradaParametro> getParametros() {
         return parametros;
     }
@@ -73,6 +76,11 @@ public class EntradaMetodo {
     public void setRet(String ret) {
         this.ret = ret;
     }
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
+
     // Functions
 
     public void insertParametro(String name, EntradaParametro parametro) {

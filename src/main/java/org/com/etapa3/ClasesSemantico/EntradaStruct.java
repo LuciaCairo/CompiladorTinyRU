@@ -121,9 +121,7 @@ public class EntradaStruct {
         this.atributos.put(name, atributo);
     }
 
-    public void insertMetodoHeredado(String name, EntradaMetodo metodo){
-        this.metodos.put(name, metodo);
-    }
+
     public void insertVariable(String name, EntradaVariable variable) {
         if(this.variables.containsKey(name)){
             throw new SemantErrorException(variable.getLine(), variable.getCol(),
