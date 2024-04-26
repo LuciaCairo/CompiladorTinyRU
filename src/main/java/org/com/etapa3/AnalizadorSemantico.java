@@ -81,6 +81,11 @@ public class AnalizadorSemantico {
                     // Inserta los atributos del struct heredado
                     for (EntradaAtributo a : struct.getAtributos().values()) { // Primero redefino las posiciones
                         a.setPos(a.getPos()+ structHeredada.getAtributos().size());
+
+                        // Verificar que las declaraciones de atributos esten correctas
+                        if(!ts.getTableStructs().containsKey(a.getType()) && !ts.getStructsPred().containsKey(a.getType())){
+                            throw new SemantErrorException(a.getLine(), a.getCol(), "Tipo no definido: \"" + a.getType() + "\" no esta definido", "AS");
+                        };
                     }
                     for (EntradaAtributo atributo : structHeredada.getAtributos().values()) {
                             struct.insertAtributoHeredado(atributo.getName(), atributo,structHeredada.getName());
@@ -100,6 +105,23 @@ public class AnalizadorSemantico {
                     }
 
                 }
+            } else{
+
+                // Verificar que todo nombre usado en una declaración haya sido declarado en el contexto adecuado.
+
+                // Verificar que las declaraciones de atributos esten correctas
+                for (EntradaAtributo a : struct.getAtributos().values()) {
+                    if(!ts.getTableStructs().containsKey(a.getType()) && !ts.getStructsPred().containsKey(a.getType())){
+                        throw new SemantErrorException(a.getLine(), a.getCol(), "Tipo no definido: \"" + a.getType() + "\" no esta definido", "AS");
+                    };
+                }
+
+                // Ver que declaracion de parametros este bien (por ejemplo Base b, ver que Base exista)
+
+                // Ver que declaracion de variables este bien (por ejemplo Base b, ver que Base exista)
+
+                // Ver que lo que se quiere retornar en una funcion exista  (por ejemplo fn a() ->Base{ }, ver que Base exista)
+
             }
 
             visitados.add(nombreStruct);

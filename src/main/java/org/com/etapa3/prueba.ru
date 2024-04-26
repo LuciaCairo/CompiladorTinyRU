@@ -1,5 +1,6 @@
-struct A:B{
-Int a;
+struct A{
+Int h;
+Noda l,m;
 }
 
 struct B{

@@ -3,40 +3,31 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "B",
+	"heredaDe": "Object",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "b",
-		"tipo": "Str",
+		"nombre": "h",
+		"tipo": "Int",
 		"public": true,
 		"posicion": 0
 	},
 	{
-		"nombre": "c",
-		"tipo": "Str",
+		"nombre": "l",
+		"tipo": "Noda",
 		"public": true,
 		"posicion": 1
 	},
 	{
-		"nombre": "a",
-		"tipo": "Str",
+		"nombre": "m",
+		"tipo": "Noda",
 		"public": true,
 		"posicion": 2
 	}
 	],
-	"metodos": [
-	{
-		"nombre": "contructor",
-		"static": "false",
-		"retorno": "null",
-		"posicion": 0,
-		"paramF": [ ],
-		"variables": [ ]
-	}
-	]
+	"metodos": [ ]
 },
 {
 	"nombre": "B",
