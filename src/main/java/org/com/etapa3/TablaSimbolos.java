@@ -32,7 +32,7 @@ public class TablaSimbolos {
 
     // Struct Predefinida Str
     public EntradaStructPredef newStr(){
-        EntradaStructPredef e = new EntradaStructPredef("Array");
+        EntradaStructPredef e = new EntradaStructPredef("Str");
         // fn length()->Int
         e = insertPred(e, false,"length", "Int", 0);
         // fn concat(Str s)->Str.
