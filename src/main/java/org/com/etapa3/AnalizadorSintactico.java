@@ -21,17 +21,22 @@ public class AnalizadorSintactico {
         }
 
         String input = args[0];
+        String fileName;
+
+        // Obtener el nombre del archivo
+        File inputFile = new File(input);
+        fileName = inputFile.getName();
 
         // Verificar existencia del archivo
         File file = new File(input);
         if (!file.exists()) {
-            System.out.println("ERROR: El archivo fuente '" + input + "' no existe.");
+            System.out.println("ERROR: El archivo fuente '" + fileName + "' no existe.");
             return;
         }
 
         // Verificar si el archivo no está vacío
         if (file.length() == 0) {
-            System.out.println("ERROR: El archivo fuente '" + input + "' está vacío.");
+            System.out.println("ERROR: El archivo fuente '" + fileName + "' está vacío.");
             return;
         }
 
@@ -54,8 +59,8 @@ public class AnalizadorSintactico {
             }
             program();      // Analisis Sintactico y Tabla de Simbolos
             s.checkDecl();  // Chequeo de Declaraciones
-            String json = ts.printJSON_Tabla(input);
-            ts.saveJSON(json, input + ".json");
+            String json = ts.printJSON_Tabla(fileName);
+            ts.saveJSON(json, fileName + ".json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
         } catch (LexicalErrorException e) {

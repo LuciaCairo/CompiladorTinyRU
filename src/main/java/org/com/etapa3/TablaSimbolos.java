@@ -200,7 +200,7 @@ public class TablaSimbolos {
         String rutaActual = System.getProperty("user.dir");
         File directorioActual = new File(rutaActual);
         String rutaDirectorioPadre = directorioActual.getParent();
-        String rutaArchivo = rutaDirectorioPadre + "\\" + nombreArchivo;
+        String rutaArchivo = rutaActual + "\\" + nombreArchivo;
 
         try (FileWriter fileWriter = new FileWriter(rutaArchivo)) {
             fileWriter.write(json);
