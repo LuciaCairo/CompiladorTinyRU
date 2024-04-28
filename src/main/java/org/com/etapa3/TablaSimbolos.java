@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 public class TablaSimbolos {
     private Hashtable<String,EntradaStruct> structs;
@@ -169,16 +170,16 @@ public class TablaSimbolos {
         return this.structs.containsKey(nombre);
     }
 
-    public String printJSON_Tabla(){
+    public String printJSON_Tabla(String input){
         this.start = this.structs.remove("start");
         String json = "{\n";
-        json += "\"nombre\": \""+ "\",\n";
+        json += "\"nombre\": \"TS-"+input+"\",\n"; // "TS-ejemplo.ru",
         json += "\"structs\": [\n";
-        /*for(Map.Entry<String, EntradaStructPredef> entry : structsPred.entrySet()) {
+        for(Map.Entry<String, EntradaStructPredef> entry : structsPred.entrySet()) {
             String key = entry.getKey();
             EntradaStructPredef value = entry.getValue();
             json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printJSON_StructPredef()+"\n},\n";
-        }*/
+        }
         for(Map.Entry<String, EntradaStruct> entry : structs.entrySet()) {
             String key = entry.getKey();
             EntradaStruct value = entry.getValue();
@@ -194,8 +195,13 @@ public class TablaSimbolos {
     }
 
     // Método para guardar el JSON en un archivo
+
     public void saveJSON(String json, String nombreArchivo) {
-        String rutaArchivo = System.getProperty("user.dir") + "\\src\\main\\java\\org\\com\\etapa3\\" + nombreArchivo;
+        String rutaActual = System.getProperty("user.dir");
+        File directorioActual = new File(rutaActual);
+        String rutaDirectorioPadre = directorioActual.getParent();
+        String rutaArchivo = rutaDirectorioPadre + "\\" + nombreArchivo;
+
         try (FileWriter fileWriter = new FileWriter(rutaArchivo)) {
             fileWriter.write(json);
             System.out.println("JSON guardado exitosamente en " + rutaArchivo);
@@ -204,4 +210,5 @@ public class TablaSimbolos {
             e.printStackTrace();
         }
     }
+
 }

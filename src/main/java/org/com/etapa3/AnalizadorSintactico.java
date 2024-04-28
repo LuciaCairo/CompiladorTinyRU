@@ -14,14 +14,13 @@ public class AnalizadorSintactico {
     private static boolean isLocal = false;
     private static TablaSimbolos ts;
     public static void main(String[] args) {
-        /*if (args.length < 1) {
+        if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
-            System.out.println("Uso: java -jar etapa2.jar <ARCHIVO_FUENTE> ");
+            System.out.println("Uso: java -jar etapa3.jar <ARCHIVO_FUENTE> ");
             return;
-        }*/
+        }
 
-        //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = args[0];
 
         // Verificar existencia del archivo
         File file = new File(input);
@@ -55,8 +54,8 @@ public class AnalizadorSintactico {
             }
             program();      // Analisis Sintactico y Tabla de Simbolos
             s.checkDecl();  // Chequeo de Declaraciones
-            String json = ts.printJSON_Tabla();
-            ts.saveJSON(json, "archivo.json");
+            String json = ts.printJSON_Tabla(input);
+            ts.saveJSON(json, input + ".json");
             System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
 
         } catch (LexicalErrorException e) {
