@@ -3,65 +3,207 @@
 "structs": [
 {
 	"nombre": "A",
-	"heredaDe": "Object",
+	"heredaDe": "B",
 	"constructor": {
 		"paramF": [ ]
 	},
 	"atributos": [
 	{
-		"nombre": "h",
-		"tipo": "Int",
+		"nombre": "s",
+		"tipo": "A",
 		"public": true,
 		"posicion": 0
 	},
-	{
-		"nombre": "l",
-		"tipo": "Noda",
-		"public": true,
-		"posicion": 1
-	},
-	{
-		"nombre": "m",
-		"tipo": "Noda",
-		"public": true,
-		"posicion": 2
-	}
-	],
-	"metodos": [ ]
-},
-{
-	"nombre": "B",
-	"heredaDe": "Object",
-	"constructor": {
-		"paramF": [ ]
-	},
-	"atributos": [
 	{
 		"nombre": "b",
-		"tipo": "Str",
-		"public": true,
-		"posicion": 0
-	},
-	{
-		"nombre": "c",
-		"tipo": "Str",
+		"tipo": "Array Int",
 		"public": true,
 		"posicion": 1
 	},
 	{
 		"nombre": "a",
-		"tipo": "Str",
+		"tipo": "Char",
 		"public": true,
 		"posicion": 2
 	}
 	],
-	"metodos": [ ]
+	"metodos": [
+	{
+		"nombre": "f0",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		},
+		{
+			"nombre": "b",
+			"tipo": "Int",
+			"posicion": 1
+		}
+		],
+		"variables": [
+		{
+			"nombre": "r",
+			"tipo": "Int",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "f1",
+		"static": "false",
+		"retorno": "Array Int",
+		"posicion": 1,
+		"paramF": [
+		{
+			"nombre": "d",
+			"tipo": "Array Int",
+			"posicion": 0
+		}
+		],
+		"variables": [ ]
+	}
+	]
+},
+{
+	"nombre": "C",
+	"heredaDe": "Object",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "s",
+		"tipo": "A",
+		"public": true,
+		"posicion": 0
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "f0",
+		"static": "true",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		},
+		{
+			"nombre": "b",
+			"tipo": "Int",
+			"posicion": 1
+		}
+		],
+		"variables": [ ]
+	},
+	{
+		"nombre": "f1",
+		"static": "false",
+		"retorno": "Array Int",
+		"posicion": 1,
+		"paramF": [
+		{
+			"nombre": "d",
+			"tipo": "Array Int",
+			"posicion": 0
+		}
+		],
+		"variables": [
+		{
+			"nombre": "hola",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		]
+	}
+	]
+},
+{
+	"nombre": "B",
+	"heredaDe": "C",
+	"constructor": {
+		"paramF": [ ]
+	},
+	"atributos": [
+	{
+		"nombre": "s",
+		"tipo": "A",
+		"public": true,
+		"posicion": 0
+	},
+	{
+		"nombre": "b",
+		"tipo": "Array Int",
+		"public": true,
+		"posicion": 1
+	}
+	],
+	"metodos": [
+	{
+		"nombre": "f0",
+		"static": "false",
+		"retorno": "void",
+		"posicion": 0,
+		"paramF": [
+		{
+			"nombre": "a",
+			"tipo": "Str",
+			"posicion": 0
+		},
+		{
+			"nombre": "b",
+			"tipo": "Int",
+			"posicion": 1
+		}
+		],
+		"variables": [
+		{
+			"nombre": "z",
+			"tipo": "Int",
+			"posicion": 0
+		}
+		]
+	},
+	{
+		"nombre": "f1",
+		"static": "false",
+		"retorno": "Array Int",
+		"posicion": 1,
+		"paramF": [
+		{
+			"nombre": "d",
+			"tipo": "Array Int",
+			"posicion": 0
+		}
+		],
+		"variables": [
+		{
+			"nombre": "hola",
+			"tipo": "Str",
+			"posicion": 0
+		}
+		]
+	}
+	]
 }
 ],
 "start": {
 	"nombre": "start",
 	"retorno": "void",
 	"posicion": 0,
-	"variables": [ ]
+	"variables": [
+	{
+		"nombre": "g",
+		"tipo": "Str",
+		"posicion": 0
+	}
+	]
 }
 }

@@ -26,6 +26,9 @@ public class EntradaParametro {
     public int getCol() {
         return col;
     }
+    public String getType() {
+        return tipo;
+    }
 
     public String imprimeParametro(){
         return
