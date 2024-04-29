@@ -214,7 +214,7 @@ public class AnalizadorSemantico {
                             String[] palabras = v.getType().split(" ");
                             String isArray = palabras[0];
                             if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
-                                    && isArray.equals("Array")){
+                                    && !isArray.equals("Array")){
                                 throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo de variable no definido: \"" + v.getType() + "\" no esta definido", "AS");
                             };
                         }
@@ -228,6 +228,15 @@ public class AnalizadorSemantico {
     }
 
     public static void igualFirma(EntradaMetodo metodo1, EntradaMetodo metodo2) {
+        //Verificar que los metodos sean st
+        if (!metodo1.getSt().equals(metodo2.getSt())) {
+            // falta st en el metodo
+            throw new SemantErrorException(metodo1.getLine(), metodo1.getCol(),
+                    "No se puede redefinir el metodo heredado \"" + metodo1.getName() +
+                            "\" porque no tienen la misma firma" +
+                            "Para redefinir un metodo este debe deben tener la misma firma que su metodo ancestro incluyendo si es Static"
+                    ,"insertMetodoHeredado");
+        }
 
         // Verificar que tengan el mismo tipo de retorno
         if (!metodo1.getRet().equals(metodo2.getRet())) {

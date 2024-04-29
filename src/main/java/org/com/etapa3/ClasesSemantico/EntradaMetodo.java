@@ -65,6 +65,9 @@ public class EntradaMetodo {
     public String getRet() {
         return ret;
     }
+    public Boolean getSt(){
+        return isStatic;
+    }
     public Hashtable<String, EntradaParametro> getParametros() {
         return parametros;
     }
