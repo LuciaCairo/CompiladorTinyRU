@@ -23,7 +23,7 @@ public class EntradaMetodo {
         this.nombre = nombre;
         this.isStatic = isStatic;
         this.ret = null;
-        this.pos = pos - 1 ;
+        this.pos = pos ;
         this.line = line;
         this.col = col;
         this.parametros = new Hashtable<>();
