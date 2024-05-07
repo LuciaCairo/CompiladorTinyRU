@@ -195,13 +195,11 @@ public class TablaSimbolos {
     }
 
     // Método para guardar el JSON en un archivo
-
     public void saveJSON(String json, String nombreArchivo) {
         String rutaActual = System.getProperty("user.dir");
         File directorioActual = new File(rutaActual);
         String rutaDirectorioPadre = directorioActual.getParent();
         String rutaArchivo = rutaActual + "\\" + nombreArchivo;
-
         try (FileWriter fileWriter = new FileWriter(rutaArchivo)) {
             fileWriter.write(json);
             System.out.println("JSON guardado exitosamente en " + rutaArchivo);

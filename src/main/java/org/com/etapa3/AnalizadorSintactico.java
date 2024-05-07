@@ -1,4 +1,7 @@
 package org.com.etapa3;
+import org.com.etapa3.ArbolAST.AST;
+import org.com.etapa3.ArbolAST.NodoMetodo;
+import org.com.etapa3.ArbolAST.NodoStruct;
 import org.com.etapa3.ClasesSemantico.*;
 
 import java.io.File;
@@ -13,14 +16,16 @@ public class AnalizadorSintactico {
     private static int isConstr = 0;
     private static boolean isLocal = false;
     private static TablaSimbolos ts;
+    private static AST ast;
     public static void main(String[] args) {
-        if (args.length < 1) {
+        /*if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
             System.out.println("Uso: java -jar etapa3.jar <ARCHIVO_FUENTE> ");
             return;
-        }
+        }*/
 
-        String input = args[0];
+        //String input = args[0];
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -48,6 +53,7 @@ public class AnalizadorSintactico {
 
         l = new AnalizadorLexico();
         ts = new TablaSimbolos();
+        ast = new AST();
         s = new AnalizadorSemantico(ts);
         try {
             l.analyzeFile(input);
@@ -59,9 +65,11 @@ public class AnalizadorSintactico {
             }
             program();      // Analisis Sintactico y Tabla de Simbolos
             s.checkDecl();  // Chequeo de Declaraciones
-            String json = ts.printJSON_Tabla(fileName);
-            ts.saveJSON(json, fileName + ".json");
-            System.out.println("CORRECTO: SEMANTICO - DECLARACIONES\n");
+            //String json = ts.printJSON_Tabla(fileName);
+            //ts.saveJSON(json, fileName + ".json");
+            String json = ast.printJSON_Arbol(fileName);
+            ast.saveJSON(json, fileName + ".json");
+            System.out.println("CORRECTO: SEMANTICO - SENTENCIAS\n");
 
         } catch (LexicalErrorException e) {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
@@ -163,6 +171,7 @@ public class AnalizadorSintactico {
         match("struct");
         String nombre = currentToken.getLexema();
         match("struct_name");
+        // Construccion TS
         EntradaStruct e;
         if(!(ts.searchStruct(nombre))){
             e = new EntradaStruct(nombre, currentToken.getLine(), currentToken.getCol());
@@ -245,6 +254,7 @@ public class AnalizadorSintactico {
         match("impl");
         String nombre = currentToken.getLexema();
         match("struct_name");
+        // Construccion TS
         EntradaStruct e;
         if(!(ts.searchStruct(nombre))){
             e = new EntradaStruct(nombre, currentToken.getLine(), currentToken.getCol());
@@ -254,6 +264,11 @@ public class AnalizadorSintactico {
         ts.setCurrentStruct(e);
         ts.insertStruct_impl(ts.getCurrentStruct(), currentToken);
         ts.getCurrentStruct().sethaveImpl(true);
+
+        // Construccion AST
+        NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), nombre);
+        ast.setCurrentStruct(nodo);
+        ast.insertStruct(nombre,nodo);
         match("{");
         miembros();
         match("}");
@@ -348,10 +363,16 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("st")){
             formaMetodo();
             match("fn");
+            // Tabla de Simbolos
             EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),true,ts.getCurrentStruct().getMetodos().size()- isConstr,
                     currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
             ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
+            // AST
+            NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
+                    currentToken.getLexema(), ts.getCurrentStruct().getName());
+            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+            ast.setCurrentMetodo(nodo);
             match("id");
             argumentosFormales();
             match("->");
@@ -360,10 +381,16 @@ public class AnalizadorSintactico {
             bloqueMetodo();
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
+
+            // Tabla de Simbolos
             EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),false,ts.getCurrentStruct().getMetodos().size() - isConstr,
                     currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
             ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
+            // AST
+            NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
+                    currentToken.getLexema(), ts.getCurrentStruct().getName());
+            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
             match("id");
             argumentosFormales();
             match("->");

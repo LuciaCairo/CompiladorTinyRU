@@ -1,0 +1,29 @@
+{
+"nombre": "AST-prueba.ru",
+"structs": [
+{
+	"nombre": "A",
+	"metodos": [
+	{
+		"nombre":"f",
+		"Bloque": {
+				"sentencias":[
+				]
+		}
+	}
+	]
+},
+{
+	"nombre": "B",
+	"metodos": [
+	{
+		"nombre":"f",
+		"Bloque": {
+				"sentencias":[
+				]
+		}
+	}
+	]
+}
+]
+}

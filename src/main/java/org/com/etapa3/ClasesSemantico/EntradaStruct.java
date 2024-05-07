@@ -73,7 +73,6 @@ public class EntradaStruct {
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
-
     public Hashtable<String, EntradaVariable> getVariables() {
         return this.variables;
     }
