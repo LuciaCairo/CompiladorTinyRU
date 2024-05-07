@@ -1,7 +1,5 @@
 package org.com.etapa3;
-import org.com.etapa3.ArbolAST.AST;
-import org.com.etapa3.ArbolAST.NodoMetodo;
-import org.com.etapa3.ArbolAST.NodoStruct;
+import org.com.etapa3.ArbolAST.*;
 import org.com.etapa3.ClasesSemantico.*;
 
 import java.io.File;
@@ -254,6 +252,7 @@ public class AnalizadorSintactico {
         match("impl");
         String nombre = currentToken.getLexema();
         match("struct_name");
+
         // Construccion TS
         EntradaStruct e;
         if(!(ts.searchStruct(nombre))){
@@ -267,8 +266,8 @@ public class AnalizadorSintactico {
 
         // Construccion AST
         NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), nombre);
-        ast.setCurrentStruct(nodo);
-        ast.insertStruct(nombre,nodo);
+        ast.setCurrentStruct(nodo); // Actualizo el struct actual
+        ast.insertStruct(nombre,nodo); // Inserto el struct en el AST
         match("{");
         miembros();
         match("}");
@@ -317,14 +316,26 @@ public class AnalizadorSintactico {
 
     private static void constructor() {
         match(".");
+
+        // TS
         EntradaMetodo e = new EntradaMetodo(currentToken.getLine(), currentToken.getCol());
         ts.setCurrentMetod(e);
         ts.getCurrentStruct().insertMetodo("constructor",e);
         ts.getCurrentStruct().setHaveConst(true);
         isConstr = 1;
+
+        // AST
+        NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
+                "constructor", ast.getCurrentStruct());
+        ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
+
         argumentosFormales();
         bloqueMetodo();
         isConstr = 0;
+
+        // Fin del bloque del constructor
+        // Inserto el constructor en su struct padre (el actual)
+        ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
     }
 
     private static void atributo() {
@@ -363,22 +374,29 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("st")){
             formaMetodo();
             match("fn");
+
             // Tabla de Simbolos
             EntradaMetodo e = new EntradaMetodo(currentToken.getLexema(),true,ts.getCurrentStruct().getMetodos().size()- isConstr,
                     currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
             ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
+
             // AST
             NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
-                    currentToken.getLexema(), ts.getCurrentStruct().getName());
-            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
-            ast.setCurrentMetodo(nodo);
+                    currentToken.getLexema(), ast.getCurrentStruct());
+            ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
+
             match("id");
             argumentosFormales();
             match("->");
             String ret = tipoMetodo();
             ts.getCurrentMetod().setRet(ret);
             bloqueMetodo();
+
+            // Fin del bloque del metodo
+            // Inserto el metodo en su struct padre (el actual)
+            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
 
@@ -387,16 +405,23 @@ public class AnalizadorSintactico {
                     currentToken.getLine(), currentToken.getCol());
             ts.setCurrentMetod(e);
             ts.getCurrentStruct().insertMetodo(currentToken.getLexema(),e);
+
             // AST
             NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
-                    currentToken.getLexema(), ts.getCurrentStruct().getName());
-            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+                    currentToken.getLexema(), ast.getCurrentStruct());
+            ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
+
             match("id");
             argumentosFormales();
             match("->");
             String ret = tipoMetodo();
             ts.getCurrentMetod().setRet(ret);
             bloqueMetodo();
+
+            // Fin del bloque del metodo
+            // Inserto el metodo en su struct padre (el actual)
+            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -505,8 +530,11 @@ public class AnalizadorSintactico {
     }
 
     private static void sentencias() {
-        sentencia();
+        // Sentencias del bloque del metodo
+        NodoSentencia nodo = sentencia();
         sentencias1();
+        // Cuando terminaron las sentencias
+        // Las inserto en el metodo ?? como?
     }
 
     private static void sentencias1() {
@@ -518,7 +546,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("{") ||
                 currentToken.getName().equals("id")){
-                sentencias();
+            sentencias();
         } else if(currentToken.getLexema().equals("}")){
             // lambda
         }else{
@@ -702,12 +730,12 @@ public class AnalizadorSintactico {
         return "Array " + tipo;
     }
 
-    private static void sentencia() {
+    private static NodoSentencia sentencia() {
         if (currentToken.getLexema().equals(";")){
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
-            asignacion();
+            Nodo Sentencia = asignacion();
             match(";");
         } else if (currentToken.getLexema().equals("(") ){
             sentenciaSimple();
@@ -737,6 +765,9 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "sentencia");
         }
+        // Borrar esyo
+        NodoSentencia r = new NodoSentencia(1,1,"nose");
+        return r;
     }
     private static void sentencia1() {
         if (currentToken.getLexema().equals("else")){
@@ -817,11 +848,28 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void asignacion() {
+    private static NodoSentencia asignacion() {
         if (currentToken.getName().equals("id")){
+            // AST
+            // Me encuentro con un identificador
+            // Verifico si está declarado como variable o como parametro del metodo en la TS
+            // Si no está declarado se lanza una excepcion de error semantico
+            String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
+            if(tipoId == null){
+                throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
+                        "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
+                                ts.getCurrentMetod() + "\"","asignacion");
+            } else { // Si esta declarado se guarda en la pila
+                ast.getProfundidad().push(new NodoExpresion(currentToken.getLine(),currentToken.getCol(), currentToken.getLexema(),tipoId));
+            }
             accesoVarSimple();
+            // Ya puedo guardar el lado izquierdo de la asignacion
+            NodoExpresion nodoI = (NodoExpresion) ast.getProfundidad().pop();
             match("=");
-            expresion();
+            // Ahora armo el lado derecho de la asignacion
+            NodoExpresion nodoD = expresion();
+            return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(),
+                    nodoI,nodoD);
         }else if(currentToken.getLexema().equals("self")){
             accesoSelfSimple();
             match("=");
@@ -832,6 +880,7 @@ public class AnalizadorSintactico {
                     "Se esperaba: self o id. Se encontró " + currentToken.getLexema(),
                     "asignacion");
         }
+        return null;
     }
 
     private static void accesoVarSimple() {
@@ -903,16 +952,31 @@ public class AnalizadorSintactico {
         match(")");
     }
 
-    private static void expresion() {
-        expAnd();
-        expresion1();
+    private static NodoExpresion expresion() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        // Armamos la expresion (unaria o binaria)
+        NodoExpresion nodoI = expAnd();
+        NodoExpresion nodoD = expresion1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        return new NodoExpBin(line, col, nodoI,"||", nodoD);
     }
 
-    private static void expresion1() {
+    private static NodoExpresion expresion1() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("||")){
             match("||");
-            expAnd();
-            expresion1();
+            // Armamos la expresion (unaria o binaria)
+            NodoExpresion nodoI = expAnd();
+            NodoExpresion nodoD = expresion1();
+            if(nodoD == null){ // No hay lado derecho entonces es unaria
+                return nodoI; // Es unaria
+            } // Si no, es binaria
+            return new NodoExpBin(line, col, nodoI,"||", nodoD);
+
         }else if(currentToken.getLexema().equals(")")||
                 currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("]")||
@@ -925,18 +989,35 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "expresion1");
         }
+        return null;
     }
 
-    private static void expAnd() {
-        expIgual();
-        expAnd1();
+    private static NodoExpresion expAnd() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        // Armamos la expresion (unaria o binaria)
+        NodoExpresion nodoI = expIgual();
+        NodoExpresion nodoD = expAnd1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        return new NodoExpBin(line, col, nodoI,"&&", nodoD);
+
     }
 
-    private static void expAnd1() {
+    private static NodoExpresion expAnd1() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("&&")){
             match("&&");
-            expIgual();
-            expAnd1();
+            // Armamos la expresion (unaria o binaria)
+            NodoExpresion nodoI = expIgual();
+            NodoExpresion nodoD = expAnd1();
+            if(nodoD == null){ // No hay lado derecho entonces es unaria
+                return nodoI; // Es unaria
+            } // Si no, es binaria
+            return new NodoExpBin(line, col, nodoI,"&&", nodoD);
+
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals(")")||
                 currentToken.getLexema().equals(";")||
@@ -950,19 +1031,42 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "expAnd1");
         }
+        return null;
     }
 
-    private static void expIgual() {
-        expCompuesta();
-        expIgual1();
+    private static NodoExpresion expIgual() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        ast.getProfundidad().push(new NodoExpBin(line,col));
+        NodoExpresion nodoI = expCompuesta();
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        NodoExpresion nodoD = expIgual1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            ast.getProfundidad().pop();
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        return (NodoExpBin) ast.getProfundidad().pop();
+
     }
 
-    private static void expIgual1() {
+    private static NodoExpresion expIgual1() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("==") ||
                 currentToken.getLexema().equals("!=")){
             opIgual();
-            expCompuesta();
-            expIgual1();
+            ast.getProfundidad().push(new NodoExpBin(line,col));
+            NodoExpresion nodoI = expCompuesta();
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+            NodoExpresion nodoD = expIgual1();
+            if(nodoD == null){ // No hay lado derecho entonces es unaria
+                ast.getProfundidad().pop();
+                return nodoI; // Es unaria
+            } // Si no, es binaria
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+            return (NodoExpBin) ast.getProfundidad().pop();
+
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -977,20 +1081,32 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "expIgual1");
         }
+        return null;
     }
 
-    private static void expCompuesta() {
-        expAd();
-        expCompuesta1();
+    private static NodoExpresion expCompuesta() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        ast.getProfundidad().push(new NodoExpBin(line,col));
+        NodoExpresion nodoI = expAd();
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        NodoExpresion nodoD = expCompuesta1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            ast.getProfundidad().pop();
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        return (NodoExpBin) ast.getProfundidad().pop();
+
     }
 
-    private static void expCompuesta1() {
+    private static NodoExpresion expCompuesta1() {
         if (currentToken.getLexema().equals("<") ||
                 currentToken.getLexema().equals(">") ||
                 currentToken.getLexema().equals("<=") ||
                 currentToken.getLexema().equals(">=")){
             opCompuesto();
-            expAd();
+            return expAd();
 
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
@@ -1009,19 +1125,42 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "expCompuesta1");
         }
+        return null;
     }
 
-    private static void expAd() {
-        expMul();
-        expAd1();
+    private static NodoExpresion expAd() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        ast.getProfundidad().push(new NodoExpBin(line,col));
+        NodoExpresion nodoI = expMul();
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        NodoExpresion nodoD = expAd1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            ast.getProfundidad().pop();
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        return (NodoExpBin) ast.getProfundidad().pop();
+
     }
 
-    private static void expAd1() {
+    private static NodoExpresion expAd1() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-")){
             opAd();
-            expMul();
-            expAd1();
+            ast.getProfundidad().push(new NodoExpBin(line,col));
+            NodoExpresion nodoI = expMul();
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+            NodoExpresion nodoD = expAd1();
+            if(nodoD == null){ // No hay lado derecho entonces es unaria
+                ast.getProfundidad().pop();
+                return nodoI; // Es unaria
+            } // Si no, es binaria
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+            return (NodoExpBin) ast.getProfundidad().pop();
+
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -1043,20 +1182,42 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "expAd1");
         }
+        return null;
     }
 
-    private static void expMul() {
-        expUn();
-        expMul1();
+    private static NodoExpresion expMul() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        ast.getProfundidad().push(new NodoExpBin(line,col));
+        NodoExpresion nodoI = expUn();
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        NodoExpresion nodoD = expMul1();
+        if(nodoD == null){ // No hay lado derecho entonces es unaria
+            ast.getProfundidad().pop();
+            return nodoI; // Es unaria
+        } // Si no, es binaria
+        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        return (NodoExpBin) ast.getProfundidad().pop();
     }
 
-    private static void expMul1() {
+    private static NodoExpresion expMul1() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("*") ||
                 currentToken.getLexema().equals("/")||
                 currentToken.getLexema().equals("%")){
             opMul();
-            expUn();
-            expMul1();
+            ast.getProfundidad().push(new NodoExpBin(line,col));
+            NodoExpresion nodoI = expUn();
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+            NodoExpresion nodoD = expMul1();
+            if(nodoD == null){ // No hay lado derecho entonces es unaria
+                ast.getProfundidad().pop();
+                return nodoI; // Es unaria
+            } // Si no, es binaria
+            ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+            return (NodoExpBin) ast.getProfundidad().pop();
+
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -1080,16 +1241,22 @@ public class AnalizadorSintactico {
                             "')', ';', ']' o ','. Se encontró " + currentToken.getLexema(),
                     "expMul1");
         }
+        return null;
     }
 
-    private static void expUn() {
+    private static NodoExpresion expUn() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-") ||
                 currentToken.getLexema().equals("!") ||
                 currentToken.getLexema().equals("++") ||
                 currentToken.getLexema().equals("--")){
+            ast.getProfundidad().push(new NodoExpUn(line,col));
             opUnario();
             expUn();
+            ((NodoExpUn) ast.getProfundidad().peek()).setExp(expUn());
+            return (NodoExpUn) ast.getProfundidad().pop();
         }else if(currentToken.getLexema().equals("nil") ||
                 currentToken.getLexema().equals("true") ||
                 currentToken.getLexema().equals("false") ||
@@ -1101,7 +1268,7 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("char") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")){
-            operando();
+            return operando();
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1114,8 +1281,10 @@ public class AnalizadorSintactico {
     private static void opIgual() {
         if(currentToken.getLexema().equals("==")){
             match("==");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("==");
         } else if(currentToken.getLexema().equals("!=")){
             match("!=");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("!=");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1127,12 +1296,16 @@ public class AnalizadorSintactico {
     private static void opCompuesto() {
         if(currentToken.getLexema().equals("<")){
             match("<");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("<");
         } else if(currentToken.getLexema().equals(">")){
             match(">");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp(">");
         } else if(currentToken.getLexema().equals("<=")){
             match("<=");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("<=");
         } else if(currentToken.getLexema().equals(">=")){
             match(">=");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp(">=");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1144,8 +1317,10 @@ public class AnalizadorSintactico {
     private static void opAd() {
         if(currentToken.getLexema().equals("+")){
             match("+");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("+");
         }else if(currentToken.getLexema().equals("-")){
             match("-");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("-");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1157,14 +1332,19 @@ public class AnalizadorSintactico {
     private static void opUnario() {
         if(currentToken.getLexema().equals("+")){
             match("+");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("+");
         } else if(currentToken.getLexema().equals("-")){
             match("-");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("-");
         } else if(currentToken.getLexema().equals("++")){
             match("++");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("++");
         } else if(currentToken.getLexema().equals("--")){
             match("--");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("--");
         } else if(currentToken.getLexema().equals("!")){
             match("!");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("!");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1176,10 +1356,13 @@ public class AnalizadorSintactico {
     private static void opMul() {
         if(currentToken.getLexema().equals("*")){
             match("*");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("*");
         } else if(currentToken.getLexema().equals("/")){
             match("/");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("/");
         } else if(currentToken.getLexema().equals("%")){
             match("%");
+            ((NodoExpBin) ast.getProfundidad().peek()).setOp("%");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1188,21 +1371,21 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void operando() {
+    private static NodoExpresion operando() {
         if (currentToken.getLexema().equals("nil") ||
                 currentToken.getLexema().equals("true") ||
                 currentToken.getLexema().equals("false") ||
                 currentToken.getName().equals("int") ||
                 currentToken.getName().equals("str") ||
                 currentToken.getName().equals("char")){
-            literal();
+            return literal();
         }else if(currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("new") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")){
-            primario();
-            operando1();
+            return primario();
+            //operando1();
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1241,19 +1424,34 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void literal() {
+    private static NodoExpresion literal() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        String tipo = currentToken.getLexema();
         if(currentToken.getLexema().equals("nil")){
             match("nil");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"nil");
+            return nodo;
         } else if(currentToken.getLexema().equals("true")){
             match("true");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"true");
+            return nodo;
         } else if(currentToken.getLexema().equals("false")){
             match("false");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"false");
+            return nodo;
         } else if(currentToken.getName().equals("int")){
             match("int");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"int");
+            return nodo;
         } else if(currentToken.getName().equals("str")){
             match("str");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"str");
+            return nodo;
         } else if(currentToken.getName().equals("char")){
             match("char");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"char");
+            return nodo;
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1262,7 +1460,10 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void primario() {
+    private static NodoExpresion primario() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        ast.getProfundidad().push(new NodoExpresion(line,col));
         if(currentToken.getLexema().equals("(")){
             expresionParentizada();
         } else if(currentToken.getLexema().equals("self")){
@@ -1285,6 +1486,7 @@ public class AnalizadorSintactico {
                     "Se esperaba: id, '(', self o new. Se encontró " + currentToken.getLexema(),
                     "primario");
         }
+        return null;
     }
 
     private static void expresionParentizada() {

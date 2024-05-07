@@ -4,16 +4,14 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class NodoStruct{
+public class NodoStruct extends Nodo{
     private String name;
-    private int line, col;
     private HashMap<String, NodoMetodo> metodos;
     //private NodoMetodo constructor;
 
     // Constructor
     public NodoStruct(int line, int col, String name){
-        this.line = line;
-        this.col = col;
+        super(line, col);
         this.name = name;
         this.metodos = new HashMap<>();
     }

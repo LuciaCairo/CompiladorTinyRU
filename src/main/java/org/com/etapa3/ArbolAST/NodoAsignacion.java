@@ -1,21 +1,23 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoAsignacion{
+// Nodo para las asignaciones (expresion = expresion)
+public class NodoAsignacion extends NodoExpresion{
 
     private NodoExpresion izq;
     private NodoExpresion der;
-    private String op;
-    private int line, col;
 
-    public NodoAsignacion(int line,int col, NodoExpresion izq, NodoExpresion der, String op){
-        this.line = line;
-        this.col = col;
+
+    // Constructores
+    public NodoAsignacion(int line,int col, NodoExpresion izq, NodoExpresion der){
+        super(line, col);
         this.der = der;
         this.izq = izq;
-        this.op = op;
     }
 
     /*
+
+
+
     public NodoAsignacion(int filaTok,int colTok,NodoExpresion izqui,String tipo){
         super(filaTok,colTok);
         this.izq = izqui;
@@ -69,6 +71,8 @@ public class NodoAsignacion{
                 + "\"tipoAsignacion\":\""+this.tipoAsig+"\",\n"
                 + "\"ladoDer\":{"+this.der.imprimeSentencia()+"\n}";
     }
+}
+
     */
 
 }

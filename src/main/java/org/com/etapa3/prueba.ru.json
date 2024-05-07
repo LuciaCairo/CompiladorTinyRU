@@ -5,19 +5,14 @@
 	"nombre": "A",
 	"metodos": [
 	{
-		"nombre":"f",
+		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
 				]
 		}
-	}
-	]
-},
-{
-	"nombre": "B",
-	"metodos": [
+	},
 	{
-		"nombre":"f",
+		"nombre":"funcion",
 		"Bloque": {
 				"sentencias":[
 				]

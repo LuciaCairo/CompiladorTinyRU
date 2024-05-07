@@ -1,18 +1,21 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoSentencia {
-    private int line, col;
+public class NodoSentencia extends Nodo{
+
     public NodoSentencia(int line,int col){
-        this.line = line;
-        this.col = col;
+        super(line, col);
+    }
+    public NodoSentencia(int line,int col, String type){
+        super(line, col, type);
     }
 
+    public String imprimeSentencia(){
+        return "\"nodo\": \"Sentencia\"";
+    }
     /*
     public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica{
         return true;
     }
 
-    public String imprimeSentencia(){
-        return "\"nodo\": \"Sentencia\"";
-    }*/
+    */
 }

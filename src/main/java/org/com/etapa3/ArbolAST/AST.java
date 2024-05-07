@@ -1,24 +1,21 @@
 package org.com.etapa3.ArbolAST;
 
-import org.com.etapa3.ClasesSemantico.EntradaStruct;
-import org.com.etapa3.ClasesSemantico.EntradaStructPredef;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class AST {
     private HashMap<String,NodoStruct> structs;
-    //private Stack<NodoAST> scope;
     private NodoStruct currentStruct;
     private NodoMetodo currentMetodo;
+    private Stack<Nodo> profundidad;
 
     // Constructor
     public AST(){
         this.structs = new HashMap<>();
-        //this.scope = new Stack<>();
+        this.profundidad = new Stack<>();
     }
 
     // Getters
@@ -28,6 +25,10 @@ public class AST {
     public NodoMetodo getCurrentMetodo() {
         return currentMetodo;
     }
+    public Stack<Nodo> getProfundidad() {
+        return profundidad;
+    }
+
 
     // Setters
     public void setCurrentStruct(NodoStruct currentStruct) {
@@ -55,7 +56,6 @@ public class AST {
         return json;
     }
 
-
     // Método para guardar el JSON en un archivo
     public void saveJSON(String json, String nombreArchivo) {
         //String rutaActual = System.getProperty("user.dir");
@@ -71,17 +71,9 @@ public class AST {
     }
 
     /*
-    public HashMap<String, NodoClase> getClases() {
-        return clases;
-    }
 
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void putClase(String nombre, NodoClase clase) {
-        this.clases.put(nombre, clase);
-    }
+
 
     public NodoAST popScope() {
         return this.scope.pop();
