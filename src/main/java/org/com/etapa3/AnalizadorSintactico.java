@@ -24,7 +24,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -536,7 +536,6 @@ public class AnalizadorSintactico {
         sentencias1();
         // Cuando terminaron las sentencias
         ast.getCurrentMetodo().insertSentencia(nodo);
-        System.out.println(nodo.getNodeType());
     }
 
     private static void sentencias1() {
@@ -737,7 +736,7 @@ public class AnalizadorSintactico {
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
-            NodoSentencia nodo = asignacion();
+            NodoSentencia nodo = asignacion(); // Asignaciones
             match(";");
             return nodo;
         } else if (currentToken.getLexema().equals("(") ){
@@ -768,7 +767,7 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "sentencia");
         }
-        // Borrar esyo
+        // Borrar esto
         NodoSentencia r = new NodoSentencia(1,1,"nose");
         return r;
     }
@@ -856,23 +855,30 @@ public class AnalizadorSintactico {
             // AST
             // Me encuentro con un identificador
             // Verifico si está declarado como variable o como parametro del metodo en la TS
-            // Si no está declarado se lanza una excepcion de error semantico
             String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
-            if(tipoId == null){
-                throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
-                        "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
-                                ts.getCurrentMetod() + "\"","asignacion");
+            if(tipoId == null){ // Si no, verifico si esta declarado en los atributos del struct
+                tipoId = ts.getCurrentStruct().isDeclaredAtributo(currentToken.getLexema());
+                if(tipoId == null){ // Si no está declarado se lanza una excepcion de error semantico
+                    throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
+                            "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
+                                    ts.getCurrentMetod().getName() + "\"", "asignacion");
+                    } else {
+                    // Si esta declarado se guarda en la pila
+                    ast.getProfundidad().push(new NodoExpresion(currentToken.getLine(),currentToken.getCol(),
+                            currentToken.getLexema(),tipoId));
+                }
             } else { // Si esta declarado se guarda en la pila
-                ast.getProfundidad().push(new NodoExpresion(currentToken.getLine(),currentToken.getCol(), currentToken.getLexema(),tipoId));
+                ast.getProfundidad().push(new NodoExpresion(currentToken.getLine(),currentToken.getCol(),
+                        currentToken.getLexema(),tipoId));
             }
             accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
-            NodoExpresion nodoI = (NodoExpresion) ast.getProfundidad().pop();
+            NodoExpresion nodoI = (NodoExpresion) ast.getProfundidad().pop(); // Lo creo y saco de la pila
             match("=");
             // Ahora armo el lado derecho de la asignacion
             NodoExpresion nodoD = expresion();
             return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(),
-                    nodoI,nodoD);
+                    nodoI,nodoD); // Se termino de armar la asignacion
         }else if(currentToken.getLexema().equals("self")){
             accesoSelfSimple();
             match("=");
@@ -946,6 +952,22 @@ public class AnalizadorSintactico {
 
     private static void encadenadoSimple() {
         match(".");
+        // Verifico si el struct existe
+        if (ts.getStruct(ast.getProfundidad().peek().getNodeType()) != null) {
+            // Verifico si el atributo esta declarado en la clase
+            if ((ts.getStruct(ast.getProfundidad().peek().getNodeType())).getAtributo(currentToken.getLexema()) == null) {
+                throw new SyntactErrorException(currentToken.getLine(),
+                        currentToken.getCol(),
+                        "El atributo " + currentToken.getLexema() + " no existe en el struct " + ast.getProfundidad().peek().getName() + " . Por lo tanto no se puede acceder a el",
+                        "encadenadoSimple");
+            }
+        } else {
+            throw new SyntactErrorException(currentToken.getLine(),
+                    currentToken.getCol(),
+                    ast.getProfundidad().peek().getName() + " no es un struct por lo " +
+                            "que no se puede usar para realizar un acceso a un atributo",
+                    "encadenadoSimple");
+        }
         match("id");
     }
 
@@ -1040,12 +1062,12 @@ public class AnalizadorSintactico {
     private static NodoExpresion expIgual() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        ast.getProfundidad().push(new NodoExpBin(line,col));
+        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoExpresion nodoI = expCompuesta();
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoExpresion nodoD = expIgual1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            ast.getProfundidad().pop();
+            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
         ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
@@ -1090,12 +1112,12 @@ public class AnalizadorSintactico {
     private static NodoExpresion expCompuesta() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        ast.getProfundidad().push(new NodoExpBin(line,col));
+        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoExpresion nodoI = expAd();
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoExpresion nodoD = expCompuesta1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            ast.getProfundidad().pop();
+            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
         ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
@@ -1134,12 +1156,12 @@ public class AnalizadorSintactico {
     private static NodoExpresion expAd() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        ast.getProfundidad().push(new NodoExpBin(line,col));
+        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoExpresion nodoI = expMul();
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoExpresion nodoD = expAd1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            ast.getProfundidad().pop();
+            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
         ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
@@ -1191,12 +1213,12 @@ public class AnalizadorSintactico {
     private static NodoExpresion expMul() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        ast.getProfundidad().push(new NodoExpBin(line,col));
-        NodoExpresion nodoI = expUn(); // 1
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+        // ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO? por ahora no
+        NodoExpresion nodoI = expUn();
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoExpresion nodoD = expMul1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            ast.getProfundidad().pop();
+            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
         ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
@@ -1271,7 +1293,7 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("char") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")){
-            return operando();
+            return operando(); // Devuelve la expresion armada con el operando
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1381,7 +1403,7 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("int") ||
                 currentToken.getName().equals("str") ||
                 currentToken.getName().equals("char")){
-            return literal();
+            return literal(); // Devuelve la expresion armada con el literal
         }else if(currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("new") ||
@@ -1432,31 +1454,34 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         String tipo = currentToken.getName();
         if(currentToken.getLexema().equals("nil")){
+            // Llego a un literal nulo que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal nulo",tipo,currentToken.getLexema());
             match("nil");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"nil");
             return nodo;
         } else if(currentToken.getLexema().equals("true")){
+            // Llego a un literal booleano que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal bool",tipo,currentToken.getLexema());
             match("true");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"true");
             return nodo;
         } else if(currentToken.getLexema().equals("false")){
+            // Llego a un literal booleano que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal bool",tipo,currentToken.getLexema());
             match("false");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"false");
             return nodo;
         } else if(currentToken.getName().equals("int")){
-            //LU Aca habia un error, porq estabamos creando un Nodo expresion con el currenToken pero despues
-            //del match el curren token ya no era el literal, por eso lo guardo.
-            String litEntero = currentToken.getLexema();
+            // Llego a un literal entero que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal entero",tipo,currentToken.getLexema());
             match("int");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,litEntero);
             return nodo;
         } else if(currentToken.getName().equals("str")){
+            // Llego a un literal string que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal str",tipo,currentToken.getLexema());
             match("str");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"str");
             return nodo;
         } else if(currentToken.getName().equals("char")){
+            // Llego a un literal char que sera una expresion
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal char",tipo,currentToken.getLexema());
             match("char");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"char");
             return nodo;
         } else{
             throw new SyntactErrorException(currentToken.getLine(),

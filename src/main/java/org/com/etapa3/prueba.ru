@@ -1,13 +1,7 @@
+struct A{Int b;}
+impl A{ .(){}}
 
-struct A{
-}
+struct B{A a;}
+impl B{.(){ a.b = b;}}
 
-impl A{
-fn funcion(Int a)->void{ a = 1;}
-.(){}
-}
-
-
-
-start{
-}
+start{}

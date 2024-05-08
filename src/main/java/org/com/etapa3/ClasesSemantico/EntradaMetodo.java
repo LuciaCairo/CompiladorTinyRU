@@ -112,9 +112,8 @@ public class EntradaMetodo {
     public String isDeclared(String name) {
         if(this.parametros.containsKey(name)){ // Verifico si esta declarado como parametro
             return this.parametros.get(name).getType();
-        }
-        if(this.variables.containsKey(name)){ // Verifico si esta declarado como variable
-            return this.parametros.get(name).getType();
+        }else if(this.variables.containsKey(name)){ // Verifico si esta declarado como variable
+            return this.variables.get(name).getType();
         } else {
             return null;
         }

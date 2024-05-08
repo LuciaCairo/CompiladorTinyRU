@@ -20,6 +20,11 @@ public class NodoExpresion extends NodoSentencia{
         super(line,col);
     }
 
+    // Getters
+    public String getName() {
+        return name;
+    }
+
 /*
     public NodoExpresion(int filaTok,int colTok,String nombre, String tipo){
         super(filaTok,colTok);
@@ -44,9 +49,7 @@ public class NodoExpresion extends NodoSentencia{
         return tipo;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+
 
     public void setValor(Object valor) {
         this.valor = valor;
@@ -75,9 +78,11 @@ public class NodoExpresion extends NodoSentencia{
         return "\"nodo\":\"NodoExpresion\",\n\"nombre\":\""+this.nombre+"\",\n\"tipo\":\""+this.tipo+"\",\n\"valor\":\""+valor+"\"";
     }*/
 @Override
-public String imprimeSentencia() {
-    String valor = this.value == null ? "null" : this.value.toString().replace("\"", "\\\"");
-    return "\"nodo\":\"NodoExpresion\",\n\"nombre\":\""+this.name+"\",\n\"tipo\":\""+this.getNodeType()+"\",\n\"valor\":\""+value+"\"";
+public String printSentencia(String space) {
+    return space + "\"nodo\": \"Expresion\",\n"
+            + space + "\"nombre\":\""+ this.name +"\",\n"
+            + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
+            + space + "\"valor\":\""+ this.value +"\"";
 }
 
 

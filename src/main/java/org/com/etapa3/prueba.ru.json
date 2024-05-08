@@ -8,26 +8,36 @@
 		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
+
 				]
 		}
-	},
+	}
+	]
+},
+{
+	"nombre": "B",
+	"metodos": [
 	{
-		"nombre":"funcion",
+		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
-{"nodo": "NodoAsignacion",
-"ladoIzq":{
-"nodo":"NodoExpresion",
-"nombre":"a",
-"tipo":"Int",
-"valor":"null"
-},
-"tipoAsignacion":"",
-"ladoDer":{"nodo":"NodoExpresion",
-"nombre":"literal",
-"tipo":"int",
-"valor":"1"
-}}				]
+				{
+					"nodo": "Asignacion",
+					"tipo":"null",
+					"NodoIzq":{
+						"nodo": "Expresion",
+						"nombre":"a",
+						"tipo":"A",
+						"valor":"null"
+					},
+					"NodoDer":{
+						"nodo": "Expresion",
+						"nombre":"literal entero",
+						"tipo":"int",
+						"valor":"1"					
+					}
+				}
+				]
 		}
 	}
 	]

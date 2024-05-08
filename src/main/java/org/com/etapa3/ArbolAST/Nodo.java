@@ -6,6 +6,7 @@ public class Nodo {
     private int col;
     private String nodeType; // Tipo de nodo
     private Nodo parent; // Nodo padre
+    private String name;
 
 
     // Constructores
@@ -40,8 +41,8 @@ public class Nodo {
     public String getNodeType() {
         return nodeType;
     }
-    public Nodo getParent() {
-        return parent;
+    public String getName() {
+        return name;
     }
 
     // Setters

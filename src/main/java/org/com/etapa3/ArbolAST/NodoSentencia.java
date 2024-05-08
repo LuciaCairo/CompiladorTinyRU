@@ -9,7 +9,7 @@ public class NodoSentencia extends Nodo{
         super(line, col, type);
     }
 
-    public String imprimeSentencia(){
+    public String printSentencia(String space){
         return "\"nodo\": \"Sentencia\"" ;
     }
     /*
