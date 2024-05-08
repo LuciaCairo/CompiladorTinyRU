@@ -8,27 +8,22 @@
 		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
-
-				]
-		}
-	}
-	]
-},
-{
-	"nombre": "B",
-	"metodos": [
-	{
-		"nombre":"constructor",
-		"Bloque": {
-				"sentencias":[
 				{
 					"nodo": "Asignacion",
 					"tipo":"null",
 					"NodoIzq":{
-						"nodo": "Expresion",
-						"nombre":"a",
-						"tipo":"A",
-						"valor":"null"
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Expresion",
+							"nombre":"a",
+							"tipo":"Array Int",
+							"valor":"null",
+						"nodoDer": {
+							"nodo": "Expresion",
+							"nombre":"literal entero",
+							"tipo":"int",
+							"valor":"2",
+
 					},
 					"NodoDer":{
 						"nodo": "Expresion",

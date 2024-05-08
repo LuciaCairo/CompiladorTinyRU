@@ -1,7 +1,8 @@
-struct A{Int b;}
-impl A{ .(){}}
+struct A{}
+impl A{ .(){
+Array Int a;
+A s;
+a[2] = 1;}}
 
-struct B{A a;}
-impl B{.(){ a.b = b;}}
 
 start{}

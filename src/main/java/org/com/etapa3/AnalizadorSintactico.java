@@ -871,12 +871,17 @@ public class AnalizadorSintactico {
                 ast.getProfundidad().push(new NodoExpresion(currentToken.getLine(),currentToken.getCol(),
                         currentToken.getLexema(),tipoId));
             }
-            accesoVarSimple();
+            NodoExpresion nodoD= (NodoExpresion) accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
             NodoExpresion nodoI = (NodoExpresion) ast.getProfundidad().pop(); // Lo creo y saco de la pila
+            if (nodoD != null){
+                nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
+                        nodoI,nodoD);
+                ast.getProfundidad().push(nodoI);
+            }
             match("=");
             // Ahora armo el lado derecho de la asignacion
-            NodoExpresion nodoD = expresion();
+            nodoD = expresion();
             return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(),
                     nodoI,nodoD); // Se termino de armar la asignacion
         }else if(currentToken.getLexema().equals("self")){
@@ -892,18 +897,28 @@ public class AnalizadorSintactico {
         return null;
     }
 
-    private static void accesoVarSimple() {
+    private static NodoSentencia accesoVarSimple() {
         match("id");
-        accesoVarSimple1();
+        return accesoVarSimple1();
     }
 
-    private static void accesoVarSimple1() {
+    private static  NodoSentencia accesoVarSimple1() {
         if (currentToken.getLexema().equals(".")){
-            encadenadosSimples();
+           return encadenadosSimples();
         }else if(currentToken.getLexema().equals("[")){
+            String[] palabras = (ast.getProfundidad().peek().getNodeType()).split(" ");
+            String isArray = palabras[0];
+            System.out.println(isArray);
+            if(!isArray.equals("Array")){
+                throw new SyntactErrorException(currentToken.getLine(),
+                        currentToken.getCol(),
+                        "NO ES ARRAY " + currentToken.getLexema(),
+                        "asignacion");
+            }
             match("[");
-            expresion();
+            NodoExpresion nodo = expresion();
             match("]");
+            return nodo;
         } else if(currentToken.getLexema().equals("=")) {
             // lambda
         } else{
@@ -912,16 +927,24 @@ public class AnalizadorSintactico {
                     "Se esperaba: '.', '[' o =. Se encontró " + currentToken.getLexema(),
                     "accesoVarSimple1");
         }
+        return null;
     }
 
-    private static void encadenadosSimples() {
-       encadenadoSimple();
-       encadenadosSimples1();
+    private static NodoSentencia encadenadosSimples() {
+       NodoExpresion nodoI = (NodoExpresion) encadenadoSimple();
+       ast.getProfundidad().push(nodoI);
+       NodoExpresion nodoD = (NodoExpresion) encadenadosSimples1();
+       if(nodoD==null){
+           ast.getProfundidad().pop();
+           return nodoI;
+       }
+       ast.getProfundidad().pop();
+       return new NodoAcceso(currentToken.getLine(), currentToken.getCol(), nodoI, nodoD);
     }
 
-    private static void encadenadosSimples1() {
+    private static NodoSentencia encadenadosSimples1() {
         if (currentToken.getLexema().equals(".")){
-            encadenadosSimples();
+            return encadenadosSimples();
         }else if(currentToken.getLexema().equals("=")){
             // lambda
         }else{
@@ -930,6 +953,7 @@ public class AnalizadorSintactico {
                     "Se esperaba: '.' o '='. Se encontró " + currentToken.getLexema(),
                     "encadenadosSimples1");
         }
+        return null;
     }
 
     private static void accesoSelfSimple() {
@@ -950,7 +974,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void encadenadoSimple() {
+    private static NodoSentencia encadenadoSimple() {
         match(".");
         // Verifico si el struct existe
         if (ts.getStruct(ast.getProfundidad().peek().getNodeType()) != null) {
@@ -968,7 +992,10 @@ public class AnalizadorSintactico {
                             "que no se puede usar para realizar un acceso a un atributo",
                     "encadenadoSimple");
         }
+        String tipoId = (ts.getStruct(ast.getProfundidad().peek().getNodeType())).getAtributo(currentToken.getLexema()).getType();
+        NodoExpresion nodo= new NodoExpresion(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),tipoId);
         match("id");
+        return nodo;
     }
 
     private static void sentenciaSimple() {

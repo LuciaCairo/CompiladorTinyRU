@@ -14,6 +14,13 @@ public class NodoAcceso extends NodoExpresion{
         this.izq = izq;
     }
 
+    @Override
+    public String printSentencia(String space) {
+        return space + "\"nodo\": \"Acceso\",\n"
+                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +",\n"
+                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +",\n";
+    }
+
     /*
 
 
