@@ -64,16 +64,17 @@ public class NodoAsignacion extends NodoExpresion{
         }
     }
 
+
+}
+
+    */
     @Override
     public String imprimeSentencia() {
         return "\"nodo\": \"NodoAsignacion\",\n"
                 + "\"ladoIzq\":{\n"+this.izq.imprimeSentencia()+"\n},\n"
-                + "\"tipoAsignacion\":\""+this.tipoAsig+"\",\n"
+                + "\"tipoAsignacion\":\""+"\",\n"
                 + "\"ladoDer\":{"+this.der.imprimeSentencia()+"\n}";
     }
-}
-
-    */
 
 }
 

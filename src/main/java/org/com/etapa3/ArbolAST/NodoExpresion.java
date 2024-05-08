@@ -74,6 +74,12 @@ public class NodoExpresion extends NodoSentencia{
         String valor = this.valor == null ? "null" : this.valor.toString().replace("\"", "\\\"");
         return "\"nodo\":\"NodoExpresion\",\n\"nombre\":\""+this.nombre+"\",\n\"tipo\":\""+this.tipo+"\",\n\"valor\":\""+valor+"\"";
     }*/
+@Override
+public String imprimeSentencia() {
+    String valor = this.value == null ? "null" : this.value.toString().replace("\"", "\\\"");
+    return "\"nodo\":\"NodoExpresion\",\n\"nombre\":\""+this.name+"\",\n\"tipo\":\""+this.getNodeType()+"\",\n\"valor\":\""+value+"\"";
+}
+
 
 
 

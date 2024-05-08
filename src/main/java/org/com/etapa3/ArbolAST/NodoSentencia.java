@@ -10,7 +10,7 @@ public class NodoSentencia extends Nodo{
     }
 
     public String imprimeSentencia(){
-        return "\"nodo\": \"Sentencia\"" + this.getNodeType() ;
+        return "\"nodo\": \"Sentencia\"" ;
     }
     /*
     public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica{

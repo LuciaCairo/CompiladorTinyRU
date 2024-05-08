@@ -15,7 +15,19 @@
 		"nombre":"funcion",
 		"Bloque": {
 				"sentencias":[
-{"nodo": "Sentencia"null}				]
+{"nodo": "NodoAsignacion",
+"ladoIzq":{
+"nodo":"NodoExpresion",
+"nombre":"a",
+"tipo":"Int",
+"valor":"null"
+},
+"tipoAsignacion":"",
+"ladoDer":{"nodo":"NodoExpresion",
+"nombre":"literal",
+"tipo":"int",
+"valor":"1"
+}}				]
 		}
 	}
 	]

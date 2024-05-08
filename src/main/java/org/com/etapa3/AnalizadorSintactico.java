@@ -2,6 +2,7 @@ package org.com.etapa3;
 import org.com.etapa3.ArbolAST.*;
 import org.com.etapa3.ClasesSemantico.*;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 
 public class AnalizadorSintactico {
@@ -23,7 +24,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -535,6 +536,7 @@ public class AnalizadorSintactico {
         sentencias1();
         // Cuando terminaron las sentencias
         ast.getCurrentMetodo().insertSentencia(nodo);
+        System.out.println(nodo.getNodeType());
     }
 
     private static void sentencias1() {
@@ -1442,8 +1444,11 @@ public class AnalizadorSintactico {
             NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"false");
             return nodo;
         } else if(currentToken.getName().equals("int")){
+            //LU Aca habia un error, porq estabamos creando un Nodo expresion con el currenToken pero despues
+            //del match el curren token ya no era el literal, por eso lo guardo.
+            String litEntero = currentToken.getLexema();
             match("int");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,currentToken.getLexema());
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,litEntero);
             return nodo;
         } else if(currentToken.getName().equals("str")){
             match("str");
