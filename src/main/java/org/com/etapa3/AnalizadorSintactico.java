@@ -534,7 +534,7 @@ public class AnalizadorSintactico {
         NodoSentencia nodo = sentencia();
         sentencias1();
         // Cuando terminaron las sentencias
-        // Las inserto en el metodo ?? como?
+        ast.getCurrentMetodo().insertSentencia(nodo);
     }
 
     private static void sentencias1() {
@@ -735,8 +735,9 @@ public class AnalizadorSintactico {
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
-            Nodo Sentencia = asignacion();
+            NodoSentencia nodo = asignacion();
             match(";");
+            return nodo;
         } else if (currentToken.getLexema().equals("(") ){
             sentenciaSimple();
             match(";");
@@ -957,7 +958,7 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         // Armamos la expresion (unaria o binaria)
         NodoExpresion nodoI = expAnd();
-        NodoExpresion nodoD = expresion1();
+        NodoExpresion nodoD = expresion1(); // puede ser lambda
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
@@ -1189,7 +1190,7 @@ public class AnalizadorSintactico {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         ast.getProfundidad().push(new NodoExpBin(line,col));
-        NodoExpresion nodoI = expUn();
+        NodoExpresion nodoI = expUn(); // 1
         ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoExpresion nodoD = expMul1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
@@ -1208,7 +1209,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("%")){
             opMul();
             ast.getProfundidad().push(new NodoExpBin(line,col));
-            NodoExpresion nodoI = expUn();
+            NodoExpresion nodoI = expUn(); // 1
             ((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
             NodoExpresion nodoD = expMul1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
@@ -1427,7 +1428,7 @@ public class AnalizadorSintactico {
     private static NodoExpresion literal() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        String tipo = currentToken.getLexema();
+        String tipo = currentToken.getName();
         if(currentToken.getLexema().equals("nil")){
             match("nil");
             NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"nil");
@@ -1442,7 +1443,7 @@ public class AnalizadorSintactico {
             return nodo;
         } else if(currentToken.getName().equals("int")){
             match("int");
-            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,"int");
+            NodoExpresion nodo = new NodoExpresion(line,col,"literal",tipo,currentToken.getLexema());
             return nodo;
         } else if(currentToken.getName().equals("str")){
             match("str");

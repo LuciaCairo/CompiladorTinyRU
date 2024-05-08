@@ -33,7 +33,6 @@ public class NodoMetodo extends Nodo{
         json += "\t\t\t\t\"sentencias\":[\n";
         if(!this.sentencias.isEmpty()){
             for (int i = 0; i < this.sentencias.size(); i++) {
-
                 json +="{"+ this.sentencias.get(i).imprimeSentencia()+"},";
             }
             json = json.substring(0,json.length()-1);
