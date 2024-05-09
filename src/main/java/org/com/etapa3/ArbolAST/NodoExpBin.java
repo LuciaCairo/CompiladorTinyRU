@@ -1,12 +1,12 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoExpBin extends NodoExpresion {
-    private NodoExpresion izq;
-    private NodoExpresion der;
+public class NodoExpBin extends NodoLiteral {
+    private NodoLiteral izq;
+    private NodoLiteral der;
     private String op;
 
     // Constructor
-    public NodoExpBin(int line,int col, NodoExpresion izq, String op, NodoExpresion der){
+    public NodoExpBin(int line, int col, NodoLiteral izq, String op, NodoLiteral der){
         super(line,col);
         this.der = der;
         this.izq = izq;
@@ -20,11 +20,11 @@ public class NodoExpBin extends NodoExpresion {
     // Getters
 
     // Setters
-    public void setNodoD(NodoExpresion der) {
+    public void setNodoD(NodoLiteral der) {
         this.der = der;
     }
 
-    public void setNodoI(NodoExpresion izq) {
+    public void setNodoI(NodoLiteral izq) {
         this.izq = izq;
     }
 
@@ -79,7 +79,7 @@ public class NodoExpBin extends NodoExpresion {
         this.oper = oper;
     }
 
-    public NodoExpresion getIzq() {
+    public NodoLiteral getIzq() {
         return izq;
     }
 

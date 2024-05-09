@@ -1,14 +1,14 @@
 package org.com.etapa3.ArbolAST;
 
 // Nodo para las asignaciones (expresion = expresion)
-public class NodoAsignacion extends NodoExpresion{
+public class NodoAsignacion extends NodoLiteral {
 
-    private NodoExpresion izq;
-    private NodoExpresion der;
+    private NodoLiteral izq;
+    private NodoLiteral der;
 
 
     // Constructores
-    public NodoAsignacion(int line,int col, NodoExpresion izq, NodoExpresion der){
+    public NodoAsignacion(int line, int col, NodoLiteral izq, NodoLiteral der){
         super(line, col);
         this.der = der;
         this.izq = izq;
@@ -18,17 +18,17 @@ public class NodoAsignacion extends NodoExpresion{
 
 
 
-    public NodoAsignacion(int filaTok,int colTok,NodoExpresion izqui,String tipo){
+    public NodoAsignacion(int filaTok,int colTok,NodoLiteral izqui,String tipo){
         super(filaTok,colTok);
         this.izq = izqui;
         this.tipoAsig = tipo;
     }
 
-    public void setDer(NodoExpresion der) {
+    public void setDer(NodoLiteral der) {
         this.der = der;
     }
 
-    public void setIzq(NodoExpresion izq) {
+    public void setIzq(NodoLiteral izq) {
         this.izq = izq;
     }
 
@@ -41,11 +41,11 @@ public class NodoAsignacion extends NodoExpresion{
         return tipoAsig;
     }
 
-    public NodoExpresion getIzq() {
+    public NodoLiteral getIzq() {
         return izq;
     }
 
-    public NodoExpresion getDer() {
+    public NodoLiteral getDer() {
         return der;
     }
 

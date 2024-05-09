@@ -14,19 +14,19 @@
 					"NodoIzq":{
 						"nodo": "Acceso",
 						"nodoIzq": {
-							"nodo": "Expresion",
+							"nodo": "Literal",
 							"nombre":"a",
 							"tipo":"Array Int",
 							"valor":"null",
 						"nodoDer": {
-							"nodo": "Expresion",
-							"nombre":"literal entero",
-							"tipo":"int",
-							"valor":"2",
+							"nodo": "Literal",
+							"nombre":"s",
+							"tipo":"Int",
+							"valor":"null",
 
 					},
 					"NodoDer":{
-						"nodo": "Expresion",
+						"nodo": "Literal",
 						"nombre":"literal entero",
 						"tipo":"int",
 						"valor":"1"					

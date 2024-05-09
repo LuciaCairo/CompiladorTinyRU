@@ -1,22 +1,22 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoExpresion extends NodoSentencia{
+public class NodoLiteral extends NodoSentencia{
 
     private String name;
     private String value;
 
-    public NodoExpresion(int line,int col, String name, String type){
+    public NodoLiteral(int line, int col, String name, String type){
         super(line,col,type);
         this.name = name;
     }
 
-    public NodoExpresion(int line,int col, String name, String type, String value){
+    public NodoLiteral(int line, int col, String name, String type, String value){
         super(line,col,type);
         this.name = name;
         this.value = value;
     }
 
-    public NodoExpresion(int line,int col){
+    public NodoLiteral(int line, int col){
         super(line,col);
     }
 
@@ -26,13 +26,13 @@ public class NodoExpresion extends NodoSentencia{
     }
 
 /*
-    public NodoExpresion(int filaTok,int colTok,String nombre, String tipo){
+    public NodoLiteral(int filaTok,int colTok,String nombre, String tipo){
         super(filaTok,colTok);
         this.nombre = nombre;
         this.tipo = tipo;
     }
 
-    public NodoExpresion(int filaTok,int colTok,String nombre){
+    public NodoLiteral(int filaTok,int colTok,String nombre){
         super(filaTok,colTok);
         this.nombre = nombre;
     }
@@ -75,11 +75,11 @@ public class NodoExpresion extends NodoSentencia{
     @Override
     public String imprimeSentencia() {
         String valor = this.valor == null ? "null" : this.valor.toString().replace("\"", "\\\"");
-        return "\"nodo\":\"NodoExpresion\",\n\"nombre\":\""+this.nombre+"\",\n\"tipo\":\""+this.tipo+"\",\n\"valor\":\""+valor+"\"";
+        return "\"nodo\":\"NodoLiteral\",\n\"nombre\":\""+this.nombre+"\",\n\"tipo\":\""+this.tipo+"\",\n\"valor\":\""+valor+"\"";
     }*/
 @Override
 public String printSentencia(String space) {
-    return space + "\"nodo\": \"Expresion\",\n"
+    return space + "\"nodo\": \"Literal\",\n"
             + space + "\"nombre\":\""+ this.name +"\",\n"
             + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
             + space + "\"valor\":\""+ this.value +"\"";

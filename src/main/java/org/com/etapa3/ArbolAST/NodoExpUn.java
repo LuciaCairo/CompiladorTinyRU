@@ -1,13 +1,13 @@
 package org.com.etapa3.ArbolAST;
 
 // Nodo para expresiones unarias (por ejemplo: ++a, --a, !a, etc)
-public class NodoExpUn extends NodoExpresion {
+public class NodoExpUn extends NodoLiteral {
 
     private String op; // Operador unario y
-    private NodoExpresion exp; // Expresión a la que se aplica ese operador
+    private NodoLiteral exp; // Expresión a la que se aplica ese operador
 
     // Constructores
-    public NodoExpUn(int line,int col, Nodo parent, NodoExpresion exp, String op){
+    public NodoExpUn(int line, int col, Nodo parent, NodoLiteral exp, String op){
         super(line,col);
         this.exp = exp;
         this.op = op;
@@ -21,12 +21,12 @@ public class NodoExpUn extends NodoExpresion {
     public String getOp() {
         return op;
     }
-    public NodoExpresion getExp() {
+    public NodoLiteral getExp() {
         return exp;
     }
 
     // Setters
-    public void setExp(NodoExpresion exp) {
+    public void setExp(NodoLiteral exp) {
         this.exp = exp;
     }
 
