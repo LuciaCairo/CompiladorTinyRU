@@ -3,7 +3,7 @@ package org.com.etapa3.ArbolAST;
 public class NodoLiteral extends NodoSentencia{
 
     private String name;
-    private String value;
+    private String value = null;
 
     public NodoLiteral(int line, int col, String name, String type){
         super(line,col,type);

@@ -12,24 +12,16 @@
 					"nodo": "Asignacion",
 					"tipo":"null",
 					"NodoIzq":{
-						"nodo": "Acceso",
-						"nodoIzq": {
-							"nodo": "Literal",
-							"nombre":"a",
-							"tipo":"Array Int",
-							"valor":"null",
-						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"s",
-							"tipo":"Int",
-							"valor":"null",
-
+						"nodo": "Literal",
+						"nombre":"a",
+						"tipo":"Array Int",
+						"valor":"null"
 					},
 					"NodoDer":{
 						"nodo": "Literal",
 						"nombre":"literal entero",
 						"tipo":"int",
-						"valor":"1"					
+						"valor":"2"					
 					}
 				}
 				]

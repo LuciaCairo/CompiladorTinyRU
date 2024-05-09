@@ -4,6 +4,7 @@ package org.com.etapa3.ArbolAST;
 public class Nodo {
     private int line;
     private int col;
+    private String value = null;
     private String nodeType; // Tipo de nodo
     private Nodo parent; // Nodo padre
     private String name;
@@ -43,6 +44,9 @@ public class Nodo {
     }
     public String getName() {
         return name;
+    }
+    public String getValue() {
+        return value;
     }
 
     // Setters

@@ -33,9 +33,18 @@ public class NodoExpBin extends NodoLiteral {
     }
 
     // Functions
+    @Override
+    public String printSentencia(String space) {
+        return space + "\"nodo\": \"Expresion Binaria\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
+                + space + "\"valor\":\""+ this.getValue() +"\",\n"
+                + space + "\"operador\":\""+ this.op +"\",\n"
+                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +"\n" + space +"},\n"
+                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +"\n" + space +"}";
+    }
 
     /*
-    @Override
+
     public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
 
         if(this.oper.equals("||") || this.oper.equals("&&")){

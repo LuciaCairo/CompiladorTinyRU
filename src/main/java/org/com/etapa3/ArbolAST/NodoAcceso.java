@@ -17,8 +17,8 @@ public class NodoAcceso extends NodoLiteral {
     @Override
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Acceso\",\n"
-                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +",\n"
-                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +",\n";
+                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +"\n" + space +"},\n"
+                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +"\n" + space +"}";
     }
 
     /*

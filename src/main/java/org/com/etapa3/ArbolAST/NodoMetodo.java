@@ -37,6 +37,7 @@ public class NodoMetodo extends Nodo{
             }
             json = json.substring(0,json.length()-1);
         }
+
         json +="\n\t\t\t\t]\n";
         return json;
     }
