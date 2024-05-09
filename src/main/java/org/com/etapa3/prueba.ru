@@ -1,7 +1,8 @@
 struct A{}
 impl A{ .(){
 Array Int a;
-a[s] = 1;}}
+Int s;
+a[s +1] = 1;}}
 
 
 start{}

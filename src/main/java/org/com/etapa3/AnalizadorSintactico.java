@@ -909,12 +909,11 @@ public class AnalizadorSintactico {
         }else if(currentToken.getLexema().equals("[")){
             String[] palabras = (ast.getProfundidad().peek().getNodeType()).split(" ");
             String isArray = palabras[0];
-            System.out.println(isArray);
             if(!isArray.equals("Array")){
                 throw new SyntactErrorException(currentToken.getLine(),
                         currentToken.getCol(),
                         "\"" + ast.getProfundidad().peek().getName() +"\" no es un array por lo que no se puede acceder a un indice",
-                        "asignacion");
+                        "accesoVarSimple1");
             }
             match("[");
             NodoLiteral nodo = expresion();
@@ -1010,11 +1009,12 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         // Armamos la expresion (unaria o binaria)
         NodoLiteral nodoI = expAnd();
-        NodoLiteral nodoD = expresion1(); // puede ser lambda
+        NodoLiteral nodoD = expresion1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        return new NodoExpBin(line, col, nodoI,"||", nodoD);
+        //return new NodoExpBin(line, col, nodoI,"||", nodoD);
+        return null;
     }
 
     private static NodoLiteral expresion1() {
@@ -1054,8 +1054,8 @@ public class AnalizadorSintactico {
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        return new NodoExpBin(line, col, nodoI,"&&", nodoD);
-
+        //return new NodoExpBin(line, col, nodoI,"&&", nodoD);
+        return null;
     }
 
     private static NodoLiteral expAnd1() {
@@ -1098,8 +1098,9 @@ public class AnalizadorSintactico {
             //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return (NodoExpBin) ast.getProfundidad().pop();
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        //return (NodoExpBin) ast.getProfundidad().pop();
+        return null;
 
     }
 
@@ -1148,9 +1149,9 @@ public class AnalizadorSintactico {
             //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return (NodoExpBin) ast.getProfundidad().pop();
-
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        //return (NodoExpBin) ast.getProfundidad().pop();
+        return null;
     }
 
     private static NodoLiteral expCompuesta1() {
@@ -1182,8 +1183,8 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral expAd() {
-        int line = currentToken.getLine();
-        int col = currentToken.getCol();
+        //int line = currentToken.getLine();
+        //int col = currentToken.getCol();
         //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoLiteral nodoI = expMul();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
@@ -1192,9 +1193,9 @@ public class AnalizadorSintactico {
             //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return (NodoExpBin) ast.getProfundidad().pop();
-
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        //return (NodoExpBin) ast.getProfundidad().pop();
+        return null;
     }
 
     private static NodoLiteral expAd1() {
@@ -1239,8 +1240,8 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral expMul() {
-        int line = currentToken.getLine();
-        int col = currentToken.getCol();
+        //int line = currentToken.getLine();
+        //int col = currentToken.getCol();
         // ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO? por ahora no
         NodoLiteral nodoI = expUn();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
@@ -1249,8 +1250,9 @@ public class AnalizadorSintactico {
             //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        ((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return (NodoExpBin) ast.getProfundidad().pop();
+        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+        //return (NodoExpBin) ast.getProfundidad().pop();
+        return null;
     }
 
     private static NodoLiteral expMul1() {
@@ -1298,8 +1300,10 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral expUn() {
-        int line = currentToken.getLine();
-        int col = currentToken.getCol();
+        //int line = currentToken.getLine();
+        //int col = currentToken.getCol();
+
+        // Caso de expresion unaria
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-") ||
                 currentToken.getLexema().equals("!") ||
@@ -1310,7 +1314,9 @@ public class AnalizadorSintactico {
             expUn();
             //((NodoExpUn) ast.getProfundidad().peek()).setExp(expUn());
             //return (NodoExpUn) ast.getProfundidad().pop();
-        }else if(currentToken.getLexema().equals("nil") ||
+
+        } // Caso de expresion binaria
+         else if(currentToken.getLexema().equals("nil") ||
                 currentToken.getLexema().equals("true") ||
                 currentToken.getLexema().equals("false") ||
                 currentToken.getLexema().equals("self") ||
@@ -1322,6 +1328,7 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")){
             return operando(); // Devuelve la expresion armada con el operando
+
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
