@@ -6,8 +6,8 @@ public class NodoExpBin extends NodoLiteral {
     private String op;
 
     // Constructor
-    public NodoExpBin(int line, int col, NodoLiteral izq, String op, NodoLiteral der){
-        super(line,col);
+    public NodoExpBin(int line, int col, NodoLiteral izq, String op, NodoLiteral der, String type){
+        super(line,col,type);
         this.der = der;
         this.izq = izq;
         this.op = op;

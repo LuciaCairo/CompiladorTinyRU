@@ -9,23 +9,52 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Sentencia"				},				{
-										"nodo": "Expresion Binaria",
+					"nodo": "Asignacion",
 					"tipo":"null",
-					"valor":"null",
-					"operador":" ==",
-					"nodoIzq": {
-						"nodo": "Literal",
-						"nombre":"s",
-						"tipo":"Int",
-						"valor":"null"
+					"NodoIzq":{
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"A",
+							"tipo":"A",
+							"valor":"null"
+						},
+						"nodoDer": {
+							"nodo": "Acceso",
+							"nodoIzq": {
+								"nodo": "Literal",
+								"nombre":"c",
+								"tipo":"B",
+								"valor":"null"
+							},
+							"nodoDer": {
+								"nodo": "Literal",
+								"nombre":"w",
+								"tipo":"Int",
+								"valor":"null"
+							}
+						}
 					},
-					"nodoDer": {
+					"NodoDer":{
 						"nodo": "Literal",
-						"nombre":"literal bool",
-						"tipo":"keyword_true",
-						"valor":"true"
-					}				}
+						"nombre":"literal entero",
+						"tipo":"int",
+						"valor":"1"					
+					}
+				}
+				]
+		}
+	}
+	]
+},
+{
+	"nombre": "B",
+	"metodos": [
+	{
+		"nombre":"constructor",
+		"Bloque": {
+				"sentencias":[
+
 				]
 		}
 	}

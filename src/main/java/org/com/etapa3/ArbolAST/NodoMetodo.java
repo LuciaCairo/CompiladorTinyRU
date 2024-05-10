@@ -7,8 +7,8 @@ public class NodoMetodo extends Nodo{
     private LinkedList<NodoSentencia> sentencias;
 
 
-    public NodoMetodo(int line,int col,String name, Nodo parent){
-        super(line, col, parent);
+    public NodoMetodo(int line,int col,String name){
+        super(line, col);
         this.name = name;
         this.sentencias = new LinkedList<>();
     }

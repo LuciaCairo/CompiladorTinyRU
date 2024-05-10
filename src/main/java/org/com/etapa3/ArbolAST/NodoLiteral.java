@@ -1,29 +1,25 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoLiteral extends NodoSentencia{
+public class NodoLiteral extends NodoSentencia {
 
-    private String name;
-    private String value = null;
-
-    public NodoLiteral(int line, int col, String name, String type){
-        super(line,col,type);
-        this.name = name;
+    public NodoLiteral(int line, int col) {
+        super(line, col);
+    }
+    public NodoLiteral(int line, int col, String type) {
+        super(line, col, type);
+    }
+    public NodoLiteral(int line, int col, String type, String value) {
+        super(line, col,type, value);
     }
 
-    public NodoLiteral(int line, int col, String name, String type, String value){
-        super(line,col,type);
-        this.name = name;
-        this.value = value;
+    public NodoLiteral(int line, int col, String name, String type, String value) {
+        super(line, col, name, type, value);
     }
 
-    public NodoLiteral(int line, int col){
-        super(line,col);
-    }
+
 
     // Getters
-    public String getName() {
-        return name;
-    }
+
 
 /*
     public NodoLiteral(int filaTok,int colTok,String nombre, String tipo){
@@ -80,9 +76,9 @@ public class NodoLiteral extends NodoSentencia{
 @Override
 public String printSentencia(String space) {
     return space + "\"nodo\": \"Literal\",\n"
-            + space + "\"nombre\":\""+ this.name +"\",\n"
+            + space + "\"nombre\":\""+ this.getName() +"\",\n"
             + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-            + space + "\"valor\":\""+ this.value +"\"";
+            + space + "\"valor\":\""+ this.getValue() +"\"";
 }
 
 

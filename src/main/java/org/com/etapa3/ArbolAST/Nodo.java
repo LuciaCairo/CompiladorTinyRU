@@ -4,9 +4,8 @@ package org.com.etapa3.ArbolAST;
 public class Nodo {
     private int line;
     private int col;
-    private String value = null;
+    private String value;
     private String nodeType; // Tipo de nodo
-    private Nodo parent; // Nodo padre
     private String name;
 
 
@@ -20,16 +19,19 @@ public class Nodo {
         this.col = col;
         this.nodeType = nodeType;
     }
-    public Nodo(int line,int col, Nodo parent){
-        this.line = line;
-        this.col = col;
-        this.parent = parent;
-    }
-    public Nodo(int line,int col, String nodeType, Nodo parent, String value){
+    public Nodo(int line,int col,String nodeType, String value){
         this.line = line;
         this.col = col;
         this.nodeType = nodeType;
-        this.parent = parent;
+        this.value = value;
+    }
+
+    public Nodo(int line,int col,String name,String nodeType, String value){
+        this.line = line;
+        this.col = col;
+        this.nodeType = nodeType;
+        this.value = value;
+        this.name = name;
     }
 
     // Getters
@@ -50,9 +52,6 @@ public class Nodo {
     }
 
     // Setters
-    public void setParent(Nodo parent) {
-        this.parent = parent;
-    }
 
     // Functions
     /*

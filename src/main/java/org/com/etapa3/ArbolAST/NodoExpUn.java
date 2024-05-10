@@ -5,7 +5,6 @@ public class NodoExpUn extends NodoLiteral {
 
     private String op; // Operador unario y
     private NodoLiteral exp; // Expresión a la que se aplica ese operador
-    private String value = null;
 
     // Constructores
     public NodoExpUn(int line, int col, NodoLiteral exp, String op){
@@ -40,7 +39,7 @@ public class NodoExpUn extends NodoLiteral {
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Expresion Unaria\",\n"
                 + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-                + space + "\"valor\":\""+ this.value +"\",\n"
+                + space + "\"valor\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"operador\":\""+ this.op +"\",\n"
                 + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\"";
 
