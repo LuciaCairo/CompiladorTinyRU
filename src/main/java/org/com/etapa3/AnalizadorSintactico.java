@@ -731,11 +731,13 @@ public class AnalizadorSintactico {
     }
 
     private static NodoSentencia sentencia() {
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
         if (currentToken.getLexema().equals(";")){
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
-            NodoSentencia nodo = asignacion(); // Asignaciones
+            NodoSentencia nodo = asignacion(); // AST Asignaciones
             match(";");
             return nodo;
         } else if (currentToken.getLexema().equals("(") ){
@@ -751,10 +753,10 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("while")){
             match("while");
             match("(");
-            NodoLiteral nodo = expresion();
+            NodoLiteral exp = expresion();
             match(")");
             sentencia();
-            return nodo;
+            return new NodoWhile(line,col,exp);
         } else if (currentToken.getLexema().equals("{")){
             bloque();
         } else if (currentToken.getLexema().equals("ret")){
@@ -1032,7 +1034,7 @@ public class AnalizadorSintactico {
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        return new NodoExpBin(line, col, nodoI,"||", nodoD, "bool");
+        return new NodoExpBin(line, col, nodoI,"||", nodoD, "Bool");
     }
 
     private static NodoLiteral expresion1() {
@@ -1046,7 +1048,7 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            return new NodoExpBin(line, col, nodoI,"||", nodoD,"bool");
+            return new NodoExpBin(line, col, nodoI,"||", nodoD,"Bool");
         }else if(currentToken.getLexema().equals(")")||
                 currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("]")||
@@ -1071,7 +1073,7 @@ public class AnalizadorSintactico {
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        return new NodoExpBin(line, col, nodoI,"&&", nodoD, "bool");
+        return new NodoExpBin(line, col, nodoI,"&&", nodoD, "Bool");
     }
 
     private static NodoLiteral expAnd1() {
@@ -1085,7 +1087,7 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            return new NodoExpBin(line, col, nodoI,"&&", nodoD, "bool");
+            return new NodoExpBin(line, col, nodoI,"&&", nodoD, "Bool");
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals(")")||
                 currentToken.getLexema().equals(";")||
@@ -1115,7 +1117,7 @@ public class AnalizadorSintactico {
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
         //return (NodoExpBin) ast.getProfundidad().pop();
-        return new NodoExpBin(line,col,nodoI,"==",nodoD, "bool");
+        return new NodoExpBin(line,col,nodoI,"==",nodoD, "Bool");
 
     }
 
@@ -1134,7 +1136,7 @@ public class AnalizadorSintactico {
                 //ast.getProfundidad().pop();
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            return new NodoExpBin(line, col, nodoI,op, nodoD,"bool");
+            return new NodoExpBin(line, col, nodoI,op, nodoD,"Bool");
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
             //return (NodoExpBin) ast.getProfundidad().pop();
 
@@ -1169,7 +1171,7 @@ public class AnalizadorSintactico {
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
         //return (NodoExpBin) ast.getProfundidad().pop();
-        return new NodoExpBin(line, col, nodoI, op, nodoD,"bool");
+        return new NodoExpBin(line, col, nodoI, op, nodoD,"Bool");
     }
 
     private static NodoLiteral expCompuesta1() {
@@ -1212,7 +1214,7 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return new NodoExpBin(line,col,nodoI,op,nodoD,"int");
+        return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
     }
 
     private static NodoLiteral expAd1() {
@@ -1231,7 +1233,7 @@ public class AnalizadorSintactico {
                 return nodoI; // Es unaria
             } // Si no, es binaria
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-            return new NodoExpBin(line,col,nodoI,op,nodoD,"int");
+            return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
 
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
@@ -1270,7 +1272,7 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        return new NodoExpBin(line,col,nodoI,op,nodoD,"int");
+        return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
     }
 
     private static NodoLiteral expMul1() {
@@ -1290,7 +1292,7 @@ public class AnalizadorSintactico {
                 return nodoI; // Es unaria
             } // Si no, es binaria
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-            return new NodoExpBin(line,col,nodoI,op,nodoD,"int");
+            return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -1518,29 +1520,29 @@ public class AnalizadorSintactico {
             return nodo;
         } else if(currentToken.getLexema().equals("true")){
             // Llego a un literal booleano que sera una expresion
-            NodoLiteral nodo = new NodoLiteral(line,col,"literal bool","bool","true");
+            NodoLiteral nodo = new NodoLiteral(line,col,"literal bool","Bool","true");
             match("true");
             return nodo;
         } else if(currentToken.getLexema().equals("false")){
             // Llego a un literal booleano que sera una expresion
-            NodoLiteral nodo = new NodoLiteral(line,col,"literal bool","bool","false");
+            NodoLiteral nodo = new NodoLiteral(line,col,"literal bool","Bool","false");
             match("false");
             return nodo;
         } else if(currentToken.getName().equals("int")){
             // Llego a un literal entero que sera una expresion
-            NodoLiteral nodo = new NodoLiteral(line,col,"literal entero","int",currentToken.getLexema());
+            NodoLiteral nodo = new NodoLiteral(line,col,"literal entero","Int",currentToken.getLexema());
             match("int");
             return nodo;
         } else if(currentToken.getName().equals("str")){
             // Llego a un literal string que sera una expresion
 
-            NodoLiteral nodo = new NodoLiteral(line,col,"literal str","str",currentToken.getLexema());
+            NodoLiteral nodo = new NodoLiteral(line,col,"literal str","Str",currentToken.getLexema());
             match("str");
             return nodo;
         } else if(currentToken.getName().equals("char")){
 
             // Llego a un literal char que sera una expresion
-            NodoLiteral nodo = new NodoLiteral(line,col,"literal char","char",currentToken.getLexema());
+            NodoLiteral nodo = new NodoLiteral(line,col,"literal char","Char",currentToken.getLexema());
             match("char");
             return nodo;
         } else{
@@ -1592,7 +1594,7 @@ public class AnalizadorSintactico {
                 }
 
                 NodoLiteral nodoI = new NodoLiteral(line, col,
-                        identificador,tipoId);
+                        identificador,tipoId,null);
                 if(accesoVar() == null){
                     return nodoI;
                 }
