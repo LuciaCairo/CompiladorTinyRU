@@ -23,7 +23,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -736,7 +736,7 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
             NodoSentencia nodo = asignacion(); // Asignaciones
-            match(";");
+            match(";");//AGUS
             return nodo;
         } else if (currentToken.getLexema().equals("(") ){
             sentenciaSimple();
@@ -751,9 +751,11 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("while")){
             match("while");
             match("(");
-            expresion();
+            NodoLiteral nodo = expresion();
             match(")");
             sentencia();
+
+            return nodo;
         } else if (currentToken.getLexema().equals("{")){
             bloque();
         } else if (currentToken.getLexema().equals("ret")){
@@ -872,7 +874,9 @@ public class AnalizadorSintactico {
             }
             NodoLiteral nodoD= (NodoLiteral) accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
+
             NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop(); // Lo creo y saco de la pila
+
             if (nodoD != null){
                 nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
                         nodoI,nodoD);
@@ -1007,6 +1011,7 @@ public class AnalizadorSintactico {
     private static NodoLiteral expresion() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
+        System.out.println(currentToken.getLexema());
         // Armamos la expresion (unaria o binaria)
         NodoLiteral nodoI = expAnd();
         NodoLiteral nodoD = expresion1();
@@ -1091,6 +1096,7 @@ public class AnalizadorSintactico {
         //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoLiteral nodoI = expCompuesta();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+
         NodoLiteral nodoD = expIgual1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
@@ -1098,7 +1104,8 @@ public class AnalizadorSintactico {
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
         //return (NodoExpBin) ast.getProfundidad().pop();
-        return null;
+
+        return new NodoExpBin(line,col,nodoI," ==",nodoD); // AGREGUE ESTE RETURN PARA EL CASO WHILE S==1
 
     }
 
@@ -1107,14 +1114,20 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         if (currentToken.getLexema().equals("==") ||
                 currentToken.getLexema().equals("!=")){
+
+
             String op = currentToken.getLexema();
+
             opIgual();
             //ast.getProfundidad().push(new NodoExpBin(line,col));
             NodoLiteral nodoI = expCompuesta();
+
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
             NodoLiteral nodoD = expIgual1();
+
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 //ast.getProfundidad().pop();
+
                 return nodoI; // Es unaria
             } // Si no, es binaria
             return new NodoExpBin(line, col, nodoI,op, nodoD);
@@ -1144,6 +1157,7 @@ public class AnalizadorSintactico {
         //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoLiteral nodoI = expAd();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+
         NodoLiteral nodoD = expCompuesta1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
@@ -1188,6 +1202,7 @@ public class AnalizadorSintactico {
         //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoLiteral nodoI = expMul();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+
         NodoLiteral nodoD = expAd1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
@@ -1206,6 +1221,7 @@ public class AnalizadorSintactico {
             opAd();
             //ast.getProfundidad().push(new NodoExpBin(line,col));
             NodoLiteral nodoI = expMul();
+
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
             NodoLiteral nodoD = expAd1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
@@ -1248,6 +1264,7 @@ public class AnalizadorSintactico {
         NodoLiteral nodoD = expMul1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
+
             return nodoI; // Es unaria
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
@@ -1265,6 +1282,7 @@ public class AnalizadorSintactico {
             //ast.getProfundidad().push(new NodoExpBin(line,col));
             NodoLiteral nodoI = expUn();
             //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+
             NodoLiteral nodoD = expMul1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 //ast.getProfundidad().pop();
@@ -1441,12 +1459,14 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("int") ||
                 currentToken.getName().equals("str") ||
                 currentToken.getName().equals("char")) {
+
             return literal(); // Devuelve la expresion armada con el literal
         } else if (currentToken.getLexema().equals("(") ||
                 currentToken.getLexema().equals("self") ||
                 currentToken.getLexema().equals("new") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")) {
+
             NodoLiteral nodoI = primario();
             if (operando1() == null) {
                 return nodoI;
@@ -1510,16 +1530,20 @@ public class AnalizadorSintactico {
             match("false");
             return nodo;
         } else if(currentToken.getName().equals("int")){
+
+            System.out.println(currentToken.getLexema());
             // Llego a un literal entero que sera una expresion
             NodoLiteral nodo = new NodoLiteral(line,col,"literal entero",tipo,currentToken.getLexema());
             match("int");
             return nodo;
         } else if(currentToken.getName().equals("str")){
             // Llego a un literal string que sera una expresion
+
             NodoLiteral nodo = new NodoLiteral(line,col,"literal str",tipo,currentToken.getLexema());
             match("str");
             return nodo;
         } else if(currentToken.getName().equals("char")){
+
             // Llego a un literal char que sera una expresion
             NodoLiteral nodo = new NodoLiteral(line,col,"literal char",tipo,currentToken.getLexema());
             match("char");
@@ -1548,6 +1572,8 @@ public class AnalizadorSintactico {
             if(currentToken.getLexema().equals("(")) {
                 llamadaMetodo();
             } else{
+
+                System.out.println((ts.getCurrentMetod()).getVariables().get(identificador).getType());
                 // Verifico si el identificador existe
                 // Veo si esta declarado como variable en el metodo
                 String tipoId;
@@ -1571,6 +1597,7 @@ public class AnalizadorSintactico {
                             "\" no esta declarado en el metodo ni como atributo del struct",
                             "encadenadoSimple");
                 }
+
                 NodoLiteral nodoI = new NodoLiteral(line, col,
                         identificador,tipoId);
                 if(accesoVar() == null){

@@ -9,21 +9,23 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Asignacion",
+					"nodo": "Sentencia"				},				{
+										"nodo": "Expresion Binaria",
 					"tipo":"null",
-					"NodoIzq":{
+					"valor":"null",
+					"operador":" ==",
+					"nodoIzq": {
 						"nodo": "Literal",
-						"nombre":"a",
-						"tipo":"Array Int",
+						"nombre":"s",
+						"tipo":"Int",
 						"valor":"null"
 					},
-					"NodoDer":{
+					"nodoDer": {
 						"nodo": "Literal",
-						"nombre":"literal entero",
-						"tipo":"int",
-						"valor":"2"					
-					}
-				}
+						"nombre":"literal bool",
+						"tipo":"keyword_true",
+						"valor":"true"
+					}				}
 				]
 		}
 	}
