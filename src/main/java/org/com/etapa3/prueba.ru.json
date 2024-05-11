@@ -9,24 +9,42 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Retorno",
-					"tipo":"null",
-					"expresion":{
+					"nodo": "Asignacion",
+					"tipo":"Bool",
+					"NodoIzq":{
+						"nodo": "Literal",
+						"nombre":"b",
+						"tipo":"Bool",
+						"valor":"null"
+					},
+					"NodoDer":{
 						"nodo": "Expresion Binaria",
 						"tipo":"Bool",
 						"valor":"null",
 						"operador":"||",
 						"nodoIzq": {
 							"nodo": "Literal",
-							"nombre":"b",
+							"nombre":"literal bool",
 							"tipo":"Bool",
-							"valor":"null"
+							"valor":"false"
 						},
 						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"a",
-							"tipo":"Array Int",
-							"valor":"null"
+							"nodo": "Expresion Binaria",
+							"tipo":"Bool",
+							"valor":"null",
+							"operador":"||",
+							"nodoIzq": {
+								"nodo": "Literal",
+								"nombre":"literal bool",
+								"tipo":"Bool",
+								"valor":"true"
+							},
+							"nodoDer": {
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"1"
+							}
 						}					
 					}
 				}

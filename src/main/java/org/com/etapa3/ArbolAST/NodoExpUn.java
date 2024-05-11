@@ -7,8 +7,8 @@ public class NodoExpUn extends NodoLiteral {
     private NodoLiteral exp; // Expresión a la que se aplica ese operador
 
     // Constructores
-    public NodoExpUn(int line, int col, NodoLiteral exp, String op){
-        super(line,col);
+    public NodoExpUn(int line, int col, String type, NodoLiteral exp, String op){
+        super(line,col,type);
         this.exp = exp;
         this.op = op;
     }

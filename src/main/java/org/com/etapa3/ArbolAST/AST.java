@@ -1,5 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.SyntactErrorException;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,6 +43,14 @@ public class AST {
     // Functions
     public void insertStruct(String name, NodoStruct nodo) {
         this.structs.put(name, nodo);
+    }
+    public String checkTypes(Nodo nodo1 , Nodo nodo2){
+        String n1= nodo1.getNodeType();
+        String n2= nodo2.getNodeType();
+        if(n1.equals(n2)){
+            return (nodo1.getNodeType());
+        }
+        return null;
     }
 
     public String printJSON_Arbol(String input){

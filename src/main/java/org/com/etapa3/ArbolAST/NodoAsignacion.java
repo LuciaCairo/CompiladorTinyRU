@@ -8,8 +8,8 @@ public class NodoAsignacion extends NodoLiteral {
 
 
     // Constructores
-    public NodoAsignacion(int line, int col, NodoLiteral izq, NodoLiteral der){
-        super(line, col);
+    public NodoAsignacion(int line, int col, NodoLiteral izq, NodoLiteral der, String type){
+        super(line, col, type);
         this.der = der;
         this.izq = izq;
     }
