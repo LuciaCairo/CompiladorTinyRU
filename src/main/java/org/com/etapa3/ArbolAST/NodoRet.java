@@ -1,0 +1,77 @@
+package org.com.etapa3.ArbolAST;
+
+// Nodo para las asignaciones (expresion = expresion)
+public class NodoRet extends NodoLiteral {
+
+    private NodoLiteral exp;
+
+
+    // Constructores
+    public NodoRet(int line, int col, NodoLiteral exp){
+        super(line, col);
+        this.exp = exp;
+    }
+
+    /*
+
+
+
+    public NodoAsignacion(int filaTok,int colTok,NodoLiteral izqui,String tipo){
+        super(filaTok,colTok);
+        this.izq = izqui;
+        this.tipoAsig = tipo;
+    }
+
+    public void setDer(NodoLiteral der) {
+        this.der = der;
+    }
+
+    public void setIzq(NodoLiteral izq) {
+        this.izq = izq;
+    }
+
+    @Override
+    public String getTipo(TablaDeSimbolos ts) throws ExcepcionSemantica {
+        return this.izq.getTipo(ts);
+    }
+
+    public String getTipoAsig() {
+        return tipoAsig;
+    }
+
+    public NodoLiteral getIzq() {
+        return izq;
+    }
+
+    public NodoLiteral getDer() {
+        return der;
+    }
+
+
+
+    @Override
+    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
+        //TODO verificar herencias y compatibilidades
+        //TODO if tipoAsig es != primitivo throw err
+        if(izq.getTipo(ts).equals(der.getTipo(ts)) || der.getTipo(ts).equals("nil")){
+            return true;
+        }else{
+
+            String comp = this.izq.getTipo(ts)+ " y "+this.der.getTipo(ts);
+            throw new ExcepcionSemantica(this.getFila(),this.getCol(),"La asignacion contiene tipos incompatibles",comp,false);
+        }
+    }
+
+
+}
+
+    */
+    @Override
+    public String printSentencia(String space) {
+        return "\"nodo\": \"Retorno\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
+                + space + "\"expresion\":{\n"+ this.exp.printSentencia(space+"\t")+ space +"\n" + space + "}\n";
+    }
+
+}
+

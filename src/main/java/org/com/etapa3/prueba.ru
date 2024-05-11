@@ -15,7 +15,9 @@ Bool b;
 /?a[s < 2 ] = 1; /? tambien funciona con <=, <, >=
 /?a[s || 2 && true == !b + 5 * b < ++2 ] = 1;
 /?self.c.w = 1;
-while(s < 2){}
+/?if(s < 2){};
+/?while(s && 2){}
+ret b || a;
 }}
 
 

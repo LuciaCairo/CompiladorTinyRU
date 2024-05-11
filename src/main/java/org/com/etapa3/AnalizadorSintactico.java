@@ -746,22 +746,25 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("if")){
             match("if");
             match("(");
-            expresion();
+            NodoLiteral exp = expresion();
             match(")");
             sentencia();
             sentencia1();
+            return new NodoIf(line,col,exp);
         } else if (currentToken.getLexema().equals("while")){
             match("while");
             match("(");
             NodoLiteral exp = expresion();
             match(")");
-            sentencia();
+            NodoSentencia sentencia = sentencia();
+            //sentencia();
             return new NodoWhile(line,col,exp);
         } else if (currentToken.getLexema().equals("{")){
             bloque();
         } else if (currentToken.getLexema().equals("ret")){
             match("ret");
-            sentencia2();
+            NodoLiteral exp = (NodoLiteral) sentencia2();
+            return new NodoRet(line,col,exp);
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -795,7 +798,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void sentencia2() {
+    private static NodoSentencia sentencia2() {
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-") ||
                 currentToken.getLexema().equals("!") ||
@@ -812,8 +815,9 @@ public class AnalizadorSintactico {
                 currentToken.getName().equals("char") ||
                 currentToken.getName().equals("id") ||
                 currentToken.getName().equals("struct_name")){
-            expresion();
+            NodoLiteral nodo = expresion();
             match(";");
+            return nodo;
         }else if(currentToken.getLexema().equals(";")){
             match(";");
         }else{
@@ -823,6 +827,7 @@ public class AnalizadorSintactico {
                             "; , self, id , o new. Se encontró " + currentToken.getLexema(),
                     "sentencia2");
         }
+        return null;
     }
 
     private static void bloque() {

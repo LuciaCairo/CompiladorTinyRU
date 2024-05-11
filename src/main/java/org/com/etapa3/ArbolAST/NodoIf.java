@@ -2,13 +2,13 @@ package org.com.etapa3.ArbolAST;
 
 import java.util.LinkedList;
 
-public class NodoWhile extends NodoLiteral{
+public class NodoIf extends NodoLiteral {
 
     private NodoLiteral exp;
     private LinkedList<NodoSentencia> sentencias;
 
     // Constructor
-    public NodoWhile(int line,int col,NodoLiteral exp){
+    public NodoIf(int line, int col, NodoLiteral exp){
         super(line, col);
         this.exp = exp;
         this.sentencias = new LinkedList<>();
@@ -18,8 +18,9 @@ public class NodoWhile extends NodoLiteral{
     public void insertSentencia(NodoSentencia sentencia) {
         this.sentencias.add(sentencia);
     }
+
     public String printSentencia(String space) {
-        return  "\"nodo\": \"While\",\n"
+        return  "\"nodo\": \"If\",\n"
                 + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"},\n"
                 + space + "\"sentencias\":[]\n";
     }
