@@ -15,6 +15,7 @@ public class NodoExpresion extends NodoLiteral{
 
     public String printSentencia(String space) {
         return  "\"nodo\": \""+ this.getName() + "\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"},\n";
     }
 

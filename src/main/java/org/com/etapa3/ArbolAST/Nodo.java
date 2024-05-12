@@ -1,5 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
+import java.util.LinkedList;
+
 // Este es el nodo con la estructura general del que heredan todos los nodos
 public class Nodo {
     private int line;
@@ -7,23 +9,27 @@ public class Nodo {
     private String value;
     private String nodeType; // Tipo de nodo
     private String name;
+    private LinkedList<NodoSentencia> sentencias;
 
 
     // Constructores
     public Nodo(int line,int col){
         this.line = line;
         this.col = col;
+        this.sentencias = new LinkedList<>();
     }
     public Nodo(int line,int col,String nodeType){
         this.line = line;
         this.col = col;
         this.nodeType = nodeType;
+        this.sentencias = new LinkedList<>();
     }
     public Nodo(int line,int col,String nodeType, String value){
         this.line = line;
         this.col = col;
         this.nodeType = nodeType;
         this.value = value;
+        this.sentencias = new LinkedList<>();
     }
 
     public Nodo(int line,int col,String name,String nodeType, String value){
@@ -32,6 +38,7 @@ public class Nodo {
         this.nodeType = nodeType;
         this.value = value;
         this.name = name;
+        this.sentencias = new LinkedList<>();
     }
 
     // Getters
@@ -54,6 +61,9 @@ public class Nodo {
     // Setters
 
     // Functions
+    public void insertSentencia(NodoSentencia sentencia) {
+        this.sentencias.add(sentencia);
+    }
     /*
 
 public String imprimeSentencia(){

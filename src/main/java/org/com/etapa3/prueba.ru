@@ -10,9 +10,7 @@ impl A{
         Int s;
         Bool b;
         Str ciudad;
-        while(s == 1){
-            ciudad= "Mendoza";
-        }
+        while(s == 1) ret "Mendoza";
     /? PRUEBA DE EXPRESIONES
     /?a[s||2||true || b] = 1;
     /?a[s && 2 && true && b] = 1;

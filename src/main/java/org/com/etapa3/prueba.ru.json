@@ -29,24 +29,16 @@
 						}
 					},
 					"sentencias":[
-						{
-							"nodo": "Asignacion",
+					{
+						"nodo": "Retorno",
+						"tipo":"null",
+						"expresion": {
+							"nodo": "Literal",
+							"nombre":"literal str",
 							"tipo":"Str",
-							"NodoIzq":{
-								"nodo": "Literal",
-								"nombre":"ciudad",
-								"tipo":"Str",
-								"valor":"null"
-							},
-							"NodoDer":{
-								"nodo": "Literal",
-								"nombre":"literal str",
-								"tipo":"Str",
-								"valor":"Mendoza"					
-							}
-						}
-					]
-
+							"valor":"Mendoza"
+						},
+					}
 				}
 				]
 		}

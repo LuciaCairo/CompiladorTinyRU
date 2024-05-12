@@ -3,9 +3,9 @@ package org.com.etapa3.ArbolAST;
 import java.util.LinkedList;
 
 public class NodoIf extends NodoLiteral {
-
     private NodoLiteral exp;
     private LinkedList<NodoSentencia> sentencias;
+    private NodoElse nodoElse = null;
 
     // Constructor
     public NodoIf(int line, int col, NodoLiteral exp){
@@ -14,15 +14,30 @@ public class NodoIf extends NodoLiteral {
         this.sentencias = new LinkedList<>();
     }
 
+    // Setters
+    public void setNodoElse(NodoElse nodoElse) {
+        this.nodoElse = nodoElse;
+    }
+
     // Functions
     public void insertSentencia(NodoSentencia sentencia) {
         this.sentencias.add(sentencia);
     }
 
+    @Override
     public String printSentencia(String space) {
-        return  "\"nodo\": \"If\",\n"
+        String json = "\"nodo\": \"If\",\n"
                 + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"},\n"
-                + space + "\"sentencias\":[]\n";
+                + space + "\"sentencias\":[\n";
+        if(!this.sentencias.isEmpty()){
+            for (int i = 0; i < this.sentencias.size(); i++) {
+                json += space + "{\n\t"+ space+ this.sentencias.get(i).printSentencia(space+"\t")+space+ "},\n";
+            }
+            json = json.substring(0,json.length()-2);
+        }
+        json +="\n" + space + "],\n"
+                + space + this.nodoElse.printSentencia(space) + space +"},\n";
+        return json;
     }
 
     /*private NodoExpresion declaracion;

@@ -16,7 +16,7 @@ public class NodoSentencia extends Nodo{
     }
 
     public String printSentencia(String space){
-        return "\"nodo\": \"Sentencia\"" ;
+        return "\"nodo\": \"Sentencia\"";
     }
     /*
     public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica{

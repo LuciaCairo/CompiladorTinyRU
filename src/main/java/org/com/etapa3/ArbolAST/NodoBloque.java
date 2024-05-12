@@ -2,15 +2,13 @@ package org.com.etapa3.ArbolAST;
 
 import java.util.LinkedList;
 
-public class NodoWhile extends NodoLiteral{
+public class NodoBloque extends NodoLiteral{
 
-    private NodoLiteral exp;
     private LinkedList<NodoSentencia> sentencias;
 
     // Constructor
-    public NodoWhile(int line,int col,NodoLiteral exp){
+    public NodoBloque(int line, int col){
         super(line, col);
-        this.exp = exp;
         this.sentencias = new LinkedList<>();
     }
 
@@ -19,21 +17,19 @@ public class NodoWhile extends NodoLiteral{
         this.sentencias.add(sentencia);
     }
 
-
     @Override
     public String printSentencia(String space) {
-        String json = "\"nodo\": \"While\",\n"
-                + space + "\"expresion\": {\n" + this.exp.printSentencia(space + "\t") + "\n" + space + "},\n"
+        String json = "\"nodo\": \"Bloque\",\n"
                 + space + "\"sentencias\":[\n";
-        if (!this.sentencias.isEmpty()) {
+        if(!this.sentencias.isEmpty()){
             for (int i = 0; i < this.sentencias.size(); i++) {
-                json += space + "{\n\t" + space + this.sentencias.get(i).printSentencia(space + "\t") + space + "},\n";
+                json += space + "{\n\t"+ space+ this.sentencias.get(i).printSentencia(space+"\t")+space+ "},\n";
             }
-            json = json.substring(0, json.length() - 2);
+            json = json.substring(0,json.length()-2);
         }
+        json +="\n" + space + "]\n";
         return json;
     }
-
 
     /*private NodoExpresion declaracion;
     private LinkedList<NodoSentencia> loop;

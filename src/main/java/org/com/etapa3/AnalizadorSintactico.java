@@ -13,8 +13,6 @@ public class AnalizadorSintactico {
     private static boolean isStart = false;
     private static int isConstr = 0;
     private static boolean isLocal = false;
-
-    private static boolean isMethod = true;
     private static TablaSimbolos ts;
     private static AST ast;
     public static void main(String[] args) {
@@ -25,7 +23,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -330,6 +328,7 @@ public class AnalizadorSintactico {
         NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
                 "constructor");
         ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
+        ast.getProfundidad().push(nodo);
 
         argumentosFormales();
         bloqueMetodo();
@@ -387,7 +386,7 @@ public class AnalizadorSintactico {
             NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
                     currentToken.getLexema());
             ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
-
+            ast.getProfundidad().push(nodo);
             match("id");
             argumentosFormales();
             match("->");
@@ -412,7 +411,7 @@ public class AnalizadorSintactico {
             NodoMetodo nodo = new NodoMetodo(currentToken.getLine(), currentToken.getCol(),
                     currentToken.getLexema());
             ast.setCurrentMetodo(nodo); // Actualizo el metodo actual
-
+            ast.getProfundidad().push(nodo);
             match("id");
             argumentosFormales();
             match("->");
@@ -532,16 +531,10 @@ public class AnalizadorSintactico {
     }
 
     private static void sentencias() {
-        // Sentencias del bloque del metodo
         NodoSentencia nodo = sentencia();
-        sentencias1();
+        (ast.getProfundidad().peek()).insertSentencia(nodo);
         // Cuando terminaron las sentencias
-        if (!isMethod){
-            ((NodoWhile)(ast.getProfundidad().peek())).insertSentencia(nodo);
-
-        }else{
-            ast.getCurrentMetodo().insertSentencia(nodo);
-        }
+        sentencias1();
 
     }
 
@@ -753,31 +746,46 @@ public class AnalizadorSintactico {
             match(";");
             return new NodoExpresion(line,col,"Sentencia Simple",null, null,exp);
         } else if (currentToken.getLexema().equals("if")){
-            match("if");
+            match("if"); // AST IF
             match("(");
             NodoLiteral exp = expresion();
             match(")");
-            sentencia();
-            sentencia1();
-            return new NodoIf(line,col,exp);
+            NodoIf nodoIf= new NodoIf(line,col,exp);
+            ast.getProfundidad().push(nodoIf);
+            NodoSentencia s = sentencia();
+            (ast.getProfundidad().peek()).insertSentencia(s);
+            ast.getProfundidad().pop();
+
+            // Caso de que tenga un else
+            NodoElse nodoElse = new NodoElse(line,col,nodoIf);
+            ast.getProfundidad().push(nodoElse);
+            sentencia1(); // AST ELSE
+            ast.getProfundidad().pop();
+
+            // Inserto el else en el nodo if
+            nodoIf.setNodoElse(nodoElse);
+            return nodoIf;
         } else if (currentToken.getLexema().equals("while")){
-            match("while");
+            match("while"); // AST While
             match("(");
             NodoLiteral exp = expresion();
             match(")");
-            isMethod = false;
             NodoWhile nodoW= new NodoWhile(line,col,exp);
             ast.getProfundidad().push(nodoW);
-            NodoSentencia sentencia = sentencia();
-            isMethod=true;
-            //sentencia();
+            NodoSentencia s = sentencia();
+            (ast.getProfundidad().peek()).insertSentencia(s);
+            ast.getProfundidad().pop();
             return nodoW;
         } else if (currentToken.getLexema().equals("{")){
-            bloque();
+            NodoBloque nodo = new NodoBloque(currentToken.getLine(), currentToken.getCol());
+            ast.getProfundidad().push(nodo);
+            bloque(); // AST Bloque
+            ast.getProfundidad().pop();
+            return nodo;
         } else if (currentToken.getLexema().equals("ret")){
-            match("ret");
-            NodoLiteral exp = (NodoLiteral) sentencia2();
-            return new NodoRet(line,col,exp);
+            match("ret"); // AST Retorno
+            NodoLiteral exp = sentencia2();
+            return new NodoExpresion(line,col,"Retorno",null, null, exp);
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -792,7 +800,8 @@ public class AnalizadorSintactico {
     private static void sentencia1() {
         if (currentToken.getLexema().equals("else")){
             match("else");
-            sentencia();
+            NodoSentencia s = sentencia();
+            (ast.getProfundidad().peek()).insertSentencia(s);
         }else if(currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("if")||
                 currentToken.getLexema().equals("while")||
@@ -811,7 +820,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia sentencia2() {
+    private static NodoLiteral sentencia2() {
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-") ||
                 currentToken.getLexema().equals("!") ||
