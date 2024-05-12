@@ -73,7 +73,12 @@ public class EntradaStruct {
     public Hashtable<String, EntradaAtributo> getAtributos() {
         return this.atributos;
     }
-
+    public EntradaAtributo getAtributo(String nombre) {
+        return this.atributos.get(nombre);
+    }
+    public EntradaMetodo getMetodo(String nombre) {
+        return this.metodos.get(nombre);
+    }
     public Hashtable<String, EntradaVariable> getVariables() {
         return this.variables;
     }
@@ -141,6 +146,14 @@ public class EntradaStruct {
             }
         }
         this.metodos.put(name, metodo);
+    }
+
+    public String isDeclaredAtributo(String name) {
+        if(this.atributos.containsKey(name)){
+            return this.atributos.get(name).getType();
+        } else {
+            return null;
+        }
     }
 
     public String printJSON_Struct(){

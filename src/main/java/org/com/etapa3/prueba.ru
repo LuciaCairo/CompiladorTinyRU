@@ -1,40 +1,31 @@
-/? Definir un atributo de tipo Array y ver que se este escribiendo bien el tipo en json
-/? CORRECTO: SEMANTICO - DECLARACIONES
-/? "nombre": "",
-/?   "structs": [
-/?   {
-/?   	"nombre": "Perro",
-/?   	"heredaDe": "Animal",
-/?   	"constructor": {
-/?   		"paramF": [ ]
-/?   	},
-/?   	"atributos": [
-/?   	{
-/?   		"nombre": "a",
-/?   		"tipo": "Char",
-/?   		"public": true,
-/?   		"posicion": 0
-/?   	},
-/?   	{
-/?   		"nombre": "agus",
-/?   		"tipo": "Array Int",
-/?   		"public": true,
-/?   		"posicion": 1
-/?   	}
+struct B{Int w;}
+impl B{ .(){}
+    fn b() -> A { }
+}
+struct A{Int b; B c; }
+impl A{
+    fn b(Int a) -> A { }
+    .(){
+        Array Int a;
+        Int s;
+        Bool b;
+        Str ciudad;
+        while(s == 1) ret "Mendoza";
+    /? PRUEBA DE EXPRESIONES
+    /?a[s||2||true || b] = 1;
+    /?a[s && 2 && true && b] = 1;
+    /?a[s == 2 == true == b] = 1;
+    /?a[++b] = 1;
+    /?a[s * 2 / true % b] = 1;
+    /?a[s + 2 - true + b ] = 1;
+    /?a[s < 2 ] = 1; /? tambien funciona con <=, <, >=
+    /?a[s || true && false == 5 * b < ++2 ] = 1;
+    /?self.c.w = 1;
+    /?if(s < 2){};
 
-struct Animal{
 
-
+    }
 }
 
-impl Animal{
-fn f0(Str a, Int b,Array Str string) -> Int{
 
-C v;
-}
-.(Int a){}
-}
-
-start{
-Str g;
-}
+start{}
