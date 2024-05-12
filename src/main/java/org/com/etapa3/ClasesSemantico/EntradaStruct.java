@@ -76,6 +76,9 @@ public class EntradaStruct {
     public EntradaAtributo getAtributo(String nombre) {
         return this.atributos.get(nombre);
     }
+    public EntradaMetodo getMetodo(String nombre) {
+        return this.metodos.get(nombre);
+    }
     public Hashtable<String, EntradaVariable> getVariables() {
         return this.variables;
     }
