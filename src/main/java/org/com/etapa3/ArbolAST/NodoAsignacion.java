@@ -70,10 +70,10 @@ public class NodoAsignacion extends NodoLiteral {
     */
     @Override
     public String printSentencia(String space) {
-        return "\"nodo\": \"Asignacion\",\n"
-                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-                + space + "\"NodoIzq\":{\n"+ this.izq.printSentencia(space+"\t")+"\n"+ space +"},\n"
-                + space + "\"NodoDer\":{\n"+ this.der.printSentencia(space+"\t")+ space +"\n" + space + "}\n";
+        return "\t\t\"nodo\": \"Asignacion\",\n"
+                + space + "\t\t\"tipo\":\""+ this.getNodeType() +"\",\n"
+                + space + "\t\t\"NodoIzq\":{\n"+ this.izq.printSentencia(space+"\t\t\t")+"\n\t\t"+ space +"},\n"
+                + space + "\t\t\"NodoDer\":{\n"+ this.der.printSentencia(space+"\t\t\t")+ space +"\n\t\t" + space + "}\n";
     }
 
 }

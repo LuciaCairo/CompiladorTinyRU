@@ -13,6 +13,8 @@ public class AnalizadorSintactico {
     private static boolean isStart = false;
     private static int isConstr = 0;
     private static boolean isLocal = false;
+
+    private static boolean isMethod = true;
     private static TablaSimbolos ts;
     private static AST ast;
     public static void main(String[] args) {
@@ -23,7 +25,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -534,7 +536,13 @@ public class AnalizadorSintactico {
         NodoSentencia nodo = sentencia();
         sentencias1();
         // Cuando terminaron las sentencias
-        ast.getCurrentMetodo().insertSentencia(nodo);
+        if (!isMethod){
+            ((NodoWhile)(ast.getProfundidad().peek())).insertSentencia(nodo);
+
+        }else{
+            ast.getCurrentMetodo().insertSentencia(nodo);
+        }
+
     }
 
     private static void sentencias1() {
@@ -757,9 +765,13 @@ public class AnalizadorSintactico {
             match("(");
             NodoLiteral exp = expresion();
             match(")");
+            isMethod = false;
+            NodoWhile nodoW= new NodoWhile(line,col,exp);
+            ast.getProfundidad().push(nodoW);
             NodoSentencia sentencia = sentencia();
+            isMethod=true;
             //sentencia();
-            return new NodoWhile(line,col,exp);
+            return nodoW;
         } else if (currentToken.getLexema().equals("{")){
             bloque();
         } else if (currentToken.getLexema().equals("ret")){
