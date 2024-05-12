@@ -741,7 +741,7 @@ public class AnalizadorSintactico {
             match(";");
             return nodo;
         } else if (currentToken.getLexema().equals("(") ){
-            NodoLiteral exp = sentenciaSimple(); // A1
+            NodoLiteral exp = sentenciaSimple(); // AST Sentencia Simple
             match(";");
             return new NodoExpresion(line,col,"Sentencia Simple",null, null,exp);
         } else if (currentToken.getLexema().equals("if")){
@@ -1038,7 +1038,7 @@ public class AnalizadorSintactico {
 
     private static NodoLiteral sentenciaSimple() {
         match("(");
-        NodoLiteral exp = expresion(); // A2
+        NodoLiteral exp = expresion();
         match(")");
         return exp;
     }
