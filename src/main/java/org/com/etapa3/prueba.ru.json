@@ -9,45 +9,53 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Asignacion",
-					"tipo":"Bool",
-					"NodoIzq":{
-						"nodo": "Literal",
-						"nombre":"b",
-						"tipo":"Bool",
-						"valor":"null"
-					},
-					"NodoDer":{
+					"nodo": "While",
+					"expresion": {
 						"nodo": "Expresion Binaria",
 						"tipo":"Bool",
 						"valor":"null",
-						"operador":"||",
+						"operador":"==",
 						"nodoIzq": {
 							"nodo": "Literal",
-							"nombre":"literal bool",
-							"tipo":"Bool",
-							"valor":"false"
+							"nombre":"s",
+							"tipo":"Int",
+							"valor":"null"
 						},
 						"nodoDer": {
-							"nodo": "Expresion Binaria",
-							"tipo":"Bool",
-							"valor":"null",
-							"operador":"||",
-							"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"1"
+						}
+					},
+					"sentencias":[
+						{
+							"nodo": "Asignacion",
+							"tipo":"Str",
+							"NodoIzq":{
 								"nodo": "Literal",
-								"nombre":"literal bool",
-								"tipo":"Bool",
-								"valor":"true"
+								"nombre":"ciudad",
+								"tipo":"Str",
+								"valor":"null"
 							},
-							"nodoDer": {
+							"NodoDer":{
 								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"1"
+								"nombre":"literal str",
+								"tipo":"Str",
+								"valor":"Mendoza"					
 							}
-						}					
-					}
+						}
+					]
+
 				}
+				]
+		}
+	},
+	{
+		"nombre":"b",
+		"Bloque": {
+				"sentencias":[
+
 				]
 		}
 	}
@@ -58,6 +66,14 @@
 	"metodos": [
 	{
 		"nombre":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	},
+	{
+		"nombre":"b",
 		"Bloque": {
 				"sentencias":[
 

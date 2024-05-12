@@ -19,9 +19,18 @@ public class NodoWhile extends NodoLiteral{
         this.sentencias.add(sentencia);
     }
     public String printSentencia(String space) {
-        return  "\"nodo\": \"While\",\n"
-                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"},\n"
-                + space + "\"sentencias\":[]\n";
+
+        String json = "\"nodo\": \"While\",\n"
+                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"},\n";
+        json += "\t\t\t\t\t\"sentencias\":[\n";
+        if(!this.sentencias.isEmpty()){
+            for (int i = 0; i < this.sentencias.size(); i++) {
+                json +="\t\t\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\t\t\t\t\t\t},";
+            }
+            json = json.substring(0,json.length()-1);
+        }
+        json +="\n\t\t\t\t\t]\n";
+        return json;
     }
 
     /*private NodoExpresion declaracion;

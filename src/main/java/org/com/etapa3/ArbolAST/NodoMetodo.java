@@ -33,7 +33,7 @@ public class NodoMetodo extends Nodo{
         json += "\t\t\t\t\"sentencias\":[\n";
         if(!this.sentencias.isEmpty()){
             for (int i = 0; i < this.sentencias.size(); i++) {
-                json +="\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\t\t\t\t},";
+                json +="\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\n\t\t\t\t},";
             }
             json = json.substring(0,json.length()-1);
         }
