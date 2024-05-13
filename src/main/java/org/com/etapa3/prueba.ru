@@ -1,8 +1,5 @@
-/? Este caso es para verificar que evalue el retorno de los metodos, en este caso el metodo b
-/?retorna un INT y en el ret, no estoy devolviendo nada, por lo tanto deberia salir error
-/? ERROR: SEMANTICO - DECLARACIONES
-/?   | NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
-/?   | LINEA 25 | COLUMNA 11 | El retorno del metodo 'b' no puede ser 'Int' porque esta definido como void|
+/? Este caso verifica que cuando el metodo devuelva el tipo declarado en su firma, pase sin problemas.
+/?CORRECTO: SEMANTICO - SENTENCIAS
 
 struct B{Int w;}
 impl B{ .(){}
@@ -10,7 +7,7 @@ impl B{ .(){}
 }
 struct A{Int b; B c; }
 impl A{
-    fn b(Int a) -> Int {
+    fn b(Int a) -> Str{
 
             Int s;
             Bool b;
@@ -23,23 +20,12 @@ impl A{
                 ciudad = "rosario";
 
             };
-            ret (s+1);
-           }
+    ret ciudad;
+    }
+    fn b1(Int a) -> Int{ret a;}
+    fn b2() -> Bool{ret false;}
+    fn b3() -> Char{ret 'a'; }
     .(){
-
-
-    /? PRUEBA DE EXPRESIONES
-    /?a[s||2||true || b] = 1;
-    /?a[s && 2 && true && b] = 1;
-    /?a[s == 2 == true == b] = 1;
-    /?a[++b] = 1;
-    /?a[s * 2 / true % b] = 1;
-    /?a[s + 2 - true + b ] = 1;
-    /?a[s < 2 ] = 1; /? tambien funciona con <=, <, >=
-    /?a[s || true && false == 5 * b < ++2 ] = 1;
-    /?self.c.w = 1;
-    /?if(s < 2){};
-
 
     }
 }

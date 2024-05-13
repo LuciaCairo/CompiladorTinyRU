@@ -2,10 +2,28 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombre": "A",
+	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombre":"constructor",
+		"nombreMetodo":"b2",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Retorno",
+					"tipo":"Bool",
+					"expresion": {
+						"nodo": "Literal",
+						"nombre":"literal bool",
+						"tipo":"Bool",
+						"valor":"false"
+					},
+
+				}
+				]
+		}
+	},
+	{
+		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -13,152 +31,17 @@
 		}
 	},
 	{
-		"nombre":"b",
+		"nombreMetodo":"b3",
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "While",
-					"expresion": {
-						"nodo": "Expresion Binaria",
-						"tipo":"Bool",
-						"valor":"null",
-						"operador":"==",
-						"nodoIzq": {
-							"nodo": "Literal",
-							"nombre":"s",
-							"tipo":"Int",
-							"valor":"null"
-						},
-						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"literal entero",
-							"tipo":"Int",
-							"valor":"1"
-						}
-					},
-					"sentencias":[
-					{
-						"nodo": "Bloque",
-						"sentencias":[
-						{
-							"nodo": "Asignacion",
-								"tipo":"Str",
-								"NodoIzq":{
-									"nodo": "Literal",
-									"nombre":"ciudad",
-									"tipo":"Str",
-									"valor":"null"
-								},
-								"NodoDer":{
-									"nodo": "Literal",
-									"nombre":"literal str",
-									"tipo":"Str",
-									"valor":"Mendoza"							
-								}
-						},
-						{
-							"nodo": "Asignacion",
-								"tipo":"Bool",
-								"NodoIzq":{
-									"nodo": "Literal",
-									"nombre":"b",
-									"tipo":"Bool",
-									"valor":"null"
-								},
-								"NodoDer":{
-									"nodo": "Literal",
-									"nombre":"literal bool",
-									"tipo":"Bool",
-									"valor":"false"							
-								}
-						},
-						{
-							"nodo": "If",
-							"expresion": {
-								"nodo": "Expresion Binaria",
-								"tipo":"Bool",
-								"valor":"null",
-								"operador":"==",
-								"nodoIzq": {
-									"nodo": "Literal",
-									"nombre":"s",
-									"tipo":"Int",
-									"valor":"null"
-								},
-								"nodoDer": {
-									"nodo": "Literal",
-									"nombre":"literal entero",
-									"tipo":"Int",
-									"valor":"2"
-								}
-							},
-							"sentencias":[
-							{
-								"nodo": "Asignacion",
-									"tipo":"Str",
-									"NodoIzq":{
-										"nodo": "Literal",
-										"nombre":"ciudad",
-										"tipo":"Str",
-										"valor":"null"
-									},
-									"NodoDer":{
-										"nodo": "Literal",
-										"nombre":"literal str",
-										"tipo":"Str",
-										"valor":"cordoba"								
-									}
-							}
-							],
-							"sentenciasElse ":[
-							{
-								"nodo": "Asignacion",
-									"tipo":"Str",
-									"NodoIzq":{
-										"nodo": "Literal",
-										"nombre":"ciudad",
-										"tipo":"Str",
-										"valor":"null"
-									},
-									"NodoDer":{
-										"nodo": "Literal",
-										"nombre":"literal str",
-										"tipo":"Str",
-										"valor":"rosario"								
-									}
-							}
-							]
-							},
-						}
-						]
-					}
-				},				{
-					"nodo": "Sentencia"
-				},				{
 					"nodo": "Retorno",
-					"tipo":"null",
+					"tipo":"Char",
 					"expresion": {
-"nodo": "Expresion Parentizada",
-						"tipo":"Int",
-						"expresion": {
-							"nodo": "Expresion Binaria",
-							"tipo":"Int",
-							"valor":"null",
-							"operador":"+",
-							"nodoIzq": {
-								"nodo": "Literal",
-								"nombre":"s",
-								"tipo":"Int",
-								"valor":"null"
-							},
-							"nodoDer": {
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"1"
-							}
-						},
-
+						"nodo": "Literal",
+						"nombre":"literal char",
+						"tipo":"Char",
+						"valor":"a"
 					},
 
 				}
@@ -168,10 +51,10 @@
 	]
 },
 {
-	"nombre": "B",
+	"nombreImpl": "B",
 	"metodos": [
 	{
-		"nombre":"constructor",
+		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -179,7 +62,7 @@
 		}
 	},
 	{
-		"nombre":"b",
+		"nombreMetodo":"b",
 		"Bloque": {
 				"sentencias":[
 

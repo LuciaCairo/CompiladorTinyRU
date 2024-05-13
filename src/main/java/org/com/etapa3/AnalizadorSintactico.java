@@ -785,7 +785,7 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("ret")){
             match("ret"); // AST Retorno
             NodoLiteral exp = sentencia2();
-            System.out.println(exp.getName());
+
             //AGREGA AGUS
             //si el retorno es void.
             if (exp == null){
@@ -799,11 +799,20 @@ public class AnalizadorSintactico {
                     throw new SemantErrorException(currentToken.getLine(),
                             currentToken.getCol(),
                             "El retorno del metodo '" + ts.getCurrentMetod().getName()+
-                            "' no puede ser '" + ts.getCurrentMetod().getRet() + "' porque esta definido como void" ,
+                            "' no puede ser '" + "void" + "' porque en su firma esta declarado como "+ts.getCurrentMetod().getRet() ,
+                            "sentencia");
+                }
+                //verifico q el ret sea igual al de la firma del metodo
+            }else {
+                if(!(ts.getCurrentMetod().getRet().equals(exp.getNodeType()))){
+                    throw new SemantErrorException(currentToken.getLine(),
+                            currentToken.getCol(),
+                            "El retorno del metodo '" + ts.getCurrentMetod().getName()+
+                                    "' no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ts.getCurrentMetod().getRet() +"'",
                             "sentencia");
                 }
             }
-            return new NodoExpresion(line,col,"Retorno",null, null, exp);
+            return new NodoExpresion(line,col,"Retorno",exp.getNodeType(), null, exp);
 
         } else{
             throw new SyntactErrorException(currentToken.getLine(),

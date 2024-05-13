@@ -48,7 +48,6 @@ public class AST {
         String n1= nodo1.getNodeType();
         String n2= nodo2.getNodeType();
         if(n1.equals(n2)){
-            System.out.println(nodo1.getNodeType());
             return (nodo1.getNodeType());
         }
         return null;
@@ -60,7 +59,7 @@ public class AST {
         json += "\"structs\": [\n";
         for(Map.Entry<String, NodoStruct> entry : structs.entrySet()) {
             NodoStruct value = entry.getValue();
-            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
+            json +="{\n\t\"nombreImpl\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
         }
         json = json.substring(0,json.length()-2);
         json += "\n]\n}";
