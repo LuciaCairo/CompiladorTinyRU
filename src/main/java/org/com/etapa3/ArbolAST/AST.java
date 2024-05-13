@@ -48,6 +48,7 @@ public class AST {
         String n1= nodo1.getNodeType();
         String n2= nodo2.getNodeType();
         if(n1.equals(n2)){
+            System.out.println(nodo1.getNodeType());
             return (nodo1.getNodeType());
         }
         return null;
