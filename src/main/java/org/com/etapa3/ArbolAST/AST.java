@@ -59,7 +59,11 @@ public class AST {
         json += "\"structs\": [\n";
         for(Map.Entry<String, NodoStruct> entry : structs.entrySet()) {
             NodoStruct value = entry.getValue();
+            if(value.getName().equals("START")){
+                json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStart()+"\n},\n";
+            } else {
             json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
+            }
         }
         json = json.substring(0,json.length()-2);
         json += "\n]\n}";

@@ -8,45 +8,6 @@
 		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
-				{
-					"nodo": "While",
-					"expresion": {
-						"nodo": "Expresion Binaria",
-						"tipo":"Bool",
-						"valor":"null",
-						"operador":"==",
-						"nodoIzq": {
-							"nodo": "Literal",
-							"nombre":"s",
-							"tipo":"Int",
-							"valor":"null"
-						},
-						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"literal entero",
-							"tipo":"Int",
-							"valor":"1"
-						}
-					},
-					"sentencias":[
-					{
-						"nodo": "Retorno",
-						"tipo":"null",
-						"expresion": {
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"Mendoza"
-						},
-					}
-				}
-				]
-		}
-	},
-	{
-		"nombre":"b",
-		"Bloque": {
-				"sentencias":[
 
 				]
 		}
@@ -73,6 +34,29 @@
 		}
 	}
 	]
+},
+{
+	"nombre": "START",
+				"sentencias":[
+				{
+					"nodo": "Asignacion",
+						"tipo":"Int",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"c",
+							"tipo":"Int",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"1"					
+						}
+
+				}
+				]
+
 }
 ]
 }

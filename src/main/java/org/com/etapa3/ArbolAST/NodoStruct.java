@@ -2,18 +2,21 @@ package org.com.etapa3.ArbolAST;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class NodoStruct extends Nodo{
     private String name;
     private HashMap<String, NodoMetodo> metodos;
     //private NodoMetodo constructor;
+    private LinkedList<NodoSentencia> sentencias; // Para el caso del start
 
     // Constructor
     public NodoStruct(int line, int col, String name){
         super(line, col);
         this.name = name;
         this.metodos = new HashMap<>();
+        this.sentencias = new LinkedList<>();
     }
 
     // Getters
@@ -27,6 +30,9 @@ public class NodoStruct extends Nodo{
 
     public void insertMetodo(String name, NodoMetodo nodo) {
         this.metodos.put(name, nodo);
+    }
+    public void insertSentencia(NodoSentencia sentencia) {
+        this.sentencias.add(sentencia);
     }
 
     public String printNodoStruct(){
@@ -43,6 +49,20 @@ public class NodoStruct extends Nodo{
         } else {
             json += "\t\"metodos\": [ ]\n";
         }
+        return json;
+    }
+
+    public String printNodoStart(){
+        String json = "";
+        json += "\t\t\t\t\"sentencias\":[\n";
+        if(!this.sentencias.isEmpty()){
+            for (int i = 0; i < this.sentencias.size(); i++) {
+                json +="\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\n\t\t\t\t},";
+            }
+            json = json.substring(0,json.length()-1);
+        }
+
+        json +="\n\t\t\t\t]\n";
         return json;
     }
 

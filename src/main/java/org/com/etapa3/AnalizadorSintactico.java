@@ -133,6 +133,12 @@ public class AnalizadorSintactico {
         ts.setCurrentStruct(e);
         ts.insertStruct_struct(e, currentToken);
         match("start");
+
+        // Construccion AST
+        NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), "START");
+        ast.setCurrentStruct(nodo); // Actualizo el struct actual
+        ast.getProfundidad().push(nodo);
+        ast.insertStruct("START",nodo); // Inserto el struct en el AST
         bloqueMetodo();
     }
 
@@ -885,22 +891,35 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("id")){
             // AST
             // Me encuentro con un identificador
-            // Verifico si está declarado como variable o como parametro del metodo en la TS
-            String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
-            if(tipoId == null){ // Si no, verifico si esta declarado en los atributos del struct
-                tipoId = ts.getCurrentStruct().isDeclaredAtributo(currentToken.getLexema());
-                if(tipoId == null){ // Si no está declarado se lanza una excepcion de error semantico
+            // Caso especial de start
+            if(isStart){
+                if(ts.getStruct("start").getVariables().get(currentToken.getLexema()) == null){
                     throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
                             "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
                                     ts.getCurrentMetod().getName() + "\"", "asignacion");
-                    } else {
-                    // Si esta declarado se guarda en la pila
+                } else {
+                    String tipoId = ts.getStruct("start").getVariables().get(currentToken.getLexema()).getType();
                     ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
-                            currentToken.getLexema(),tipoId,null));
+                            currentToken.getLexema(),tipoId, null));
                 }
-            } else { // Si esta declarado se guarda en la pila
-                ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
-                        currentToken.getLexema(),tipoId, null));
+            } else {
+                // Verifico si está declarado como variable o como parametro del metodo en la TS
+                String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
+                if(tipoId == null){ // Si no, verifico si esta declarado en los atributos del struct
+                    tipoId = ts.getCurrentStruct().isDeclaredAtributo(currentToken.getLexema());
+                    if(tipoId == null){ // Si no está declarado se lanza una excepcion de error semantico
+                        throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
+                                "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
+                                        ts.getCurrentMetod().getName() + "\"", "asignacion");
+                    } else {
+                        // Si esta declarado se guarda en la pila
+                        ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                                currentToken.getLexema(),tipoId,null));
+                    }
+                } else { // Si esta declarado se guarda en la pila
+                    ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                            currentToken.getLexema(),tipoId, null));
+                }
             }
             NodoLiteral nodoD= (NodoLiteral) accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
