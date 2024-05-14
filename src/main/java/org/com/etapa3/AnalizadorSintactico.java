@@ -23,7 +23,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -791,7 +791,35 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("ret")){
             match("ret"); // AST Retorno
             NodoLiteral exp = sentencia2();
-            return new NodoExpresion(line,col,"Retorno",null, null, exp);
+
+            //AGREGA AGUS
+            //si el retorno es void.
+            if (exp == null){
+                //verifico que le metodo, me devuelva void realmente
+                if(ts.getCurrentMetod().getRet().equals("void")){
+
+                    //creo un nodo exp, para poder pasarlo al ret.
+                    exp = new NodoLiteral(line,col,"Ret;","void",";");
+                    return new NodoExpresion(line,col,"Retorno","void", ";", exp);
+                }else{
+                    throw new SemantErrorException(currentToken.getLine(),
+                            currentToken.getCol(),
+                            "El retorno del metodo '" + ts.getCurrentMetod().getName()+
+                            "' no puede ser '" + "void" + "' porque en su firma esta declarado como "+ts.getCurrentMetod().getRet() ,
+                            "sentencia");
+                }
+                //verifico q el ret sea igual al de la firma del metodo
+            }else {
+                if(!(ts.getCurrentMetod().getRet().equals(exp.getNodeType()))){
+                    throw new SemantErrorException(currentToken.getLine(),
+                            currentToken.getCol(),
+                            "El retorno del metodo '" + ts.getCurrentMetod().getName()+
+                                    "' no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ts.getCurrentMetod().getRet() +"'",
+                            "sentencia");
+                }
+            }
+            return new NodoExpresion(line,col,"Retorno",exp.getNodeType(), null, exp);
+
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1088,6 +1116,7 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         // Armamos la expresion (unaria o binaria)
         NodoLiteral nodoI = expAnd();
+
         NodoLiteral nodoD = expresion1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
@@ -1302,14 +1331,17 @@ public class AnalizadorSintactico {
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         String op = currentToken.getLexema();
         NodoLiteral nodoD = expAd1();
+
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        if(!(ast.checkTypes(nodoI , nodoD) == "Int")){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
+
+        if(!(ast.checkTypes(nodoI , nodoD).equals("Int"))){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
+
             throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar una operacion de " + op + "entre un "+ nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
+                    "Incompatibilidad de tipos. No se puede realizar una operacion de " + op + " entre un "+ nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
                     "expCompuesta1");
         }
         return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
@@ -1369,11 +1401,15 @@ public class AnalizadorSintactico {
         NodoLiteral nodoI = expUn();
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         String op= currentToken.getLexema();
+
         NodoLiteral nodoD = expMul1();
+
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             //ast.getProfundidad().pop();
+
             return nodoI; // Es unaria
         } // Si no, es binaria
+
         //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
         if(!(ast.checkTypes(nodoI , nodoD) == "Int")){
             throw new SemantErrorException(line, col,
@@ -1453,6 +1489,7 @@ public class AnalizadorSintactico {
                         "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
                         "expCompuesta1");
             } else if (exp.getNodeType() != "Int") {
+                ;
                 throw new SemantErrorException(line, col,
                         "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
                         "expCompuesta1");
@@ -1592,10 +1629,12 @@ public class AnalizadorSintactico {
             NodoLiteral nodoI = primario();
             int line = currentToken.getLine();
             int col = currentToken.getCol();
+
             NodoLiteral nodoD = (NodoLiteral)operando1();
             if (nodoD == null) {
                 return nodoI;
             }
+
             return new NodoAcceso(line, col, nodoI, nodoD);
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
@@ -1683,6 +1722,7 @@ public class AnalizadorSintactico {
         } else if(currentToken.getLexema().equals("self")){
             return (NodoLiteral) accesoSelf();
         } else if(currentToken.getName().equals("id")) {
+
             int line = currentToken.getLine();
             int col = currentToken.getCol();
             String identificador = currentToken.getLexema(); // Antes de que machee

@@ -42,7 +42,8 @@ public class NodoStruct extends Nodo{
             for(Map.Entry<String, NodoMetodo> entry : metodos.entrySet()) {
                 String key = entry.getKey();
                 NodoMetodo value = entry.getValue();
-                json += "\n\t{\n\t\t\"nombre\":\""+ value.getName() + "\",\n\t\t\"Bloque\": {\n"+ value.printNodoMet() + "\t\t}\n\t},";
+
+                json += "\n\t{\n\t\t\"nombreMetodo\":\""+ value.getName() + "\",\n\t\t\"Bloque\": {\n"+ value.printNodoMet() + "\t\t}\n\t},";
             }
             json = json.substring(0,json.length()-1);
             json += "\n\t]";

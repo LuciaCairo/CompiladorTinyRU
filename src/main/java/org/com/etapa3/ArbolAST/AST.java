@@ -62,7 +62,7 @@ public class AST {
             if(value.getName().equals("START")){
                 json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStart()+"\n},\n";
             } else {
-            json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
+            json +="{\n\t\"nombreImpl\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
             }
         }
         json = json.substring(0,json.length()-2);

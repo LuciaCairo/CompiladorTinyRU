@@ -229,12 +229,11 @@ public class AnalizadorSemantico {
 
     public static void igualFirma(EntradaMetodo metodo1, EntradaMetodo metodo2) {
         //Verificar que los metodos sean st
-        if (!metodo1.getSt().equals(metodo2.getSt())) {
+        if (metodo1.getSt()) {
             // falta st en el metodo
             throw new SemantErrorException(metodo1.getLine(), metodo1.getCol(),
                     "No se puede redefinir el metodo heredado \"" + metodo1.getName() +
-                            "\" porque no tienen la misma firma" +
-                            "Para redefinir un metodo este debe deben tener la misma firma que su metodo ancestro incluyendo si es Static"
+                            "\" porque es estatico"
                     ,"insertMetodoHeredado");
         }
 
