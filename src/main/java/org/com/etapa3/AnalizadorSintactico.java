@@ -818,8 +818,6 @@ public class AnalizadorSintactico {
                             "sentencia");
                 }
             }
-            return new NodoExpresion(line,col,"Retorno",exp.getNodeType(), null, exp);
-
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -827,9 +825,7 @@ public class AnalizadorSintactico {
                             "Se encontró " + currentToken.getLexema(),
                     "sentencia");
         }
-        // Borrar esto
-        NodoSentencia r = new NodoSentencia(1,1,"nose");
-        return r;
+        return null;
     }
     private static void sentencia1() {
         if (currentToken.getLexema().equals("else")){
