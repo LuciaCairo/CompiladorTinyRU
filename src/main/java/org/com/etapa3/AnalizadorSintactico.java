@@ -52,7 +52,7 @@ public class AnalizadorSintactico {
         l = new AnalizadorLexico();
         ts = new TablaSimbolos();
         ast = new AST();
-        s = new AnalizadorSemantico(ts);
+        s = new AnalizadorSemantico(ts,ast);
         try {
             l.analyzeFile(input);
             // Comenzar el análisis sintáctico desde el símbolo inicial ⟨program⟩
@@ -65,6 +65,7 @@ public class AnalizadorSintactico {
             s.checkDecl();  // Chequeo de Declaraciones
             //String json = ts.printJSON_Tabla(fileName);
             //ts.saveJSON(json, fileName + ".json");
+            s.checkSent();  // Chequeo de Sentencias
             String json = ast.printJSON_Arbol(fileName);
             ast.saveJSON(json, fileName + ".json");
             System.out.println("CORRECTO: SEMANTICO - SENTENCIAS\n");
@@ -537,7 +538,7 @@ public class AnalizadorSintactico {
     }
 
     private static void sentencias() {
-        NodoSentencia nodo = sentencia();
+        NodoLiteral nodo = sentencia();
         (ast.getProfundidad().peek()).insertSentencia(nodo);
         // Cuando terminaron las sentencias
         sentencias1();
@@ -737,14 +738,14 @@ public class AnalizadorSintactico {
         return "Array " + tipo;
     }
 
-    private static NodoSentencia sentencia() {
+    private static NodoLiteral sentencia() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         if (currentToken.getLexema().equals(";")){
             match(";");
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
-            NodoSentencia nodo = asignacion(); // AST Asignaciones
+            NodoLiteral nodo = asignacion(); // AST Asignaciones
             match(";");
             return nodo;
         } else if (currentToken.getLexema().equals("(") ){
@@ -758,7 +759,7 @@ public class AnalizadorSintactico {
             match(")");
             NodoIf nodoIf= new NodoIf(line,col,exp);
             ast.getProfundidad().push(nodoIf);
-            NodoSentencia s = sentencia();
+            NodoLiteral s = sentencia();
             (ast.getProfundidad().peek()).insertSentencia(s);
             ast.getProfundidad().pop();
 
@@ -777,7 +778,7 @@ public class AnalizadorSintactico {
             match(")");
             NodoWhile nodoW= new NodoWhile(line,col,exp);
             ast.getProfundidad().push(nodoW);
-            NodoSentencia s = sentencia();
+            NodoLiteral s = sentencia();
             (ast.getProfundidad().peek()).insertSentencia(s);
             ast.getProfundidad().pop();
             return nodoW;
@@ -828,7 +829,7 @@ public class AnalizadorSintactico {
     private static void sentencia1() {
         if (currentToken.getLexema().equals("else")){
             match("else");
-            NodoSentencia s = sentencia();
+            NodoLiteral s = sentencia();
             (ast.getProfundidad().peek()).insertSentencia(s);
         }else if(currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("if")||
@@ -907,7 +908,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia asignacion() {
+    private static NodoLiteral asignacion() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         if (currentToken.getName().equals("id")){
@@ -1004,12 +1005,12 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia accesoVarSimple() {
+    private static NodoLiteral accesoVarSimple() {
         match("id");
         return accesoVarSimple1();
     }
 
-    private static NodoSentencia accesoVarSimple1() {
+    private static NodoLiteral accesoVarSimple1() {
         if (currentToken.getLexema().equals(".")){
            return encadenadosSimples();
         }else if(currentToken.getLexema().equals("[")){
@@ -1036,10 +1037,10 @@ public class AnalizadorSintactico {
         return null;
     }
 
-    private static NodoSentencia encadenadosSimples() {
-       NodoLiteral nodoI = (NodoLiteral) encadenadoSimple();
+    private static NodoLiteral encadenadosSimples() {
+        NodoLiteral nodoI = (NodoLiteral) encadenadoSimple();
        ast.getProfundidad().push(nodoI);
-       NodoLiteral nodoD = (NodoLiteral) encadenadosSimples1();
+        NodoLiteral nodoD = (NodoLiteral) encadenadosSimples1();
        if(nodoD==null){
            ast.getProfundidad().pop();
            return nodoI;
@@ -1051,7 +1052,7 @@ public class AnalizadorSintactico {
         // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
-    private static NodoSentencia encadenadosSimples1() {
+    private static NodoLiteral encadenadosSimples1() {
         if (currentToken.getLexema().equals(".")){
             return encadenadosSimples();
         }else if(currentToken.getLexema().equals("=")){
@@ -1065,12 +1066,12 @@ public class AnalizadorSintactico {
         return null;
     }
 
-    private static NodoSentencia accesoSelfSimple() {
+    private static NodoLiteral accesoSelfSimple() {
         match("self");
         return accesoSelfSimple1();
     }
 
-    private static NodoSentencia accesoSelfSimple1() {
+    private static NodoLiteral accesoSelfSimple1() {
         if (currentToken.getLexema().equals(".")){
             return encadenadosSimples();
         }else if(currentToken.getLexema().equals("=")){
@@ -1084,7 +1085,7 @@ public class AnalizadorSintactico {
         return null;
     }
 
-    private static NodoSentencia encadenadoSimple() {
+    private static NodoLiteral encadenadoSimple() {
         match(".");
         // Verifico si el struct existe
         if (ts.getStruct(ast.getProfundidad().peek().getNodeType()) != null) {
@@ -1625,7 +1626,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia operando1() {
+    private static NodoLiteral operando1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         }else if(currentToken.getLexema().equals("||")||
@@ -1818,7 +1819,7 @@ public class AnalizadorSintactico {
         // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
-    private static NodoSentencia expresionParentizada1() {
+    private static NodoLiteral expresionParentizada1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         }else if(currentToken.getLexema().equals(">=")||
@@ -1847,7 +1848,7 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static NodoSentencia accesoSelf() {
+    private static NodoLiteral accesoSelf() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         // Guardo a self como (nombre: A, type: A), en vez de normalmente : (nombre: a, type: A)
@@ -1866,7 +1867,7 @@ public class AnalizadorSintactico {
         // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b);
     }
 
-    private static NodoSentencia accesoSelf1() {
+    private static NodoLiteral accesoSelf1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -1896,11 +1897,11 @@ public class AnalizadorSintactico {
         return null;
 
     }
-    private static NodoSentencia accesoVar() {
+    private static NodoLiteral accesoVar() {
         match("id");
         return accesoVar1();
     }
-    private static NodoSentencia accesoVar1() {
+    private static NodoLiteral accesoVar1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals("[")){
@@ -1956,7 +1957,7 @@ public class AnalizadorSintactico {
         return null;
 
     }
-    private static NodoSentencia accesoVar2() {
+    private static NodoLiteral accesoVar2() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -1985,7 +1986,7 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static NodoSentencia llamadaMetodo() {
+    private static NodoLiteral llamadaMetodo() {
         match("id");
         argumentosActuales();
 
@@ -2010,7 +2011,7 @@ public class AnalizadorSintactico {
         // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
-    private static NodoSentencia llamadaMetodo1() {
+    private static NodoLiteral llamadaMetodo1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -2039,7 +2040,7 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static NodoSentencia llamadaMetodoEstatico(boolean isPred) {
+    private static NodoLiteral llamadaMetodoEstatico(boolean isPred) {
         match("struct_name");
         match(".");
         // Verifico que el metodo este declarado en el struct
@@ -2092,7 +2093,7 @@ public class AnalizadorSintactico {
 
 
     }
-    private static NodoSentencia llamadaMetodoEstatico1() {
+    private static NodoLiteral llamadaMetodoEstatico1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -2122,11 +2123,11 @@ public class AnalizadorSintactico {
         return null;
     }
 
-    private static NodoSentencia llamadaConstructor() {
+    private static NodoLiteral llamadaConstructor() {
         match("new");
         return llamadaConstructor1();
     }
-    private static NodoSentencia llamadaConstructor1() {
+    private static NodoLiteral llamadaConstructor1() {
         if (currentToken.getName().equals("struct_name")){ // a = new Fibonacci();
             String type = currentToken.getLexema();
             ast.getProfundidad().push(new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),
@@ -2176,7 +2177,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia llamadaConstructor2() {
+    private static NodoLiteral llamadaConstructor2() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -2269,7 +2270,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia encadenado() {
+    private static NodoLiteral encadenado() {
         // Verifico si el id desde el que se quiere acceder es un struct
         if (ts.getStruct(ast.getProfundidad().peek().getNodeType()) == null) {
             throw new SyntactErrorException(currentToken.getLine(),
@@ -2282,7 +2283,7 @@ public class AnalizadorSintactico {
         return encadenado1();
     }
 
-    private static NodoSentencia encadenado1() {
+    private static NodoLiteral encadenado1() {
         if (currentToken.getName().equals("id")){
             int line = currentToken.getLine();
             int col = currentToken.getCol();
@@ -2335,7 +2336,7 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static NodoSentencia llamadaMetodoEncadenado() {
+    private static NodoLiteral llamadaMetodoEncadenado() {
         match("id");
         argumentosActuales();
         NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) ast.getProfundidad().pop();
@@ -2355,7 +2356,7 @@ public class AnalizadorSintactico {
         // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
-    private static NodoSentencia llamadaMetodoEncadenado1() {
+    private static NodoLiteral llamadaMetodoEncadenado1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
@@ -2384,11 +2385,11 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static NodoSentencia accesoVariableEncadenado() {
+    private static NodoLiteral accesoVariableEncadenado() {
         match("id");
         return accesoVariableEncadenado1();
     }
-    private static NodoSentencia accesoVariableEncadenado1() {
+    private static NodoLiteral accesoVariableEncadenado1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
         } else if(currentToken.getLexema().equals("[")){

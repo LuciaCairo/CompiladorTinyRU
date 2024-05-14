@@ -1,5 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.TablaSimbolos;
+
 import java.util.LinkedList;
 
 public class NodoLlamadaMetodo extends NodoLiteral{
@@ -33,18 +35,28 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         this.argumentos.add(argumento);
     }
 
-    /*public String printNodoMet(){
-        String json = "";
-        json += "\t\t\t\t\"sentencias\":[\n";
-        if(!this.sentencias.isEmpty()){
-            for (int i = 0; i < this.sentencias.size(); i++) {
-                json +="\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\t\t\t\t},";
+    @Override
+    public String printSentencia(String space) {
+        String json = space + "\"nodo\": \"Llamada Metodo\",\n"
+                + space + "\"metodo\": {\n"+ this.metodo +"\n" + space +"},\n";
+        if (!this.argumentos.isEmpty() && !(this.argumentos.getFirst() == null) ) {
+            json +=  space + "\"argumentos\":[\n";
+            for (int i = 0; i < this.argumentos.size(); i++) {
+                json += space + "{\n\t" + space + this.argumentos.get(i).printSentencia(space + "\t") + space + "},\n";
             }
-            json = json.substring(0,json.length()-1);
+            json = json.substring(0, json.length() - 2);
+        } else {
+            json +=  space + "\"argumentos\":[]\n";
         }
-
-        json +="\n\t\t\t\t]\n";
         return json;
-    }*/
+    }
+
+    @Override
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoLlamadaMetodo: metodo(lista expresiones)
+        // Verificar que el metodo exista en su structs padre en la ts
+        // Verificar los argumentos de la llamada coincidan en tipo y cantidad con los argumentos que espera el metodo
+        return true;
+    }
 
 }

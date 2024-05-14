@@ -1,15 +1,13 @@
 package org.com.etapa3.ArbolAST;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 
 public class NodoStruct extends Nodo{
     private String name;
     private HashMap<String, NodoMetodo> metodos;
-    //private NodoMetodo constructor;
-    private LinkedList<NodoSentencia> sentencias; // Para el caso del start
+    private LinkedList<NodoLiteral> sentencias; // Para el caso del start
 
     // Constructor
     public NodoStruct(int line, int col, String name){
@@ -24,6 +22,9 @@ public class NodoStruct extends Nodo{
         return name;
     }
 
+    public HashMap<String, NodoMetodo> getMetodos() {
+        return metodos;
+    }
     // Setters
 
     // Functions
@@ -31,7 +32,7 @@ public class NodoStruct extends Nodo{
     public void insertMetodo(String name, NodoMetodo nodo) {
         this.metodos.put(name, nodo);
     }
-    public void insertSentencia(NodoSentencia sentencia) {
+    public void insertSentencia(NodoLiteral sentencia) {
         this.sentencias.add(sentencia);
     }
 
@@ -66,58 +67,6 @@ public class NodoStruct extends Nodo{
         json +="\n\t\t\t\t]\n";
         return json;
     }
-
-    /*
-    public HashMap<String, NodoMetodo> getMetodos() {
-        return metodos;
-    }
-
-
-
-    public void putConstantes(String nombre, NodoSentencia cte) {
-        this.constantes.put(nombre, cte);
-    }
-
-    public void setConstructor(NodoMetodo constructor) {
-        this.constructor = constructor;
-    }
-
-    public NodoMetodo getConstructor() {
-        return constructor;
-    }
-
-    public HashMap<String, NodoSentencia> getConstantes() {
-        return constantes;
-    }
-
-
-
-
-    @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        if(!constantes.isEmpty()){
-            for(Map.Entry<String, NodoSentencia> entry : constantes.entrySet()) {
-                String key = entry.getKey();
-                NodoAsignacion value = (NodoAsignacion) entry.getValue();
-                value.verifica(ts);
-            }
-
-        }
-        if(!metodos.isEmpty()){
-
-            for(Map.Entry<String, NodoMetodo> entry : metodos.entrySet()) {
-                String key = entry.getKey();
-                NodoMetodo value = entry.getValue();
-                value.verifica(ts);
-            }
-
-        }
-        if(this.constructor != null){
-            this.constructor.verifica(ts);
-        }
-        return true;
-    }*/
-
 
 }
 

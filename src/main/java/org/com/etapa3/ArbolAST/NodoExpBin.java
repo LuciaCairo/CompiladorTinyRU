@@ -1,5 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.TablaSimbolos;
+
 public class NodoExpBin extends NodoLiteral {
     private NodoLiteral izq;
     private NodoLiteral der;
@@ -23,11 +25,9 @@ public class NodoExpBin extends NodoLiteral {
     public void setNodoD(NodoLiteral der) {
         this.der = der;
     }
-
     public void setNodoI(NodoLiteral izq) {
         this.izq = izq;
     }
-
     public void setOp(String op) {
         this.op = op;
     }
@@ -41,6 +41,13 @@ public class NodoExpBin extends NodoLiteral {
                 + space + "\"operador\":\""+ this.op +"\",\n"
                 + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +"\n" + space +"},\n"
                 + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +"\n" + space +"}";
+    }
+
+    @Override
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoExpBin: nodoI op nodoD
+        // Verificar que el nodoI y el nodoD sean de tipo "Int"
+        return true;
     }
 
     /*

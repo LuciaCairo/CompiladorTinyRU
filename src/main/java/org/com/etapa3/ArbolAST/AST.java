@@ -30,6 +30,9 @@ public class AST {
     public Stack<Nodo> getProfundidad() {
         return profundidad;
     }
+    public HashMap<String,NodoStruct> getStructs() {
+        return structs;
+    }
 
 
     // Setters
@@ -84,37 +87,6 @@ public class AST {
         }
     }
 
-    /*
-
-
-
-
-    public NodoAST popScope() {
-        return this.scope.pop();
-    }
-
-    public void pushScope(NodoAST scope) {
-        this.scope.push(scope);
-    }
-
-    public NodoAST peekScope(){
-        return this.scope.peek();
-    }
-
-    public Stack<NodoAST> getScope() {
-        return scope;
-    }
-
-
-
-
-    public boolean verifica(TablaDeSimbolos ts)throws ExcepcionSemantica{
-        for (int i = 0; i < scope.size(); i++) {
-            NodoClase nC = (NodoClase) scope.get(i);
-            nC.verifica(ts);
-        }
-        return true;
-    }*/
 
 }
 

@@ -1,6 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
 import java.util.LinkedList;
+import org.com.etapa3.*;
 
 // Este es el nodo con la estructura general del que heredan todos los nodos
 public class Nodo {
@@ -9,7 +10,7 @@ public class Nodo {
     private String value;
     private String nodeType; // Tipo de nodo
     private String name;
-    private LinkedList<NodoSentencia> sentencias;
+    private LinkedList<NodoLiteral> sentencias;
 
 
     // Constructores
@@ -61,16 +62,12 @@ public class Nodo {
     // Setters
 
     // Functions
-    public void insertSentencia(NodoSentencia sentencia) {
+    public void insertSentencia(NodoLiteral sentencia) {
         this.sentencias.add(sentencia);
     }
-    /*
 
-public String imprimeSentencia(){
-        return "\"nodo\":\"NodoAST\"";
-    }
-
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
+    public boolean checkTypes(TablaSimbolos ts){
+        // En todos los casos setear los tipos correspondientes una vez que se chequearon
         return true;
-    }*/
+    }
 }

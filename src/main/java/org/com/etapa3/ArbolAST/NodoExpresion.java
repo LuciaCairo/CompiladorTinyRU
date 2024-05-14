@@ -1,7 +1,9 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.TablaSimbolos;
+
 // Este es el nodo con la estructura general del que heredan todos los nodos
-public class NodoExpresion extends NodoLiteral{
+public class NodoExpresion extends NodoLiteral {
 
     private NodoLiteral exp;
 
@@ -23,6 +25,13 @@ public class NodoExpresion extends NodoLiteral{
                     + space + "\"expresion\": {\n" + this.exp.printSentencia(space + "\t") + "\n" + space + "},\n";
 
         }
+    }
+
+    @Override
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoExpresion:
+        // Aca solo setear el valor del tipo
+        return true;
     }
 
     /*private NodoExpresion declaracion;

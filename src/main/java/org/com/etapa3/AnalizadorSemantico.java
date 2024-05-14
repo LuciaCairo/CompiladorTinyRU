@@ -1,5 +1,9 @@
 package org.com.etapa3;
 
+import org.com.etapa3.ArbolAST.AST;
+import org.com.etapa3.ArbolAST.NodoMetodo;
+import org.com.etapa3.ArbolAST.NodoLiteral;
+import org.com.etapa3.ArbolAST.NodoStruct;
 import org.com.etapa3.ClasesSemantico.*;
 
 
@@ -7,12 +11,14 @@ import java.util.*;
 
 public class AnalizadorSemantico {
     TablaSimbolos ts;
+    AST ast;
     HashSet<String> enProgreso = new HashSet<>();
     HashSet<String> visitados = new HashSet<>();
 
     // Constructor
-    public AnalizadorSemantico(TablaSimbolos ts){
+    public AnalizadorSemantico(TablaSimbolos ts, AST ast){
         this.ts = ts;
+        this.ast = ast;
     }
 
     // Funcion para el chequeo de Declaraciones
@@ -290,5 +296,84 @@ public class AnalizadorSemantico {
         }
 
         // Si pasó todas las verificaciones, no hay error
+    }
+
+    // Funcion para el chequeo de Sentencias
+    public void checkSent() {
+
+        // Recorro los nodos del AST
+
+        // Recorro cada struct
+        for (Map.Entry<String, NodoStruct> entry : ast.getStructs().entrySet()) {
+            NodoStruct value = entry.getValue();
+            ast.setCurrentStruct(value);
+
+            // Primero verifico si el struct es start (ya que es un caso especial de struct)
+            if(value.getName().equals("START")){
+                // El start no tiene metodos
+                // start{ sentencias }
+                /*for (EntradaVariable v : struct.getVariables().values()) {
+                            String[] palabras = v.getType().split(" ");
+                            String isArray = palabras[0];
+                            if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
+                                    && !isArray.equals("Array")){
+                                throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo no definido: el tipo \"" + v.getType() +
+                                        "\" de la variable \"" + v.getName() + "\" no esta definido", "AS");
+                            };
+                        }*/
+            } else { // Ahora para los demas structs que no son start
+
+                // Recorro todos los nodos metodos del struct
+                for (NodoMetodo m : value.getMetodos().values()) {
+
+                    // Recorro las sentencias del metodo
+                    // Las sentencias pueden ser:
+                    // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
+                    for (NodoLiteral s : value.getMetodos().get(m.getName()).getSentencias()) {
+
+                        // Para cada sentencia asigno y verifico sus tipos
+                        s.checkTypes(ts);
+
+                    }
+
+                    /*// Verifico si el metodo es el constructor (ya que es un caso especial de metodo)
+                            // Para constructor no hay que verificar si la declaracion de retorno es correcta
+                            if(!m.getName().equals("constructor")){
+                                String[] palabras = m.getRet().split(" ");
+                                String isArray = palabras[0];
+                                if((!ts.getTableStructs().containsKey(m.getRet()) // Verificar las declaraciones de retorno
+                                        && !ts.getStructsPred().containsKey(m.getRet()))
+                                        && !m.getRet().equals("void")
+                                        && !isArray.equals("Array")){
+                                    throw new SemantErrorException(m.getLine(), m.getCol(), "Tipo no definido: el tipo \"" + m.getRet() +
+                                            "\" de retorno no esta definido", "AS");
+                                };
+                            }
+
+                            // Ver que declaracion de parametros en metodos esten correctas (por ejemplo Base b, ver que Base exista)
+                            for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
+                                String[] palabras = p.getType().split(" ");
+                                String isArray = palabras[0];
+                                if(!ts.getTableStructs().containsKey(p.getType()) && !ts.getStructsPred().containsKey(p.getType())
+                                        && !isArray.equals("Array")){
+                                    throw new SemantErrorException(p.getLine(), p.getCol(), "Tipo de parametro no definido: \"" + p.getType() + "\" no esta definido", "AS");
+                                };
+                            */
+
+                            /*// Ver que declaracion de variables este bien en metodos (por ejemplo Base b, ver que Base exista)
+                            for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
+                                String[] palabras = v.getType().split(" ");
+                                String isArray = palabras[0];
+                                if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
+                                        && !isArray.equals("Array")){
+                                    throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo de variable no definido: \"" + v.getType() + "\" no esta definido", "AS");
+                                };
+                            }*/
+                        }
+                    }
+
+
+
+        }
     }
 }
