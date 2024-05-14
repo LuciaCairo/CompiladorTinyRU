@@ -23,7 +23,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -750,7 +750,7 @@ public class AnalizadorSintactico {
         } else if (currentToken.getLexema().equals("(") ){
             NodoLiteral exp = sentenciaSimple(); // AST Sentencia Simple
             match(";");
-            return new NodoExpresion(line,col,"Sentencia Simple",null, null,exp);
+            return new NodoExpresion(line,col,"Sentencia Simple",exp.getNodeType(), null,exp);
         } else if (currentToken.getLexema().equals("if")){
             match("if"); // AST IF
             match("(");
@@ -767,7 +767,6 @@ public class AnalizadorSintactico {
             ast.getProfundidad().push(nodoElse);
             sentencia1(); // AST ELSE
             ast.getProfundidad().pop();
-
             // Inserto el else en el nodo if
             nodoIf.setNodoElse(nodoElse);
             return nodoIf;
@@ -792,7 +791,6 @@ public class AnalizadorSintactico {
             match("ret"); // AST Retorno
             NodoLiteral exp = sentencia2();
 
-            //AGREGA AGUS
             //si el retorno es void.
             if (exp == null){
                 //verifico que le metodo, me devuelva void realmente
@@ -808,7 +806,7 @@ public class AnalizadorSintactico {
                             "' no puede ser '" + "void" + "' porque en su firma esta declarado como "+ts.getCurrentMetod().getRet() ,
                             "sentencia");
                 }
-                //verifico q el ret sea igual al de la firma del metodo
+                // Verifico q el ret sea igual al de la firma del metodo
             }else {
                 if(!(ts.getCurrentMetod().getRet().equals(exp.getNodeType()))){
                     throw new SemantErrorException(currentToken.getLine(),
@@ -952,7 +950,10 @@ public class AnalizadorSintactico {
 
             if (nodoD != null){
                 nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
-                        nodoI,nodoD);
+                        nodoI,nodoD, nodoD.getNodeType());
+                // El tipo de un acceso es el tipo de su nodo derecho porque:
+                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
                 ast.getProfundidad().push(nodoI);
             }
 
@@ -965,7 +966,8 @@ public class AnalizadorSintactico {
                         "Incompatibilidad de tipos. No se puede asignar un " + nodoD.getNodeType() + " a un " + nodoI.getNodeType(),
                         "expCompuesta1");
             }
-            return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(), nodoI,nodoD, nodoI.getNodeType()); // Se termino de armar la asignacion
+            return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(), nodoI,nodoD, nodoI.getNodeType());
+            // Se termino de armar la asignacion
 
         }else if(currentToken.getLexema().equals("self")){
             // Lado izquierdo de la asignacion
@@ -976,7 +978,10 @@ public class AnalizadorSintactico {
 
             if (nodoD != null){
                 nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
-                        nodoI,nodoD);
+                        nodoI,nodoD, nodoD.getNodeType());
+                // El tipo de un acceso es el tipo de su nodo derecho porque:
+                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
                 ast.getProfundidad().push(nodoI);
             }
 
@@ -1040,7 +1045,10 @@ public class AnalizadorSintactico {
            return nodoI;
        }
        ast.getProfundidad().pop();
-       return new NodoAcceso(currentToken.getLine(), currentToken.getCol(), nodoI, nodoD);
+       return new NodoAcceso(currentToken.getLine(), currentToken.getCol(), nodoI, nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoSentencia encadenadosSimples1() {
@@ -1210,16 +1218,13 @@ public class AnalizadorSintactico {
     private static NodoLiteral expIgual() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
+
         NodoLiteral nodoI = expCompuesta();
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoLiteral nodoD = expIgual1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        //return (NodoExpBin) ast.getProfundidad().pop();
+
         if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
             throw new SemantErrorException(line, col,
                     "Incompatibilidad de tipos. No se puede realizar una comparacion entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
@@ -1236,12 +1241,10 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("!=")){
             String op = currentToken.getLexema();
             opIgual();
-            //ast.getProfundidad().push(new NodoExpBin(line,col));
+
             NodoLiteral nodoI = expCompuesta();
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
             NodoLiteral nodoD = expIgual1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
-                //ast.getProfundidad().pop();
                 return nodoI; // Es unaria
             } // Si no, es binaria
             if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
@@ -1250,8 +1253,7 @@ public class AnalizadorSintactico {
                         "expCompuesta1");
             }
             return new NodoExpBin(line, col, nodoI,op, nodoD,"Bool");
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-            //return (NodoExpBin) ast.getProfundidad().pop();
+
 
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
@@ -1273,17 +1275,14 @@ public class AnalizadorSintactico {
     private static NodoLiteral expCompuesta() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
+
         NodoLiteral nodoI = expAd();
         String op = currentToken.getLexema();
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         NodoLiteral nodoD = expCompuesta1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
-        //return (NodoExpBin) ast.getProfundidad().pop();
+
         if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
             throw new SemantErrorException(line, col,
                     "Incompatibilidad de tipos. No se puede realizar una comparacion entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
@@ -1322,17 +1321,13 @@ public class AnalizadorSintactico {
     private static NodoLiteral expAd() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        //ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO?
         NodoLiteral nodoI = expMul();
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         String op = currentToken.getLexema();
         NodoLiteral nodoD = expAd1();
 
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            //ast.getProfundidad().pop();
             return nodoI; // Es unaria
         } // Si no, es binaria
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
 
         if(!(ast.checkTypes(nodoI , nodoD).equals("Int"))){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
 
@@ -1349,16 +1344,14 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals("+") ||
                 currentToken.getLexema().equals("-")){
             opAd();
-            //ast.getProfundidad().push(new NodoExpBin(line,col));
             NodoLiteral nodoI = expMul();
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
+
             String op = currentToken.getLexema();
             NodoLiteral nodoD = expAd1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
-                //ast.getProfundidad().pop();
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
+
             if(!(ast.checkTypes(nodoI , nodoD) == "Int")){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
                 throw new SemantErrorException(line, col,
                         "Incompatibilidad de tipos. No se puede realizar una operacion de " + op + "entre un "+ nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
@@ -1393,20 +1386,15 @@ public class AnalizadorSintactico {
     private static NodoLiteral expMul() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        // ast.getProfundidad().push(new NodoExpBin(line,col)); // NECESARIO? por ahora no
         NodoLiteral nodoI = expUn();
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
         String op= currentToken.getLexema();
 
         NodoLiteral nodoD = expMul1();
 
         if(nodoD == null){ // No hay lado derecho entonces es unaria
-            //ast.getProfundidad().pop();
-
             return nodoI; // Es unaria
         } // Si no, es binaria
 
-        //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
         if(!(ast.checkTypes(nodoI , nodoD) == "Int")){
             throw new SemantErrorException(line, col,
                     "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" entre un " + nodoI.getNodeType() + " y un " + nodoD.getNodeType(),
@@ -1422,16 +1410,12 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("/")||
                 currentToken.getLexema().equals("%")){
             opMul();
-            //ast.getProfundidad().push(new NodoExpBin(line,col));
             NodoLiteral nodoI = expUn();
             String op = currentToken.getLexema();
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoI(nodoI);
             NodoLiteral nodoD = expMul1();
             if(nodoD == null){ // No hay lado derecho entonces es unaria
-                //ast.getProfundidad().pop();
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            //((NodoExpBin) ast.getProfundidad().peek()).setNodoD(nodoD);
             if(!(ast.checkTypes(nodoI , nodoD) == "Int")){
                 throw new SemantErrorException(line, col,
                         "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" entre un " + nodoI.getNodeType() + " y un " + nodoD.getNodeType(),
@@ -1474,7 +1458,6 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("!") ||
                 currentToken.getLexema().equals("++") ||
                 currentToken.getLexema().equals("--")){
-            //ast.getProfundidad().push(new NodoExpUn(line,col));
             int line = currentToken.getLine();
             int col = currentToken.getCol();
             String op = currentToken.getLexema(); // operador de la expresion unaria
@@ -1491,8 +1474,6 @@ public class AnalizadorSintactico {
                         "expCompuesta1");
             }
             return new NodoExpUn(line, col, exp.getNodeType() ,exp, op);
-            //((NodoExpUn) ast.getProfundidad().peek()).setExp(expUn());
-            //return (NodoExpUn) ast.getProfundidad().pop();
 
         } else if(currentToken.getLexema().equals("nil") ||
                 currentToken.getLexema().equals("true") ||
@@ -1631,7 +1612,11 @@ public class AnalizadorSintactico {
                 return nodoI;
             }
 
-            return new NodoAcceso(line, col, nodoI, nodoD);
+            return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+            // El tipo de un acceso es el tipo de su nodo derecho porque:
+            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
+
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1642,7 +1627,7 @@ public class AnalizadorSintactico {
 
     private static NodoSentencia operando1() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals("&&")||
                 currentToken.getLexema().equals(")")||
@@ -1712,7 +1697,6 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral primario() {
-        //ast.getProfundidad().push(new NodoLiteral(line,col));
         if(currentToken.getLexema().equals("(")){
            return expresionParentizada();
         } else if(currentToken.getLexema().equals("self")){
@@ -1732,10 +1716,15 @@ public class AnalizadorSintactico {
                     // Si no esta declarado hay una exception de error semantico
                     throw new SemantErrorException(line,
                             col, "\"" + identificador +
-                            "\" no esta declarado en el struct como metodo del struct",
+                            "\" no esta declarado como metodo del struct " + ts.getCurrentStruct().getName() ,
                             "encadenadoSimple");
                 }
-                NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),identificador);
+                String typeRet = ts.getCurrentStruct().getMetodos().get(identificador).getRet();
+                NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),
+                        ts.getCurrentStruct().getName(),identificador, typeRet);
+                // El tipo de una llamada a un metodo es el tipo del retorno del metodo:
+                // Ejemplo: a(), se obtiene algo del tipo de retorno del metodo
+
                 ast.getProfundidad().push(nodo);
                 return (NodoLiteral) llamadaMetodo();
             } else{
@@ -1768,18 +1757,22 @@ public class AnalizadorSintactico {
                 if(nodoD == null){
                     return nodoI;
                 }
-                return new NodoAcceso(line, col, nodoI, nodoD);
+                return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+                // El tipo de un acceso es el tipo de su nodo derecho porque:
+                // Ejemplo 1: a.b, se accede a algo del tipo del atributo b
+                // Ejemplo 2: a.b(), se accede a algo del tipo de retorno del metodo b;
             }
         } else if(currentToken.getName().equals("struct_name")){
             int line = currentToken.getLine();
             int col = currentToken.getCol();
-
+            boolean isPred = false;
             // Veo si existe el struct
-            if(ts.getTableStructs().containsKey(currentToken.getLexema())){
+            if(ts.getTableStructs().containsKey(currentToken.getLexema())){ // como struct normal
                 NodoLiteral nodo = new NodoLiteral(line, col,
                         (ts.getTableStructs().get(currentToken.getLexema()).getName()));
                 ast.getProfundidad().push(nodo);
-            } else if(ts.getStructsPred().containsKey(currentToken.getLexema())){
+            } else if(ts.getStructsPred().containsKey(currentToken.getLexema())){ // o como struct predefinido
+                isPred = true;
                 NodoLiteral nodo = new NodoLiteral(line, col,
                         (ts.getStructsPred().get(currentToken.getLexema()).getName()));
                 ast.getProfundidad().push(nodo);
@@ -1789,7 +1782,7 @@ public class AnalizadorSintactico {
                         currentToken.getCol(), "El struct \"" + currentToken.getLexema() +
                         "\" no existe", "encadenadoSimple");
             }
-            return (NodoLiteral) llamadaMetodoEstatico();
+            return (NodoLiteral) llamadaMetodoEstatico(isPred);
 
         } else if(currentToken.getLexema().equals("new")){
             return (NodoLiteral) llamadaConstructor();
@@ -1810,13 +1803,19 @@ public class AnalizadorSintactico {
         ast.getProfundidad().push(exp);
         match(")");
         NodoExpresion nodoI = new NodoExpresion(line, col,"Expresion Parentizada", exp.getNodeType(),null, exp);
+        // El tipo de una expresion parentizada es el tipo de su expresion:
+        // Ejemplo: (exp) se accede a algo del tipo de su expresion dentro de los ()
+
         // Lado derecho del acceso
         NodoLiteral nodoD = (NodoLiteral) expresionParentizada1();
         ast.getProfundidad().pop();
         if (nodoD == null){
             return nodoI;
         }
-        return new NodoAcceso(line,col,nodoI,nodoD);
+        return new NodoAcceso(line,col,nodoI,nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoSentencia expresionParentizada1() {
@@ -1861,7 +1860,10 @@ public class AnalizadorSintactico {
         if(nodoD == null){
             return nodoI;
         }
-        return new NodoAcceso(line, col, nodoI,nodoD);
+        return new NodoAcceso(line, col, nodoI,nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b);
     }
 
     private static NodoSentencia accesoSelf1() {
@@ -1922,7 +1924,11 @@ public class AnalizadorSintactico {
             if(nodoD == null){
                 return nodoI;
             }
-            return new NodoAcceso(line, col, nodoI, nodoD);
+            return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+            // El tipo de un acceso es el tipo de su nodo derecho porque:
+            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
+
         }else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1992,13 +1998,16 @@ public class AnalizadorSintactico {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
-        ast.getProfundidad().push(new NodoLiteral(line, col,typeRet));
+        ast.getProfundidad().push(new NodoLiteral(line, col, typeRet));
         NodoLiteral nodoD = (NodoLiteral) llamadaMetodo1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
         }
-        return new NodoAcceso(line, col, nodoI, nodoD);
+        return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoSentencia llamadaMetodo1() {
@@ -2030,19 +2039,29 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static NodoSentencia llamadaMetodoEstatico() {
+    private static NodoSentencia llamadaMetodoEstatico(boolean isPred) {
         match("struct_name");
         match(".");
-
         // Verifico que el metodo este declarado en el struct
-        if(ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
+        if(!isPred){
+            if(ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
+                String typeRet = ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().get(currentToken.getLexema()).getRet();
+                NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
+                        ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema(),
+                        typeRet);
+                // El tipo de una llamada a un metodo es el tipo que retorna el metodo porque:
+                // Ejemplo de nodo llamada metodo: a(), el resultado es algo del tipo que retorna el metodo
+                ast.getProfundidad().push(nodo);
+            }
+        } else if(ts.getStructPred(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
+            String typeRet = ts.getStructPred(ast.getProfundidad().peek().getNodeType()).getMetodos().get(currentToken.getLexema()).getRet();
             NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
-                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema());
+                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema()
+                    ,typeRet);
+            // El tipo de una llamada a un metodo es el tipo que retorna el metodo porque:
+            // Ejemplo de nodo llamada metodo: a(), el resultado es algo del tipo que retorna el metodo
             ast.getProfundidad().push(nodo);
-        } else if(ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
-            NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
-                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema());
-            ast.getProfundidad().push(nodo);
+
         } else {
             throw new SemantErrorException(currentToken.getLine(),
                     currentToken.getCol(), "\"" + currentToken.getLexema() +
@@ -2059,13 +2078,16 @@ public class AnalizadorSintactico {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
-        ast.getProfundidad().push(new NodoLiteral(line, col,typeRet));
+        ast.getProfundidad().push(new NodoLiteral(line, col, typeRet));
         NodoLiteral nodoD = (NodoLiteral) llamadaMetodoEstatico1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
         }
-        return new NodoAcceso(line, col, nodoI, nodoD);
+        return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
 
 
@@ -2108,7 +2130,10 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("struct_name")){ // a = new Fibonacci();
             String type = currentToken.getLexema();
             ast.getProfundidad().push(new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),
-                    currentToken.getLexema(), "constructor"));
+                    currentToken.getLexema(), "constructor", currentToken.getLexema()));
+            // El tipo de un constructor es el tipo de su struct:
+            // Ejemplo: a = new Fibonacci(), se crea una instancia de tipo Fibonacci
+
             match("struct_name");
             argumentosActuales();
 
@@ -2125,15 +2150,20 @@ public class AnalizadorSintactico {
             if(nodoD == null){
                 return nodoI;
             }
-            return new NodoAcceso(line, col, nodoI, nodoD);
+            return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+            // El tipo de un acceso es el tipo de su nodo derecho porque:
+            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
         } else if(currentToken.getLexema().equals("Str")||
                 currentToken.getLexema().equals("Bool")||
                 currentToken.getLexema().equals("Int")||
                 currentToken.getLexema().equals("Char")){
             NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
-                    currentToken.getLexema(), currentToken.getLexema(), "constructor");
-            tipoPrimitivo(); //  a = new Int[6];
+                    currentToken.getLexema(), currentToken.getLexema(), "constructor", "Array " + currentToken.getLexema());
+            // El tipo de un constructor de Array es del tipo Array + (Str, Bool, Int o Char segun corrresponda):
+            // Ejemplo: a = new String[6], se crea una instancia de un array de strings
+            tipoPrimitivo();
             match("[");
             nodo.insertArgumento(expresion());
             match("]");
@@ -2219,7 +2249,8 @@ public class AnalizadorSintactico {
         if (nodoD == null) { // No hay lado derecho entonces es unaria
             ((NodoLlamadaMetodo) ast.getProfundidad().peek()).insertArgumento(nodoI);
         }else{
-            ((NodoLlamadaMetodo) ast.getProfundidad().peek()).insertArgumento(new NodoExpBin(line, col, nodoI,"||", nodoD, "Bool"));
+            ((NodoLlamadaMetodo) ast.getProfundidad().peek()).insertArgumento(new NodoExpBin(line, col, nodoI,"||",
+                    nodoD, "Bool"));
         }
         listaExpresiones1();
     }
@@ -2268,20 +2299,11 @@ public class AnalizadorSintactico {
                             "El metodo " + lexema + " no existe en el struct " + ast.getProfundidad().peek().getNodeType() +
                                     " . Por lo tanto no se puede acceder a el", "encadenadoSimple");
                 }
-                /*String tipoId = (ts.getStruct(ast.getProfundidad().peek().getNodeType())).getAtributo(lexema).getType();
-                NodoLiteral nodoI = new NodoLiteral(line, col, lexema,tipoId,null); // valor? de donde lo saco?
-                ast.getProfundidad().push(nodoI);
-                NodoLiteral nodoD = (NodoLiteral) accesoVariableEncadenado();
-                ast.getProfundidad().pop();
-                if(nodoD == null){
-                    return nodoI;
-                }
-                return new NodoAcceso(line,col,nodoI, nodoD);
-               */
+                String typeRet = (ts.getStruct(ast.getProfundidad().peek().getNodeType())).getMetodo(lexema).getRet();
                 ast.getProfundidad().push(new NodoLlamadaMetodo(line, col,ast.getProfundidad().peek().getName(),
-                        ast.getProfundidad().peek().getNodeType(),lexema));
-
-                //return (NodoSentencia) ast.getProfundidad().pop();
+                        ast.getProfundidad().peek().getNodeType(),lexema, typeRet));
+                // El tipo de una llamada a un metodo es el tipo que retorna ese metodo, porque:
+                // Ejemplo de un nodo llamada metodo: a(), el resultado es algo del tipo que retorna el metodo
                 return llamadaMetodoEncadenado();
 
             } else {
@@ -2293,14 +2315,17 @@ public class AnalizadorSintactico {
                                     " . Por lo tanto no se puede acceder a el", "encadenadoSimple");
                 }
                 String tipoId = (ts.getStruct(ast.getProfundidad().peek().getNodeType())).getAtributo(lexema).getType();
-                NodoLiteral nodoI = new NodoLiteral(line, col, lexema,tipoId,null); // valor? de donde lo saco?
+                NodoLiteral nodoI = new NodoLiteral(line, col, lexema, tipoId,null);
                 ast.getProfundidad().push(nodoI);
                 NodoLiteral nodoD = (NodoLiteral) accesoVariableEncadenado();
                 ast.getProfundidad().pop();
                 if(nodoD == null){
                     return nodoI;
                 }
-                return new NodoAcceso(line,col,nodoI, nodoD);
+                return new NodoAcceso(line,col,nodoI, nodoD, nodoD.getNodeType());
+                // El tipo de un acceso es el tipo de su nodo derecho porque:
+                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
             }
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
@@ -2318,13 +2343,16 @@ public class AnalizadorSintactico {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
-        ast.getProfundidad().push(new NodoLiteral(line, col,typeRet));
+        ast.getProfundidad().push(new NodoLiteral(line, col, typeRet));
         NodoLiteral nodoD = (NodoLiteral) llamadaMetodoEncadenado1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
         }
-        return new NodoAcceso(line, col, nodoI, nodoD);
+        return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoSentencia llamadaMetodoEncadenado1() {

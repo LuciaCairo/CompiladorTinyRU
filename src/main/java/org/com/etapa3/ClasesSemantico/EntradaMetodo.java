@@ -12,7 +12,7 @@ import java.util.Comparator;
 public class EntradaMetodo {
     private String nombre;
     private boolean isStatic = false;
-    private String ret; //tipo de retorno
+    private String ret = "void"; //tipo de retorno
     private int pos, line, col;
     private Hashtable<String, EntradaParametro> parametros;
     private Hashtable<String, EntradaVariable> variables;

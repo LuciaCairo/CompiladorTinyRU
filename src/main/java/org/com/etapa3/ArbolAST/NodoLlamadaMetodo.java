@@ -9,8 +9,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     private LinkedList<NodoLiteral> argumentos;
 
 
-    public NodoLlamadaMetodo(int line, int col, String nameStruct,String typeStruct, String metodo){
-        super(line, col);
+    public NodoLlamadaMetodo(int line, int col, String nameStruct,String typeStruct, String metodo, String type){
+        super(line, col, type);
         this.nameStruct = nameStruct;
         this.typeStruct = typeStruct;
         this.metodo = metodo;

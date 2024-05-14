@@ -8,8 +8,8 @@ public class NodoAcceso extends NodoLiteral {
 
 
     // Constructores
-    public NodoAcceso(int line, int col, NodoLiteral izq, NodoLiteral der){
-        super(line, col);
+    public NodoAcceso(int line, int col, NodoLiteral izq, NodoLiteral der, String type){
+        super(line, col, type);
         this.der = der;
         this.izq = izq;
     }

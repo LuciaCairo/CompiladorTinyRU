@@ -23,6 +23,9 @@ public class EntradaStructPredef {
     public String getName() {
         return name;
     }
+    public Hashtable<String, EntradaMetodo> getMetodos() {
+        return this.metodos;
+    }
 
     // Setters
 
