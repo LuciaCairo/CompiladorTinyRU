@@ -32,6 +32,7 @@ public class NodoExpUn extends NodoLiteral {
         // NodoExpUn: opUnario exp
         // Verificar que exp sea "Bool" cuando el operador es "!"
         // Verificar que exp sea "Int" en todos los demas casos
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 }

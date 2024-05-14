@@ -31,6 +31,7 @@ public class NodoExpresion extends NodoLiteral {
     public boolean checkTypes(TablaSimbolos ts){
         // NodoExpresion:
         // Aca solo setear el valor del tipo
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 

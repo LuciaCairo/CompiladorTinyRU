@@ -27,6 +27,7 @@ public class NodoLiteral extends Nodo{
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // Creo que aca no hace falta verificar nada
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 }

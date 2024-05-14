@@ -27,7 +27,8 @@ public class NodoAcceso extends NodoLiteral {
     public boolean checkTypes(TablaSimbolos ts){
         // NodoAcceso: nodoI.nodoD
         // Verificar que el nodoI sea de tipo struct y que ese struct exista en la ts
-        // Verificar que el nodoD sea un atributo del struct que exista en la ts
+        // Verificar que el nodoD sea un atributo o metodo del struct que exista en la ts
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 

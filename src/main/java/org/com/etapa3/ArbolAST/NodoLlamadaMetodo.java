@@ -56,6 +56,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su structs padre en la ts
         // Verificar los argumentos de la llamada coincidan en tipo y cantidad con los argumentos que espera el metodo
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 

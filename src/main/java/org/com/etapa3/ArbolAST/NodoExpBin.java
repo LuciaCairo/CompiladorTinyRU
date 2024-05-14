@@ -47,6 +47,7 @@ public class NodoExpBin extends NodoLiteral {
     public boolean checkTypes(TablaSimbolos ts){
         // NodoExpBin: nodoI op nodoD
         // Verificar que el nodoI y el nodoD sean de tipo "Int"
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 

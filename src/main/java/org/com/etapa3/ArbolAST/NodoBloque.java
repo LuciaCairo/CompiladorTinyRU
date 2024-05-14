@@ -37,6 +37,7 @@ public class NodoBloque extends NodoLiteral{
     public boolean checkTypes(TablaSimbolos ts){
         // NodoBloque: Bloque {sentencias}
         // No debi verificar nada especial aca creo
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 }

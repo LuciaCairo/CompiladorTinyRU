@@ -45,6 +45,7 @@ public class NodoWhile extends NodoLiteral {
         // NodoWhile: while(exp){sentencias}
         // Verificar que el exp sea de tipo bool
         // Hacer checkTypes de sus sentencias
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 }

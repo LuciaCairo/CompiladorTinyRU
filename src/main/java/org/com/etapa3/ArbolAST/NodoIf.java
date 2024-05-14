@@ -48,6 +48,7 @@ public class NodoIf extends NodoLiteral {
         // Verificar que el exp sea de tipo bool
         // Hacer checkTypes de sus sentencias
         // Hacer checkTypes de sus sentenciasElse
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 

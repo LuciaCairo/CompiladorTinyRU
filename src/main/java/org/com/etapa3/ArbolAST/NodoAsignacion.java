@@ -28,6 +28,7 @@ public class NodoAsignacion extends NodoLiteral {
     public boolean checkTypes(TablaSimbolos ts){
         // NodoAcceso: nodoI = nodoD
         // Verificar que el nodoI y el nodoD sean del mismo tipo
+        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
         return true;
     }
 
