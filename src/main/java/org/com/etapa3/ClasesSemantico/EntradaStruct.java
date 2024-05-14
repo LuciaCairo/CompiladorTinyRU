@@ -103,12 +103,6 @@ public class EntradaStruct {
     }
 
     // Functions
-    public boolean isMetodo(EntradaMetodo metodo){
-        if (this.metodos.containsKey(metodo.getName())){
-            return true;
-        }
-        return false;
-    }
     public void insertAtributo(String name, EntradaAtributo atributo) {
         if(this.atributos.containsKey(name)){
             throw new SemantErrorException(atributo.getLine(), atributo.getCol(),

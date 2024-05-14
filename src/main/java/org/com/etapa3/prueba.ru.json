@@ -2,59 +2,62 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "A",
+	"nombre": "A",
 	"metodos": [
 	{
-		"nombreMetodo":"b2",
+		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Retorno",
-					"tipo":"Bool",
+					"nodo": "While",
 					"expresion": {
-						"nodo": "Literal",
-						"nombre":"literal bool",
+						"nodo": "Expresion Binaria",
 						"tipo":"Bool",
-						"valor":"false"
+						"valor":"null",
+						"operador":"==",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"s",
+							"tipo":"Int",
+							"valor":"null"
+						},
+						"nodoDer": {
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"1"
+						}
 					},
-
+					"sentencias":[
+					{
+						"nodo": "Retorno",
+						"tipo":"null",
+						"expresion": {
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"Mendoza"
+						},
+					}
 				}
 				]
 		}
 	},
 	{
-		"nombreMetodo":"constructor",
+		"nombre":"b",
 		"Bloque": {
 				"sentencias":[
 
-				]
-		}
-	},
-	{
-		"nombreMetodo":"b3",
-		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "Retorno",
-					"tipo":"Char",
-					"expresion": {
-						"nodo": "Literal",
-						"nombre":"literal char",
-						"tipo":"Char",
-						"valor":"a"
-					},
-
-				}
 				]
 		}
 	}
 	]
 },
 {
-	"nombreImpl": "B",
+	"nombre": "B",
 	"metodos": [
 	{
-		"nombreMetodo":"constructor",
+		"nombre":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -62,7 +65,7 @@
 		}
 	},
 	{
-		"nombreMetodo":"b",
+		"nombre":"b",
 		"Bloque": {
 				"sentencias":[
 

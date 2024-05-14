@@ -133,6 +133,12 @@ public class AnalizadorSintactico {
         ts.setCurrentStruct(e);
         ts.insertStruct_struct(e, currentToken);
         match("start");
+
+        // Construccion AST
+        NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), "START");
+        ast.setCurrentStruct(nodo); // Actualizo el struct actual
+        ast.getProfundidad().push(nodo);
+        ast.insertStruct("START",nodo); // Inserto el struct en el AST
         bloqueMetodo();
     }
 
@@ -913,22 +919,35 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("id")){
             // AST
             // Me encuentro con un identificador
-            // Verifico si está declarado como variable o como parametro del metodo en la TS
-            String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
-            if(tipoId == null){ // Si no, verifico si esta declarado en los atributos del struct
-                tipoId = ts.getCurrentStruct().isDeclaredAtributo(currentToken.getLexema());
-                if(tipoId == null){ // Si no está declarado se lanza una excepcion de error semantico
+            // Caso especial de start
+            if(isStart){
+                if(ts.getStruct("start").getVariables().get(currentToken.getLexema()) == null){
                     throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
                             "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
                                     ts.getCurrentMetod().getName() + "\"", "asignacion");
-                    } else {
-                    // Si esta declarado se guarda en la pila
+                } else {
+                    String tipoId = ts.getStruct("start").getVariables().get(currentToken.getLexema()).getType();
                     ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
-                            currentToken.getLexema(),tipoId,null));
+                            currentToken.getLexema(),tipoId, null));
                 }
-            } else { // Si esta declarado se guarda en la pila
-                ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
-                        currentToken.getLexema(),tipoId, null));
+            } else {
+                // Verifico si está declarado como variable o como parametro del metodo en la TS
+                String tipoId = ts.getCurrentMetod().isDeclared(currentToken.getLexema());
+                if(tipoId == null){ // Si no, verifico si esta declarado en los atributos del struct
+                    tipoId = ts.getCurrentStruct().isDeclaredAtributo(currentToken.getLexema());
+                    if(tipoId == null){ // Si no está declarado se lanza una excepcion de error semantico
+                        throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
+                                "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
+                                        ts.getCurrentMetod().getName() + "\"", "asignacion");
+                    } else {
+                        // Si esta declarado se guarda en la pila
+                        ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                                currentToken.getLexema(),tipoId,null));
+                    }
+                } else { // Si esta declarado se guarda en la pila
+                    ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                            currentToken.getLexema(),tipoId, null));
+                }
             }
             NodoLiteral nodoD= (NodoLiteral) accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
@@ -1709,11 +1728,22 @@ public class AnalizadorSintactico {
             String identificador = currentToken.getLexema(); // Antes de que machee
             match("id");
             flagMatch = true;
+            String tipoId;
             if(currentToken.getLexema().equals("(")) {
-                llamadaMetodo();
+
+                // Veo si esta declarado como metodo en el struct
+                if(!ts.getCurrentStruct().getMetodos().containsKey(identificador)){
+                    // Si no esta declarado hay una exception de error semantico
+                    throw new SemantErrorException(line,
+                            col, "\"" + identificador +
+                            "\" no esta declarado en el struct como metodo del struct",
+                            "encadenadoSimple");
+                }
+                NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),identificador);
+                ast.getProfundidad().push(nodo);
+                return (NodoLiteral) llamadaMetodo();
             } else{
                 // Veo si esta declarado como variable en el metodo
-                String tipoId;
                 if(ts.getCurrentMetod().getVariables().containsKey(identificador)){
                     // Guardo su tipo
                     tipoId = (ts.getCurrentMetod()).getVariables().get(identificador).getType();
@@ -1736,22 +1766,43 @@ public class AnalizadorSintactico {
                 }
 
                 NodoLiteral nodoI = new NodoLiteral(line, col, identificador,tipoId,null);
-                if(accesoVar() == null){
+                ast.getProfundidad().push(nodoI);
+                NodoLiteral nodoD = (NodoLiteral)accesoVar();
+                ast.getProfundidad().pop();
+                if(nodoD == null){
                     return nodoI;
                 }
-                return null; // retornar todo si nodoD no es null
+                return new NodoAcceso(line, col, nodoI, nodoD);
             }
         } else if(currentToken.getName().equals("struct_name")){
-            llamadaMetodoEstatico();
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+
+            // Veo si existe el struct
+            if(ts.getTableStructs().containsKey(currentToken.getLexema())){
+                NodoLiteral nodo = new NodoLiteral(line, col,
+                        (ts.getTableStructs().get(currentToken.getLexema()).getName()));
+                ast.getProfundidad().push(nodo);
+            } else if(ts.getStructsPred().containsKey(currentToken.getLexema())){
+                NodoLiteral nodo = new NodoLiteral(line, col,
+                        (ts.getStructsPred().get(currentToken.getLexema()).getName()));
+                ast.getProfundidad().push(nodo);
+            } else {
+                // Si no existe hay una exception de error semantico
+                throw new SemantErrorException(currentToken.getLine(),
+                        currentToken.getCol(), "El struct \"" + currentToken.getLexema() +
+                        "\" no existe", "encadenadoSimple");
+            }
+            return (NodoLiteral) llamadaMetodoEstatico();
+
         } else if(currentToken.getLexema().equals("new")){
-            llamadaConstructor();
+            return (NodoLiteral) llamadaConstructor();
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
                     "Se esperaba: id, '(', self o new. Se encontró " + currentToken.getLexema(),
                     "primario");
         }
-        return null;
     }
 
     private static NodoLiteral expresionParentizada() {
@@ -1847,18 +1898,35 @@ public class AnalizadorSintactico {
         return null;
 
     }
-    private static NodoLiteral accesoVar() {
+    private static NodoSentencia accesoVar() {
         match("id");
         return accesoVar1();
     }
-    private static NodoLiteral accesoVar1() {
+    private static NodoSentencia accesoVar1() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals("[")){
+            String[] palabras = (ast.getProfundidad().peek().getNodeType()).split(" ");
+            String isArray = palabras[0];
+            String type = palabras[1];
+            if(!isArray.equals("Array")){
+                throw new SyntactErrorException(currentToken.getLine(),
+                        currentToken.getCol(),
+                        "\"" + ast.getProfundidad().peek().getName() +"\" no es unno es un array por lo que no se puede acceder a un indice",
+                        "accesoVarSimple1");
+            }
             match("[");
-            expresion();
+            NodoLiteral nodoI = expresion();
             match("]");
-            accesoVar2();
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            ast.getProfundidad().push(new NodoLiteral(line,col,type));
+            NodoLiteral nodoD = (NodoLiteral) accesoVar2();
+            ast.getProfundidad().pop();
+            if(nodoD == null){
+                return nodoI;
+            }
+            return new NodoAcceso(line, col, nodoI, nodoD);
         }else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1886,9 +1954,9 @@ public class AnalizadorSintactico {
         return null;
 
     }
-    private static void accesoVar2() {
+    private static NodoSentencia accesoVar2() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1913,16 +1981,33 @@ public class AnalizadorSintactico {
                     "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
                     "accesoVar2");
         }
+        return null;
     }
-    private static void llamadaMetodo() {
+    private static NodoSentencia llamadaMetodo() {
         match("id");
         argumentosActuales();
-        llamadaMetodo1();
 
+        // Termino de formarse la llamada al metodo
+        NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) ast.getProfundidad().pop();
+
+        // Ahora es el caso de que se quiera acceder a algo con lo que retorna el metodo
+        // ejemplo: metodo().acceso
+        // Veo que tipo retorna el metodo (para hacer un encadenado debe devolver algo de tipo idStruct)
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
+        ast.getProfundidad().push(new NodoLiteral(line, col,typeRet));
+        NodoLiteral nodoD = (NodoLiteral) llamadaMetodo1();
+        ast.getProfundidad().pop();
+        if(nodoD == null){
+            return nodoI;
+        }
+        return new NodoAcceso(line, col, nodoI, nodoD);
     }
-    private static void llamadaMetodo1() {
+
+    private static NodoSentencia llamadaMetodo1() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1947,18 +2032,51 @@ public class AnalizadorSintactico {
                     "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
                     "llamadaMetodo1");
         }
-
+        return null;
     }
-    private static void llamadaMetodoEstatico() {
+    private static NodoSentencia llamadaMetodoEstatico() {
         match("struct_name");
         match(".");
-        llamadaMetodo();
-        llamadaMetodoEstatico1();
+
+        // Verifico que el metodo este declarado en el struct
+        if(ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
+            NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
+                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema());
+            ast.getProfundidad().push(nodo);
+        } else if(ts.getStruct(ast.getProfundidad().peek().getNodeType()).getMetodos().containsKey(currentToken.getLexema())){
+            NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
+                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema());
+            ast.getProfundidad().push(nodo);
+        } else {
+            throw new SemantErrorException(currentToken.getLine(),
+                    currentToken.getCol(), "\"" + currentToken.getLexema() +
+                    "\" no esta declarado como metodo en el struct",
+                    "encadenadoSimple");
+        }
+
+        NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) llamadaMetodo();
+        ast.getProfundidad().pop();
+
+        // Ahora es el caso de que se quiera acceder a algo con lo que retorna el metodo
+        // ejemplo: IO.metodo().acceso
+        // Veo que tipo retorna el metodo (para hacer un encadenado debe devolver algo de tipo idStruct)
+        int line = currentToken.getLine();
+        int col = currentToken.getCol();
+        String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
+        ast.getProfundidad().push(new NodoLiteral(line, col,typeRet));
+        NodoLiteral nodoD = (NodoLiteral) llamadaMetodoEstatico1();
+        ast.getProfundidad().pop();
+        if(nodoD == null){
+            return nodoI;
+        }
+        return new NodoAcceso(line, col, nodoI, nodoD);
+
+
 
     }
-    private static void llamadaMetodoEstatico1() {
+    private static NodoSentencia llamadaMetodoEstatico1() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -1983,25 +2101,47 @@ public class AnalizadorSintactico {
                     "Se esperaba: '*', '.' ,'/','%','+','-',')' ,';' ,']',',','||','&&','==','!=','<','>','<=', '>='. Se encontró " + currentToken.getLexema(),
                     "llamadaMetodoEstatico1");
         }
+        return null;
     }
 
-    private static void llamadaConstructor() {
+    private static NodoSentencia llamadaConstructor() {
         match("new");
-        llamadaConstructor1();
+        return llamadaConstructor1();
     }
-    private static void llamadaConstructor1() {
-        if (currentToken.getName().equals("struct_name")){
+    private static NodoSentencia llamadaConstructor1() {
+        if (currentToken.getName().equals("struct_name")){ // a = new Fibonacci();
+            String type = currentToken.getLexema();
+            ast.getProfundidad().push(new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),
+                    currentToken.getLexema(), "constructor"));
             match("struct_name");
             argumentosActuales();
-            llamadaConstructor2();
+
+            // Termino de formarse la llamada al metodo
+            NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) ast.getProfundidad().pop();
+
+            // Ahora es el caso de que se quiera acceder a algo del struct
+            // ejemplo: new A().acceso
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            ast.getProfundidad().push(new NodoLiteral(line, col,type));
+            NodoLiteral nodoD = (NodoLiteral) llamadaConstructor2();
+            ast.getProfundidad().pop();
+            if(nodoD == null){
+                return nodoI;
+            }
+            return new NodoAcceso(line, col, nodoI, nodoD);
+
         } else if(currentToken.getLexema().equals("Str")||
                 currentToken.getLexema().equals("Bool")||
                 currentToken.getLexema().equals("Int")||
                 currentToken.getLexema().equals("Char")){
-            tipoPrimitivo();
+            NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
+                    currentToken.getLexema(), currentToken.getLexema(), "constructor");
+            tipoPrimitivo(); //  a = new Int[6];
             match("[");
-            expresion();
+            nodo.insertArgumento(expresion());
             match("]");
+            return nodo;
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                 currentToken.getCol(),
@@ -2010,9 +2150,9 @@ public class AnalizadorSintactico {
         }
     }
 
-    private static void llamadaConstructor2() {
+    private static NodoSentencia llamadaConstructor2() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -2037,6 +2177,7 @@ public class AnalizadorSintactico {
                     "Se esperaba: operador aritmetico, operador logico, ')' ,';' ,']' o ','. Se encontró " + currentToken.getLexema(),
                     "llamadaConstructor2");
         }
+        return null;
     }
 
     private static void argumentosActuales() {
@@ -2223,33 +2364,6 @@ public class AnalizadorSintactico {
         match("id");
         return accesoVariableEncadenado1();
     }
-
-    /*private static NodoSentencia accesoVarSimple1() {
-        if (currentToken.getLexema().equals(".")){
-           return encadenadosSimples();
-        }else if(currentToken.getLexema().equals("[")){
-            String[] palabras = (ast.getProfundidad().peek().getNodeType()).split(" ");
-            String isArray = palabras[0];
-            if(!isArray.equals("Array")){
-                throw new SyntactErrorException(currentToken.getLine(),
-                        currentToken.getCol(),
-                        "\"" + ast.getProfundidad().peek().getName() +"\" no es un array por lo que no se puede acceder a un indice",
-                        "accesoVarSimple1");
-            }
-            match("[");
-            NodoLiteral nodo = expresion();
-            match("]");
-            return nodo;
-        } else if(currentToken.getLexema().equals("=")) {
-            // lambda
-        } else{
-            throw new SyntactErrorException(currentToken.getLine(),
-                    currentToken.getCol(),
-                    "Se esperaba: '.', '[' o =. Se encontró " + currentToken.getLexema(),
-                    "accesoVarSimple1");
-        }
-        return null;
-    }*/
     private static NodoSentencia accesoVariableEncadenado1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();

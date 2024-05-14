@@ -113,6 +113,10 @@ public class TablaSimbolos {
         return this.structs.get(nombre);
     }
 
+    public EntradaStructPredef getStructPred(String nombre) {
+        return this.structsPred.get(nombre);
+    }
+
     public EntradaMetodo getCurrentMetod() {
         return currentMetod;
     }

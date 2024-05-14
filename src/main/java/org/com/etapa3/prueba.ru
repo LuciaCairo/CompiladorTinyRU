@@ -1,31 +1,28 @@
-/? Este caso verifica que cuando el metodo devuelva el tipo declarado en su firma, pase sin problemas.
-/?CORRECTO: SEMANTICO - SENTENCIAS
-
 struct B{Int w;}
 impl B{ .(){}
     fn b() -> A { }
 }
 struct A{Int b; B c; }
 impl A{
-    fn b(Int a) -> Str{
-
-            Int s;
-            Bool b;
-            Str ciudad;
-            while(s == 1) {ciudad= "Mendoza";
-            b = false;
-            if(s == 2)
-                ciudad = "cordoba";
-            else
-                ciudad = "rosario";
-
-            };
-    ret ciudad;
-    }
-    fn b1(Int a) -> Int{ret a;}
-    fn b2() -> Bool{ret false;}
-    fn b3() -> Char{ret 'a'; }
+    fn b(Int a) -> A { }
     .(){
+        Array Int a;
+        Int s;
+        Bool b;
+        Str ciudad;
+        while(s == 1) ret "Mendoza";
+    /? PRUEBA DE EXPRESIONES
+    /?a[s||2||true || b] = 1;
+    /?a[s && 2 && true && b] = 1;
+    /?a[s == 2 == true == b] = 1;
+    /?a[++b] = 1;
+    /?a[s * 2 / true % b] = 1;
+    /?a[s + 2 - true + b ] = 1;
+    /?a[s < 2 ] = 1; /? tambien funciona con <=, <, >=
+    /?a[s || true && false == 5 * b < ++2 ] = 1;
+    /?self.c.w = 1;
+    /?if(s < 2){};
+
 
     }
 }
