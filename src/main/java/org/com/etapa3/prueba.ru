@@ -1,5 +1,7 @@
-struct Fibonacci {
-Int suma;
-Int i,j;
-}
- impl F{.(){}}
+struct F {A a;}
+impl F{.(){}}
+
+struct A{}
+impl A{.(){}}
+
+start{}

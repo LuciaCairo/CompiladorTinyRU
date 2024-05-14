@@ -2,49 +2,10 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombre": "A",
+	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombre":"constructor",
-		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "While",
-					"expresion": {
-						"nodo": "Expresion Binaria",
-						"tipo":"Bool",
-						"valor":"null",
-						"operador":"==",
-						"nodoIzq": {
-							"nodo": "Literal",
-							"nombre":"s",
-							"tipo":"Int",
-							"valor":"null"
-						},
-						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"literal entero",
-							"tipo":"Int",
-							"valor":"1"
-						}
-					},
-					"sentencias":[
-					{
-						"nodo": "Retorno",
-						"tipo":"null",
-						"expresion": {
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"Mendoza"
-						},
-					}
-				}
-				]
-		}
-	},
-	{
-		"nombre":"b",
+		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -54,18 +15,10 @@
 	]
 },
 {
-	"nombre": "B",
+	"nombreImpl": "F",
 	"metodos": [
 	{
-		"nombre":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	},
-	{
-		"nombre":"b",
+		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -73,6 +26,13 @@
 		}
 	}
 	]
+},
+{
+	"nombre": "START",
+				"sentencias":[
+
+				]
+
 }
 ]
 }

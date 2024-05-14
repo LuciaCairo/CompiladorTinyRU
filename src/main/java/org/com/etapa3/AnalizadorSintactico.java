@@ -78,7 +78,7 @@ public class AnalizadorSintactico {
             System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
 
         } catch (SemantErrorException e) {
-            System.out.println("ERROR: SEMANTICO - DECLARACIONES\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
+            System.out.println("ERROR: SEMANTICO \n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");
             System.out.println("| LINEA " + e.getLineNumber() + " | COLUMNA " + e.getColumnNumber() + " | " + e.getDescription() + "|\n");
 
         } catch (Exception e) {
