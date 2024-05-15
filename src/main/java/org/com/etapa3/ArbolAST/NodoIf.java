@@ -1,5 +1,6 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.SemantErrorException;
 import org.com.etapa3.TablaSimbolos;
 
 import java.util.LinkedList;
@@ -19,6 +20,11 @@ public class NodoIf extends NodoLiteral {
     // Setters
     public void setNodoElse(NodoElse nodoElse) {
         this.nodoElse = nodoElse;
+    }
+
+    // Getters
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
     }
 
     // Functions
@@ -42,13 +48,25 @@ public class NodoIf extends NodoLiteral {
         return json;
     }
 
+
     @Override
     public boolean checkTypes(TablaSimbolos ts){
-        // NodoIf: if(exp){sentencias} else{sentencias}
+        // NodoIf: if(exp){sentencias} else
+        exp.checkTypes(ts); // Chequeo la expresion
         // Verificar que el exp sea de tipo bool
+        if(!(this.exp.getNodeType().equals("Bool"))){
+            throw new SemantErrorException(this.exp.getLine(), this.exp.getCol(),
+                    "La condicion del if debe ser de tipo Bool",
+                    "sentencia");
+        }
         // Hacer checkTypes de sus sentencias
+        for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
+            s.checkTypes(ts);
+        }
         // Hacer checkTypes de sus sentenciasElse
-        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
+        this.nodoElse.checkTypes(ts);
+        // Setear el tipo correspondiente una vez que se chequeo
+        this.setNodeType(null);
         return true;
     }
 
