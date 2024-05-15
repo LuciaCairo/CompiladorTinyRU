@@ -324,6 +324,9 @@ public class AnalizadorSemantico {
 
                 // Recorro todos los nodos metodos del struct
                 for (NodoMetodo m : value.getMetodos().values()) {
+                    ts.setCurrentStruct(ts.getStruct(value.getName()));
+                    ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
+
                     boolean isRet = false;
                     // Recorro las sentencias del metodo
                     // Las sentencias pueden ser:
@@ -334,7 +337,7 @@ public class AnalizadorSemantico {
                                 isRet = true;
                             }
                         }
-                        System.out.println(s.getClass());
+
                         // Para cada sentencia asigno y verifico sus tipos
                         s.checkTypes(ts);
 
