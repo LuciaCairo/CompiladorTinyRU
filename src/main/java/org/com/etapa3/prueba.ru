@@ -1,6 +1,5 @@
 struct B{Int w;}
 impl B{ .(){}
-    fn b() -> A { }
 }
 struct A{Int b; B c; }
 impl A{
@@ -9,10 +8,8 @@ impl A{
         Array Int a;
         Int s;
         Bool b;
-        Str ciudad;
-        while(s == 1);
+        c.w = 1;
     }
 }
-
 
 start{}

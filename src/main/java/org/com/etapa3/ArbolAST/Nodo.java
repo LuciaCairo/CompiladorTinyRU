@@ -61,12 +61,17 @@ public class Nodo {
 
     // Setters
 
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     // Functions
     public void insertSentencia(NodoLiteral sentencia) {
         this.sentencias.add(sentencia);
     }
 
     public boolean checkTypes(TablaSimbolos ts){
+        // Esta funcion es diferente para cada nodo
         // En todos los casos setear los tipos correspondientes una vez que se chequearon
         return true;
     }

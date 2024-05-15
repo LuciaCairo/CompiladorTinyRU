@@ -944,7 +944,7 @@ public class AnalizadorSintactico {
                             currentToken.getLexema(),tipoId, null));
                 }
             }
-            NodoLiteral nodoD= (NodoLiteral) accesoVarSimple();
+            NodoLiteral nodoD= accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
 
             NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop(); // Lo creo y saco de la pila
@@ -952,10 +952,6 @@ public class AnalizadorSintactico {
             if (nodoD != null){
                 nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
                         nodoI,nodoD, nodoD.getNodeType());
-                // El tipo de un acceso es el tipo de su nodo derecho porque:
-                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
-                ast.getProfundidad().push(nodoI);
             }
 
             match("=");
@@ -980,10 +976,6 @@ public class AnalizadorSintactico {
             if (nodoD != null){
                 nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
                         nodoI,nodoD, nodoD.getNodeType());
-                // El tipo de un acceso es el tipo de su nodo derecho porque:
-                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
-                ast.getProfundidad().push(nodoI);
             }
 
             match("=");
@@ -1047,9 +1039,6 @@ public class AnalizadorSintactico {
        }
        ast.getProfundidad().pop();
        return new NodoAcceso(currentToken.getLine(), currentToken.getCol(), nodoI, nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoLiteral encadenadosSimples1() {
@@ -1614,9 +1603,6 @@ public class AnalizadorSintactico {
             }
 
             return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-            // El tipo de un acceso es el tipo de su nodo derecho porque:
-            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
@@ -1759,9 +1745,6 @@ public class AnalizadorSintactico {
                     return nodoI;
                 }
                 return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-                // El tipo de un acceso es el tipo de su nodo derecho porque:
-                // Ejemplo 1: a.b, se accede a algo del tipo del atributo b
-                // Ejemplo 2: a.b(), se accede a algo del tipo de retorno del metodo b;
             }
         } else if(currentToken.getName().equals("struct_name")){
             int line = currentToken.getLine();
@@ -1814,9 +1797,6 @@ public class AnalizadorSintactico {
             return nodoI;
         }
         return new NodoAcceso(line,col,nodoI,nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoLiteral expresionParentizada1() {
@@ -1862,9 +1842,6 @@ public class AnalizadorSintactico {
             return nodoI;
         }
         return new NodoAcceso(line, col, nodoI,nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b);
     }
 
     private static NodoLiteral accesoSelf1() {
@@ -1926,9 +1903,6 @@ public class AnalizadorSintactico {
                 return nodoI;
             }
             return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-            // El tipo de un acceso es el tipo de su nodo derecho porque:
-            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
         }else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
@@ -2006,9 +1980,6 @@ public class AnalizadorSintactico {
             return nodoI;
         }
         return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoLiteral llamadaMetodo1() {
@@ -2086,9 +2057,6 @@ public class AnalizadorSintactico {
             return nodoI;
         }
         return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
 
 
@@ -2152,9 +2120,6 @@ public class AnalizadorSintactico {
                 return nodoI;
             }
             return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-            // El tipo de un acceso es el tipo de su nodo derecho porque:
-            // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-            // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
 
         } else if(currentToken.getLexema().equals("Str")||
                 currentToken.getLexema().equals("Bool")||
@@ -2324,9 +2289,6 @@ public class AnalizadorSintactico {
                     return nodoI;
                 }
                 return new NodoAcceso(line,col,nodoI, nodoD, nodoD.getNodeType());
-                // El tipo de un acceso es el tipo de su nodo derecho porque:
-                // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-                // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
             }
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
@@ -2351,9 +2313,6 @@ public class AnalizadorSintactico {
             return nodoI;
         }
         return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-        // El tipo de un acceso es el tipo de su nodo derecho porque:
-        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
-        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
     }
 
     private static NodoLiteral llamadaMetodoEncadenado1() {
