@@ -1,8 +1,9 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.SemantErrorException;
 import org.com.etapa3.TablaSimbolos;
 
-// Nodo para expresiones unarias (por ejemplo: ++a, --a, !a, etc)
+// Nodo para expresiones unarias (por ejemplo: ++a, --a, !a)
 public class NodoExpUn extends NodoLiteral {
 
     private String op; // Operador unario y
@@ -30,9 +31,27 @@ public class NodoExpUn extends NodoLiteral {
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // NodoExpUn: opUnario exp
+        this.exp.checkTypes(ts);
         // Verificar que exp sea "Bool" cuando el operador es "!"
-        // Verificar que exp sea "Int" en todos los demas casos
-        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
+        if(op.equals("!")){
+            if(!this.exp.getNodeType().equals("Bool")){
+                throw new SemantErrorException(this.getLine(),this.getCol(),
+                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
+                        "expCompuesta1");
+            }
+            // Setear el tipo correspondiente
+            this.setNodeType("Bool");
+
+        } else { // Verificar que exp sea "Int" en todos los demas casos ++ --
+            if(!this.exp.getNodeType().equals("Int")){
+                throw new SemantErrorException(this.getLine(),this.getCol(),
+                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
+                        "expCompuesta1");
+            }
+            // Setear el tipo correspondiente
+            this.setNodeType("Int");
+        }
+
         return true;
     }
 }

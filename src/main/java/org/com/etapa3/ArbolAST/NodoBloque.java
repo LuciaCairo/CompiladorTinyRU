@@ -1,7 +1,6 @@
 package org.com.etapa3.ArbolAST;
 
 import org.com.etapa3.TablaSimbolos;
-
 import java.util.LinkedList;
 
 public class NodoBloque extends NodoLiteral{
@@ -12,6 +11,11 @@ public class NodoBloque extends NodoLiteral{
     public NodoBloque(int line, int col){
         super(line, col);
         this.sentencias = new LinkedList<>();
+    }
+
+    // Getters
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
     }
 
     // Functions
@@ -36,8 +40,11 @@ public class NodoBloque extends NodoLiteral{
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // NodoBloque: Bloque {sentencias}
-        // No debi verificar nada especial aca creo
-        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
+        // Chequeo de sentencias
+        for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
+            s.checkTypes(ts);
+        }
+        this.setNodeType(null);
         return true;
     }
 }

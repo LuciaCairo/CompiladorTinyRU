@@ -788,41 +788,11 @@ public class AnalizadorSintactico {
             bloque(); // AST Bloque
             ast.getProfundidad().pop();
             return nodo;
+
         } else if (currentToken.getLexema().equals("ret")){
             match("ret"); // AST Retorno
             NodoLiteral exp = sentencia2();
-
-            //si el retorno es void.
-            if (exp == null){
-                //verifico que le metodo, me devuelva void realmente
-                if(ts.getCurrentMetod().getRet().equals("void")){
-
-                    //creo un nodo exp, para poder pasarlo al ret.
-                    exp = new NodoLiteral(line,col,"Ret;","void",";");
-                    return new NodoExpresion(line,col,"Retorno","void", ";", exp);
-                }else{
-                    throw new SemantErrorException(currentToken.getLine(),
-                            currentToken.getCol(),
-                            "El retorno del metodo '" + ts.getCurrentMetod().getName()+
-                            "' no puede ser '" + "void" + "' porque en su firma esta declarado como "+ts.getCurrentMetod().getRet() ,
-                            "sentencia");
-                }
-                // Verifico q el ret sea igual al de la firma del metodo
-            }else {
-                if(!(ts.getCurrentMetod().getRet().equals(exp.getNodeType()))){
-                    throw new SemantErrorException(currentToken.getLine(),
-                            currentToken.getCol(),
-                            "El retorno del metodo '" + ts.getCurrentMetod().getName()+
-                                    "' no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ts.getCurrentMetod().getRet() +"'",
-                            "sentencia");
-                }
-            }
-        } else{
-            throw new SyntactErrorException(currentToken.getLine(),
-                    currentToken.getCol(),
-                    "Se esperaba:',', self, id, '(', '{', if, while o ret. " +
-                            "Se encontró " + currentToken.getLexema(),
-                    "sentencia");
+            return new NodoExpresion(line,col,"Retorno",ts.getCurrentMetod().getRet(), ";", exp);
         }
         return null;
     }
@@ -958,19 +928,15 @@ public class AnalizadorSintactico {
 
             // Ahora armo el lado derecho de la asignacion
             nodoD = expresion();
-            if(ast.checkTypes(nodoI , nodoD) == null){
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede asignar un " + nodoD.getNodeType() + " a un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
-            return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(), nodoI,nodoD, nodoI.getNodeType());
+
             // Se termino de armar la asignacion
+            return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(), nodoI,nodoD, null);
 
         }else if(currentToken.getLexema().equals("self")){
             // Lado izquierdo de la asignacion
             ast.getProfundidad().push(new NodoLiteral(ts.getCurrentStruct().getLine(),ts.getCurrentStruct().getCol(),
                     ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null));
-            NodoLiteral nodoD= (NodoLiteral) accesoSelfSimple();
+            NodoLiteral nodoD= accesoSelfSimple();
             NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop();
 
             if (nodoD != null){
@@ -982,13 +948,8 @@ public class AnalizadorSintactico {
 
             // Ahora armo el lado derecho de la asignacion
             nodoD = expresion();
-            if(ast.checkTypes(nodoI , nodoD) == null){
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede asignar un " + nodoD.getNodeType() + " a un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
             return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(),
-                    nodoI,nodoD, nodoI.getNodeType()); // Se termino de armar la asignacion
+                    nodoI,nodoD, null); // Se termino de armar la asignacion
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1115,11 +1076,6 @@ public class AnalizadorSintactico {
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar un or entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line, col, nodoI,"||", nodoD, "Bool");
     }
 
@@ -1134,12 +1090,8 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar un or entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
             return new NodoExpBin(line, col, nodoI,"||", nodoD,"Bool");
+
         }else if(currentToken.getLexema().equals(")")||
                 currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("]")||
@@ -1164,11 +1116,6 @@ public class AnalizadorSintactico {
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
         } // Si no, es binaria
-        if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar un and entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line, col, nodoI,"&&", nodoD, "Bool");
     }
 
@@ -1183,11 +1130,7 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar un and entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
+
             return new NodoExpBin(line, col, nodoI,"&&", nodoD, "Bool");
         }else if(currentToken.getLexema().equals("||")||
                 currentToken.getLexema().equals(")")||
@@ -1215,11 +1158,6 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
 
-        if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar una comparacion entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line,col,nodoI,"==",nodoD, "Bool");
 
     }
@@ -1237,11 +1175,7 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar una comparacion entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
+
             return new NodoExpBin(line, col, nodoI,op, nodoD,"Bool");
 
 
@@ -1273,11 +1207,6 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
 
-        if(ast.checkTypes(nodoI , nodoD) == null){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar una comparacion entre un " + nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line, col, nodoI, op, nodoD,"Bool");
     }
 
@@ -1319,12 +1248,6 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
 
-        if(!(ast.checkTypes(nodoI , nodoD).equals("Int"))){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar una operacion de " + op + " entre un "+ nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
     }
 
@@ -1342,11 +1265,6 @@ public class AnalizadorSintactico {
                 return nodoI; // Es unaria
             } // Si no, es binaria
 
-            if(!(ast.checkTypes(nodoI , nodoD) == "Int")){ // SE PUEDE CON ALGO QUE NO SEA BOOL ?
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar una operacion de " + op + "entre un "+ nodoD.getNodeType() + " y un " + nodoI.getNodeType(),
-                        "expCompuesta1");
-            }
             return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
 
         }else if(currentToken.getLexema().equals("||")||
@@ -1385,11 +1303,6 @@ public class AnalizadorSintactico {
             return nodoI; // Es unaria
         } // Si no, es binaria
 
-        if(!(ast.checkTypes(nodoI , nodoD) == "Int")){
-            throw new SemantErrorException(line, col,
-                    "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" entre un " + nodoI.getNodeType() + " y un " + nodoD.getNodeType(),
-                    "expCompuesta1");
-        }
         return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
     }
 
@@ -1406,11 +1319,6 @@ public class AnalizadorSintactico {
             if(nodoD == null){ // No hay lado derecho entonces es unaria
                 return nodoI; // Es unaria
             } // Si no, es binaria
-            if(!(ast.checkTypes(nodoI , nodoD) == "Int")){
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" entre un " + nodoI.getNodeType() + " y un " + nodoD.getNodeType(),
-                        "expCompuesta1");
-            }
             return new NodoExpBin(line,col,nodoI,op,nodoD,"Int");
 
         }else if(currentToken.getLexema().equals("||")||
@@ -1453,17 +1361,7 @@ public class AnalizadorSintactico {
             String op = currentToken.getLexema(); // operador de la expresion unaria
             opUnario();
             NodoLiteral exp = expUn();
-            if(!((exp.getNodeType() == "Bool") && (op == "!"))){
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
-                        "expCompuesta1");
-            } else if (exp.getNodeType() != "Int") {
-                ;
-                throw new SemantErrorException(line, col,
-                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
-                        "expCompuesta1");
-            }
-            return new NodoExpUn(line, col, exp.getNodeType() ,exp, op);
+            return new NodoExpUn(line, col, null ,exp, op);
 
         } else if(currentToken.getLexema().equals("nil") ||
                 currentToken.getLexema().equals("true") ||
@@ -1739,7 +1637,7 @@ public class AnalizadorSintactico {
 
                 NodoLiteral nodoI = new NodoLiteral(line, col, identificador,tipoId,null);
                 ast.getProfundidad().push(nodoI);
-                NodoLiteral nodoD = (NodoLiteral)accesoVar();
+                NodoLiteral nodoD = accesoVar();
                 ast.getProfundidad().pop();
                 if(nodoD == null){
                     return nodoI;
@@ -1766,10 +1664,10 @@ public class AnalizadorSintactico {
                         currentToken.getCol(), "El struct \"" + currentToken.getLexema() +
                         "\" no existe", "encadenadoSimple");
             }
-            return (NodoLiteral) llamadaMetodoEstatico(isPred);
+            return llamadaMetodoEstatico(isPred);
 
         } else if(currentToken.getLexema().equals("new")){
-            return (NodoLiteral) llamadaConstructor();
+            return llamadaConstructor();
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),

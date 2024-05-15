@@ -1,6 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
 import org.com.etapa3.TablaSimbolos;
+import org.com.etapa3.SemantErrorException;
 
 // Este es el nodo con la estructura general del que heredan todos los nodos
 public class NodoExpresion extends NodoLiteral {
@@ -12,6 +13,12 @@ public class NodoExpresion extends NodoLiteral {
         super(line, col,name,type, value);
         this.exp = exp;
     }
+
+    // Setters
+    public void setExp(NodoLiteral exp) {
+        this.exp = exp;
+    }
+
 
     // Functions
 
@@ -29,72 +36,38 @@ public class NodoExpresion extends NodoLiteral {
 
     @Override
     public boolean checkTypes(TablaSimbolos ts){
-        // NodoExpresion:
-        // Aca solo setear el valor del tipo
-        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
+        // NodoExpresion: exp
+
+        if(this.getName().equals("Retorno")){
+
+            // Si el retorno es void.
+            if (exp == null){
+                // Verifico que el metodo, me devuelva void
+                if(this.getNodeType().equals("void")){
+                    // Creo un nodo exp, para poder pasarlo al ret.
+                    this.setExp(new NodoLiteral(this.getLine(),this.getCol(),"Ret;","void",";"));
+                    // Setear el tipo correspondiente
+                    this.setNodeType(exp.getNodeType());
+
+                }else{
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "El retorno del metodo no puede ser \"void\" porque en su firma esta declarado como "+ this.getNodeType(),
+                            "sentencia");
+                }
+
+            }else { // Verifico q el ret sea igual al de la firma del metodo
+
+                exp.checkTypes(ts); // Chequeo la expresion
+                if(!(this.getNodeType().equals(exp.getNodeType()))){
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "El retorno del metodo no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ this.getNodeType() +"'",
+                            "sentencia");
+                } else {
+                    // Setear el tipo correspondiente
+                    this.setNodeType(exp.getNodeType());
+                }
+            }
+        }
         return true;
     }
-
-    /*private NodoExpresion declaracion;
-    private LinkedList<NodoSentencia> loop;
-    private boolean scoped = false;
-
-    public NodoWhile(int filaTok,int colTok){
-        super(filaTok,colTok);
-        this.loop = new LinkedList<>();
-        this.scoped = false;
-    }
-
-    public void setDeclaracion(NodoExpresion declaracion) {
-        this.declaracion = declaracion;
-    }
-
-
-    public void addSentencia(NodoSentencia e){
-        this.loop.add(e);
-    }
-
-    //como es la verificacion del while? como saber cuando cortar? deberia verificarlo yo? o solo verificar que sea todo correcto?
-    // verificar condicion y loop si es correcto semanticamente.. es suficiente?
-
-    @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        if(!this.declaracion.checkIsBoolean(ts)){
-            throw new ExcepcionSemantica(this.declaracion.getFila(),this.declaracion.getCol(),"No es una declaracion de tipo booleana",this.declaracion.getTipo(ts),false);
-        }
-        this.loop.forEach((elem)  -> {
-            try{
-                elem.verifica(ts);
-            }catch(ExcepcionSemantica eS){}
-        });
-        return true;
-    }
-
-    public void setScoped(boolean scoped) {
-        this.scoped = scoped;
-    }
-
-    public boolean isScoped() {
-        return scoped;
-    }
-
-    public LinkedList<NodoSentencia> getLoop() {
-        return loop;
-    }
-
-
-    @Override
-    public String imprimeSentencia() {
-        String json= "\"nodo\": \"NodoWhile\",\n"
-                + "\"declaracion\":{\n"+this.declaracion.imprimeSentencia()+"\n},\n"
-                + "\"Bloque\":[";
-        for (int i = 0; i < loop.size(); i++) {
-            json += "\n{"+ this.loop.get(i).imprimeSentencia() +"},";
-        }
-        json = json.substring(0,json.length()-1);
-        json += "]";
-
-
-        return json;
-    }*/
 }

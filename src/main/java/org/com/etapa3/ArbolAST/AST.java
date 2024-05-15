@@ -47,14 +47,6 @@ public class AST {
     public void insertStruct(String name, NodoStruct nodo) {
         this.structs.put(name, nodo);
     }
-    public String checkTypes(Nodo nodo1 , Nodo nodo2){
-        String n1= nodo1.getNodeType();
-        String n2= nodo2.getNodeType();
-        if(n1.equals(n2)){
-            return (nodo1.getNodeType());
-        }
-        return null;
-    }
 
     public String printJSON_Arbol(String input){
         String json = "{\n";

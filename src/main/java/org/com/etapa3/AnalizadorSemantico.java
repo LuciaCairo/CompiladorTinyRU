@@ -324,13 +324,28 @@ public class AnalizadorSemantico {
 
                 // Recorro todos los nodos metodos del struct
                 for (NodoMetodo m : value.getMetodos().values()) {
+                    boolean isRet = false;
                     // Recorro las sentencias del metodo
                     // Las sentencias pueden ser:
                     // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
                     for (NodoLiteral s : m.getSentencias()) {
+                        if(s.getName()!= null){
+                            if(s.getName()!= null && s.getName().equals("Retorno")){
+                                isRet = true;
+                            }
+                        }
+                        System.out.println(s.getClass());
                         // Para cada sentencia asigno y verifico sus tipos
                         s.checkTypes(ts);
 
+                    }
+                    if(!isRet){
+                        if( !(ts.getStruct(value.getName()).getMetodos().get(m.getName()).getRet().equals("void"))){
+                            throw new SemantErrorException(m.getLine(), m.getCol(),
+                                    "Falta sentencia de retorno. El metodo esta delarado para retornar " +
+                                            ts.getStruct(value.getName()).getMetodos().get(m.getName()).getRet(),
+                                    "sentencia");
+                        }
                     }
                 }
             }

@@ -89,8 +89,6 @@ public class NodoAcceso extends NodoLiteral {
             // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
             this.setNodeType(nodoD.getNodeType());
         }
-
         return true;
     }
-
 }

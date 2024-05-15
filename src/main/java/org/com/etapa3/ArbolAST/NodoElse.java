@@ -1,5 +1,7 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.TablaSimbolos;
+
 import java.util.LinkedList;
 
 public class NodoElse extends NodoLiteral {
@@ -11,6 +13,13 @@ public class NodoElse extends NodoLiteral {
         super(line, col);
         this.nodoIf = nodoIf;
         this.sentencias = new LinkedList<>();
+    }
+
+    // Getters
+
+
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
     }
 
     // Functions
@@ -34,6 +43,17 @@ public class NodoElse extends NodoLiteral {
         }
 
         return json;
+    }
+
+    @Override
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoElse: else {sentencias}
+        // Chequeo de sentencias
+        for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del else
+            s.checkTypes(ts);
+        }
+        this.setNodeType(null);
+        return true;
     }
 
 }

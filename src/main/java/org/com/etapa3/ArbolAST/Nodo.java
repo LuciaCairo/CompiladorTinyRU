@@ -8,7 +8,7 @@ public class Nodo {
     private int line;
     private int col;
     private String value;
-    private String nodeType; // Tipo de nodo
+    private String nodeType;
     private String name;
     private LinkedList<NodoLiteral> sentencias;
 
