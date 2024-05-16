@@ -32,6 +32,7 @@ public class NodoExpresion extends NodoLiteral {
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // NodoExpresion: exp
+        System.out.println(this.getName());
         if(this.getName().equals("Retorno")){
 
             // Si el retorno es void.
@@ -61,6 +62,8 @@ public class NodoExpresion extends NodoLiteral {
                     this.setNodeType(exp.getNodeType());
                 }
             }
+        }else if (this.getName().equals("Sentencia Simple")){
+            exp.checkTypes(ts);
         }
         return true;
     }
