@@ -21,7 +21,6 @@ public class NodoExpBin extends NodoLiteral {
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Expresion Binaria\",\n"
                 + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-                + space + "\"valor\":\""+ this.getValue() +"\",\n"
                 + space + "\"operador\":\""+ this.op +"\",\n"
                 + space + "\"nodoIzq\": {\n"+ this.nodoI.printSentencia(space+"\t") +"\n" + space +"},\n"
                 + space + "\"nodoDer\": {\n"+ this.nodoD.printSentencia(space+"\t") +"\n" + space +"}";

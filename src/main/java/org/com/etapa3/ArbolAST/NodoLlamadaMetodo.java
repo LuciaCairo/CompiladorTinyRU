@@ -38,11 +38,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     @Override
     public String printSentencia(String space) {
         String json = space + "\"nodo\": \"Llamada Metodo\",\n"
-                + space + "\"metodo\": {\n"+ this.metodo +"\n" + space +"},\n";
+                + space + "\"metodo\": \""+ this.metodo +"\"," + space +"\n";
         if (!this.argumentos.isEmpty() && !(this.argumentos.getFirst() == null) ) {
             json +=  space + "\"argumentos\":[\n";
             for (int i = 0; i < this.argumentos.size(); i++) {
-                json += space + "{\n\t" + space + this.argumentos.get(i).printSentencia(space + "\t") + space + "},\n";
+                json += space + "{\n" + this.argumentos.get(i).printSentencia(space + "\t") + space + "},\n";
             }
             json = json.substring(0, json.length() - 2);
         } else {
@@ -54,9 +54,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // NodoLlamadaMetodo: metodo(lista expresiones)
-        // Verificar que el metodo exista en su structs padre en la ts
+        // Verificar que el metodo exista en su struct padre en la ts
+        // Chequear los argumentos
         // Verificar los argumentos de la llamada coincidan en tipo y cantidad con los argumentos que espera el metodo
-        // Setear el tipo correspondiente una vez que se chequeo todo, si no tirar error
+        // Setear el tipo correspondiente
+        // Ver caso especial de constructor (y constructor de array)
         return true;
     }
 

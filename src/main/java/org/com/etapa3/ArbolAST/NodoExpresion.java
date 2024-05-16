@@ -21,23 +21,17 @@ public class NodoExpresion extends NodoLiteral {
 
 
     // Functions
-
     public String printSentencia(String space) {
-        if (this.getName().equals("Retorno") && this.exp.getNodeType().equals("void")) {
-            return "";
+        return "\"nodo\": \"" + this.getName() + "\",\n"
+                + space + "\"tipo\":\"" + this.getNodeType() + "\",\n"
+                + space + "\"expresion\": {\n" + this.exp.printSentencia(space + "\t") + "\n" + space + "},\n";
 
-        } else {
-            return "\"nodo\": \"" + this.getName() + "\",\n"
-                    + space + "\"tipo\":\"" + this.getNodeType() + "\",\n"
-                    + space + "\"expresion\": {\n" + this.exp.printSentencia(space + "\t") + "\n" + space + "},\n";
 
-        }
     }
 
     @Override
     public boolean checkTypes(TablaSimbolos ts){
         // NodoExpresion: exp
-
         if(this.getName().equals("Retorno")){
 
             // Si el retorno es void.
@@ -55,10 +49,10 @@ public class NodoExpresion extends NodoLiteral {
                             "sentencia");
                 }
 
-            }else { // Verifico q el ret sea igual al de la firma del metodo
+            }else { // Verifico q el ret sea igual al de la firma del metodo o tambien puede ser nil
 
                 exp.checkTypes(ts); // Chequeo la expresion
-                if(!(this.getNodeType().equals(exp.getNodeType()))){
+                if(!(this.getNodeType().equals(exp.getNodeType())) && !(this.exp.getNodeType().equals("nil"))){
                     throw new SemantErrorException(this.getLine(), this.getCol(),
                             "El retorno del metodo no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ this.getNodeType() +"'",
                             "sentencia");

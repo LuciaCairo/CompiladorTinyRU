@@ -24,9 +24,6 @@ public class AST {
     public NodoStruct getCurrentStruct() {
         return currentStruct;
     }
-    public NodoMetodo getCurrentMetodo() {
-        return currentMetodo;
-    }
     public Stack<Nodo> getProfundidad() {
         return profundidad;
     }
@@ -54,7 +51,7 @@ public class AST {
         json += "\"structs\": [\n";
         for(Map.Entry<String, NodoStruct> entry : structs.entrySet()) {
             NodoStruct value = entry.getValue();
-            if(value.getName().equals("START")){
+            if(value.getName().equals("start")){
                 json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStart()+"\n},\n";
             } else {
             json +="{\n\t\"nombreImpl\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";

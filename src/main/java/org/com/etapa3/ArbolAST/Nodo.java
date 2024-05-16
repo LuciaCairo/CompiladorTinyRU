@@ -60,7 +60,6 @@ public class Nodo {
     }
 
     // Setters
-
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }

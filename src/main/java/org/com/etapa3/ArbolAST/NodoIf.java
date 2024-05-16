@@ -60,8 +60,10 @@ public class NodoIf extends NodoLiteral {
                     "sentencia");
         }
         // Hacer checkTypes de sus sentencias
-        for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
-            s.checkTypes(ts);
+        if(!this.getSentencias().isEmpty()) {
+            for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
+                s.checkTypes(ts);
+            }
         }
         // Hacer checkTypes de sus sentenciasElse
         this.nodoElse.checkTypes(ts);

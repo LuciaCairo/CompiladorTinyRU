@@ -308,18 +308,29 @@ public class AnalizadorSemantico {
             ast.setCurrentStruct(value);
 
             // Primero verifico si el struct es start (ya que es un caso especial de struct)
-            if(value.getName().equals("START")){
+            if(value.getName().equals("start")){
                 // El start no tiene metodos
                 // start{ sentencias }
-                /*for (EntradaVariable v : struct.getVariables().values()) {
-                            String[] palabras = v.getType().split(" ");
-                            String isArray = palabras[0];
-                            if(!ts.getTableStructs().containsKey(v.getType()) && !ts.getStructsPred().containsKey(v.getType())
-                                    && !isArray.equals("Array")){
-                                throw new SemantErrorException(v.getLine(), v.getCol(), "Tipo no definido: el tipo \"" + v.getType() +
-                                        "\" de la variable \"" + v.getName() + "\" no esta definido", "AS");
-                            };
-                        }*/
+                ts.setCurrentStruct(ts.getStruct(value.getName()));
+                // Recorro las sentencias del start
+                // Las sentencias pueden ser:
+                // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
+                if(!value.getSentencias().isEmpty()) {
+                    for (NodoLiteral s : value.getSentencias()) {
+                        if (s.getName() != null) {
+                            if (s.getName().equals("Retorno")) {
+                                throw new SemantErrorException(value.getLine(), value.getCol(),
+                                        "El struct de inicio de programa (\"start\") no debe tener retorno.",
+                                        "sentencia");
+                            }
+                        }
+
+                        // Para cada sentencia asigno y verifico sus tipos
+                        s.checkTypes(ts);
+
+                    }
+                }
+
             } else { // Ahora para los demas structs que no son start
 
                 // Recorro todos los nodos metodos del struct
@@ -331,16 +342,18 @@ public class AnalizadorSemantico {
                     // Recorro las sentencias del metodo
                     // Las sentencias pueden ser:
                     // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
-                    for (NodoLiteral s : m.getSentencias()) {
-                        if(s.getName()!= null){
-                            if(s.getName()!= null && s.getName().equals("Retorno")){
-                                isRet = true;
+                    if(!m.getSentencias().isEmpty()){
+                        for (NodoLiteral s : m.getSentencias()) {
+                            if(s.getName()!= null){
+                                if(s.getName()!= null && s.getName().equals("Retorno")){
+                                    isRet = true;
+                                }
                             }
+
+                            // Para cada sentencia asigno y verifico sus tipos
+                            s.checkTypes(ts);
+
                         }
-
-                        // Para cada sentencia asigno y verifico sus tipos
-                        s.checkTypes(ts);
-
                     }
                     if(!isRet){
                         if( !(ts.getStruct(value.getName()).getMetodos().get(m.getName()).getRet().equals("void"))){

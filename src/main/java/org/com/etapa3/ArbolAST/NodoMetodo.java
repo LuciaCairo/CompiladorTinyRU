@@ -44,11 +44,4 @@ public class NodoMetodo extends Nodo{
         return json;
     }
 
-    @Override
-    public boolean checkTypes(TablaSimbolos ts){
-        // Creo que aca no hace falta verificar nada
-        // quiza setear el tipo del nodo con el tipo de ret
-        return true;
-    }
-
 }

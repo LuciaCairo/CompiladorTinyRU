@@ -21,14 +21,14 @@ public class NodoStruct extends Nodo{
     public String getName() {
         return name;
     }
-
     public HashMap<String, NodoMetodo> getMetodos() {
         return metodos;
     }
-    // Setters
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
+    }
 
     // Functions
-
     public void insertMetodo(String name, NodoMetodo nodo) {
         this.metodos.put(name, nodo);
     }
@@ -63,7 +63,6 @@ public class NodoStruct extends Nodo{
             }
             json = json.substring(0,json.length()-1);
         }
-
         json +="\n\t\t\t\t]\n";
         return json;
     }

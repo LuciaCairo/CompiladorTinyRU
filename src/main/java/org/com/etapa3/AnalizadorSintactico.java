@@ -23,7 +23,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -136,10 +136,10 @@ public class AnalizadorSintactico {
         match("start");
 
         // Construccion AST
-        NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), "START");
+        NodoStruct nodo = new NodoStruct(currentToken.getLine(), currentToken.getCol(), "start");
         ast.setCurrentStruct(nodo); // Actualizo el struct actual
         ast.getProfundidad().push(nodo);
-        ast.insertStruct("START",nodo); // Inserto el struct en el AST
+        ast.insertStruct("start",nodo); // Inserto el struct en el AST
         bloqueMetodo();
     }
 
@@ -882,8 +882,6 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral asignacion() {
-        int line = currentToken.getLine();
-        int col = currentToken.getCol();
         if (currentToken.getName().equals("id")){
             // AST
             // Me encuentro con un identificador
@@ -973,9 +971,9 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral encadenadosSimples() {
-        NodoLiteral nodoI = (NodoLiteral) encadenadoSimple();
+        NodoLiteral nodoI = encadenadoSimple();
        ast.getProfundidad().push(nodoI);
-        NodoLiteral nodoD = (NodoLiteral) encadenadosSimples1();
+        NodoLiteral nodoD = encadenadosSimples1();
        if(nodoD==null){
            ast.getProfundidad().pop();
            return nodoI;
@@ -1318,8 +1316,9 @@ public class AnalizadorSintactico {
         //int line = currentToken.getLine();
         //int col = currentToken.getCol();
         // Caso de expresion unaria
-        if (currentToken.getLexema().equals("+") ||
-                currentToken.getLexema().equals("-") ||
+        // currentToken.getLexema().equals("+") ||
+        //                currentToken.getLexema().equals("-") || ?? va o no
+        if (
                 currentToken.getLexema().equals("!") ||
                 currentToken.getLexema().equals("++") ||
                 currentToken.getLexema().equals("--")){
@@ -1346,7 +1345,7 @@ public class AnalizadorSintactico {
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
-                    "Se esperaba: operador aritmetico ('+','-', '++', '--', '!'), " +
+                    "Se esperaba: operador unario ('++', '--', '!'), " +
                             "literales, self, id o new. Se encontró " + currentToken.getLexema(),
                     "expUn");
         }
@@ -1406,19 +1405,14 @@ public class AnalizadorSintactico {
     private static void opUnario() {
         if(currentToken.getLexema().equals("+")){
             match("+");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("+");
         } else if(currentToken.getLexema().equals("-")){
             match("-");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("-");
         } else if(currentToken.getLexema().equals("++")){
             match("++");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("++");
         } else if(currentToken.getLexema().equals("--")){
             match("--");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("--");
         } else if(currentToken.getLexema().equals("!")){
             match("!");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("!");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1430,13 +1424,10 @@ public class AnalizadorSintactico {
     private static void opMul() {
         if(currentToken.getLexema().equals("*")){
             match("*");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("*");
         } else if(currentToken.getLexema().equals("/")){
             match("/");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("/");
         } else if(currentToken.getLexema().equals("%")){
             match("%");
-            //((NodoExpBin) ast.getProfundidad().peek()).setOp("%");
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -1584,14 +1575,21 @@ public class AnalizadorSintactico {
             int line = currentToken.getLine();
             int col = currentToken.getCol();
 
+            NodoLiteral nodoI = new NodoLiteral(line, col,
+                    (ts.getStructsPred().get(currentToken.getLexema()).getName()));
+            ast.getProfundidad().push(nodoI);
 
-            NodoLiteral nodo = new NodoLiteral(line, col, (ts.getStructsPred().get(currentToken.getLexema()).getName()));
-            ast.getProfundidad().push(nodo);
+            NodoLiteral nodoD = llamadaMetodoEstatico();
 
-            return llamadaMetodoEstatico();
+            if(nodoD == null){
+                return nodoI;
+            }
+            return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+
 
         } else if(currentToken.getLexema().equals("new")){
             return llamadaConstructor();
+
         } else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -2074,12 +2072,10 @@ public class AnalizadorSintactico {
         match("id");
         argumentosActuales();
         NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) ast.getProfundidad().pop();
-        // Veo que tipo retorna el metodo (para hacer un encadenado debe devolver algo de tipo idStruct)
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        String typeRet = (ts.getStruct(nodoI.getTypeStruct()).getMetodo(nodoI.getMetodo())).getRet();
-        ast.getProfundidad().push(new NodoLiteral(line, col, typeRet));
-        NodoLiteral nodoD = (NodoLiteral) llamadaMetodoEncadenado1();
+        ast.getProfundidad().push(new NodoLiteral(line, col, null));
+        NodoLiteral nodoD = llamadaMetodoEncadenado1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;

@@ -1,44 +1,11 @@
-struct Fibonacci {
-    Int suma;
-    Int i,j;
-}
-impl Fibonacci {
-    fn sucesion_fib(Int n)-> Int{
-        i=0; j=0; suma=0;
-        while (i<= n){
-            if (i==0){
-                (imprimo_numero(i));
-                (imprimo_sucesion(suma));
-            }else
-                if(i==1){
-                    (imprimo_numero(i));
-                    suma=suma+i;
-                    (imprimo_sucesion(suma));
-                } else{
-                    (imprimo_numero(i));
-                    suma=suma+j;
-                    j=suma;
-                    (imprimo_sucesion(suma));
-                }
-                (++i);
-            }
-            ret suma;
-    }
-    .(){
-        i=0; /? inicializo i
-        j=0; /? inicializo j
-        suma=0; /? inicializo suma
-    }
-    fn imprimo_numero(Int num) -> void{
-        (IO.out_str("f_"));
-        (IO.out_int(num));
-        (IO.out_str("="));
-    }
-    fn imprimo_sucesion(Int s) -> void{
-        /?El valor es:
-        (IO.out_int(s));
-        (IO.out_str("\n"));
-    }
-}
-start{
-}
+/? Acceso
+/? Verificar que haya error cuando se quiere hacer un acceso de array en una id que no es de tipo array
+/? Salida esperada: ERROR: SEMANTICO - SENTENCIAS
+/? No se definio un constructor para la clase "A"
+
+struct A{Int a;}
+impl A{ .(Int b){
+Int a;
+a[2] = 1;}}
+
+start{Int b;}

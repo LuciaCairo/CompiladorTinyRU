@@ -49,8 +49,10 @@ public class NodoElse extends NodoLiteral {
     public boolean checkTypes(TablaSimbolos ts){
         // NodoElse: else {sentencias}
         // Chequeo de sentencias
-        for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del else
-            s.checkTypes(ts);
+        if(!this.getSentencias().isEmpty()) {
+            for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del else
+                s.checkTypes(ts);
+            }
         }
         this.setNodeType(null);
         return true;
