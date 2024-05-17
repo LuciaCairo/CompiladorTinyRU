@@ -345,6 +345,7 @@ public class AnalizadorSemantico {
                     if(!m.getSentencias().isEmpty()){
 
                         for (NodoLiteral s : m.getSentencias()) {
+
                             if(s.getName()!= null){
                                 if(s.getName()!= null && s.getName().equals("Retorno")){
                                     isRet = true;

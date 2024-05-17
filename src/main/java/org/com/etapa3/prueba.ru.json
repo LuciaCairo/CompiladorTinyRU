@@ -10,6 +10,26 @@
 				"sentencias":[
 				{
 					"nodo": "Asignacion",
+						"tipo":"Perro",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"caniche",
+							"tipo":"Perro",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"metodo": "constructor",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"ciudad",
+								"tipo":"Str",
+								"valor":"null"							}					
+						}
+
+				},				{
+					"nodo": "Asignacion",
 						"tipo":"Str",
 						"NodoIzq":{
 							"nodo": "Literal",
@@ -65,9 +85,9 @@
 							}						},
 						{
 							"nodo": "Literal",
-							"nombre":"ciudad",
+							"nombre":"literal str",
 							"tipo":"Str",
-							"valor":"null"						},
+							"valor":"ciudad"						},
 						{
 							"nodo": "Literal",
 							"nombre":"flag1",
