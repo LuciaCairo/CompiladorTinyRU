@@ -3,9 +3,11 @@ package org.com.etapa3.ArbolAST;
 import org.com.etapa3.ClasesSemantico.EntradaMetodo;
 import org.com.etapa3.ClasesSemantico.EntradaParametro;
 import org.com.etapa3.ClasesSemantico.EntradaStruct;
+import org.com.etapa3.ClasesSemantico.EntradaStructPredef;
 import org.com.etapa3.SemantErrorException;
 import org.com.etapa3.TablaSimbolos;
 
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -65,17 +67,36 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public boolean checkTypes(TablaSimbolos ts){
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su struct padre en la ts
-
+        System.out.println(metodo);
         if(metodo.equals("constructor")){
-            //evaluo si el tipo de la instacia del objeto existe como struct
-            EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
-            if(!(ts.getStruct(this.getTypeStruct()) != null)){
-                throw new SemantErrorException(this.getLine(), this.getCol(),
-                        "No se puede crear una instancia de '"+this.getTypeStruct()+"' porque no existe el struct.Primero"+
-                        " debe crear el struct '"+this.getTypeStruct()+"'.",
-                        "sentencia");
 
-            }else{
+            EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
+            //evaluo si el tipo de la instacia del objeto existe como struct
+            if(StructConstructor == null){
+                //si no existe, busco en los struct pred
+                EntradaStructPredef  StructPredConstructor =  (ts.getStructPred(this.getTypeStruct()));
+                if (StructPredConstructor== null){
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "No se puede crear una instancia de '"+this.getTypeStruct()+"' porque no existe el struct.Primero"+
+                                    " debe crear el struct '"+this.getTypeStruct()+"'.",
+                            "sentencia");
+                }else{
+
+                    //evaluo la expresion
+                    argumentos.get(0).checkTypes(ts);
+                    //evaluo si parametro del array es int , ya que solo puede ser int new Int[1]
+                    if (!(argumentos.get(0).getNodeType().equals("Int"))){
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "Incompatibilidad de tipos. No se puede definir el tamaño de un array como '"+argumentos.get(0).getName()+
+                                        "'.El tipo debe ser 'Int'",
+                                "sentencia");
+                    }
+
+                    return true;
+                }
+
+
+            }else{ // si existe el constructor en los Structs
 
                 List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>(StructConstructor.getMetodos().get("constructor").getParametros().values());
                 parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
@@ -139,8 +160,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             this.setNodeType(ts.getCurrentStruct().getMetodos().get(metodo).getRet());
         }
 
-
-        // Ver caso especial de constructor (y constructor de array) (FALTANNNNNNNNNNNNNNNNNNN estas )
         return true;
     }
 

@@ -6,7 +6,7 @@
 struct Animal{Int a;
 Perro bulldog;
 Str son;
-Perro caniche;
+Array Str caniche;
 }
 impl Animal{
 
@@ -14,17 +14,16 @@ impl Animal{
     Int a;
     Str ciudad;
     Bool flag1;
-    caniche = new Perro(ciudad) ;
+    caniche = new Str[2+a];
+
+    caniche[1]="Chau";
+    caniche[2]="Adios";
+    caniche[3]="SI";
+
     son = "Guau";
-
-    (ladrar(bulldog,a+10*100,"ciudad",flag1));
-
-
     }
     fn ladrar(Perro p, Int s,Str string, Bool flag) -> void{
             }
-
-
 }
 
 struct Perro{}

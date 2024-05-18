@@ -10,11 +10,11 @@
 				"sentencias":[
 				{
 					"nodo": "Asignacion",
-						"tipo":"Perro",
+						"tipo":"Array Str",
 						"NodoIzq":{
 							"nodo": "Literal",
 							"nombre":"caniche",
-							"tipo":"Perro",
+							"tipo":"Array Str",
 							"valor":"null"
 						},
 						"NodoDer":{
@@ -22,10 +22,96 @@
 							"metodo": "constructor",							
 							"argumentos":[
 							{
+								"nodo": "Expresion Binaria",
+								"tipo":"Int",
+								"operador":"+",
+								"nodoIzq": {
+									"nodo": "Literal",
+									"nombre":"literal entero",
+									"tipo":"Int",
+									"valor":"2"
+								},
+								"nodoDer": {
+									"nodo": "Literal",
+									"nombre":"a",
+									"tipo":"Int",
+									"valor":"null"
+								}							}					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Str",
+						"NodoIzq":{
+							"nodo": "Acceso Array",
+							"nodo": {
 								"nodo": "Literal",
-								"nombre":"ciudad",
-								"tipo":"Str",
-								"valor":"null"							}					
+								"nombre":"caniche",
+								"tipo":"Array Str",
+								"valor":"null"
+							},
+							"indice": {
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"1"
+							}
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"Chau"					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Str",
+						"NodoIzq":{
+							"nodo": "Acceso Array",
+							"nodo": {
+								"nodo": "Literal",
+								"nombre":"caniche",
+								"tipo":"Array Str",
+								"valor":"null"
+							},
+							"indice": {
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"2"
+							}
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"Adios"					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Str",
+						"NodoIzq":{
+							"nodo": "Acceso Array",
+							"nodo": {
+								"nodo": "Literal",
+								"nombre":"caniche",
+								"tipo":"Array Str",
+								"valor":"null"
+							},
+							"indice": {
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"3"
+							}
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"SI"					
 						}
 
 				},				{
@@ -44,89 +130,12 @@
 							"valor":"Guau"					
 						}
 
-				},				{
-					"nodo": "Sentencia Simple",
-					"tipo":"null",
-					"expresion": {
-						"nodo": "Llamada Metodo",
-						"metodo": "ladrar",						
-						"argumentos":[
-						{
-							"nodo": "Literal",
-							"nombre":"bulldog",
-							"tipo":"Perro",
-							"valor":"null"						},
-						{
-							"nodo": "Expresion Binaria",
-							"tipo":"Int",
-							"operador":"+",
-							"nodoIzq": {
-								"nodo": "Literal",
-								"nombre":"a",
-								"tipo":"Int",
-								"valor":"null"
-							},
-							"nodoDer": {
-								"nodo": "Expresion Binaria",
-								"tipo":"Int",
-								"operador":"*",
-								"nodoIzq": {
-									"nodo": "Literal",
-									"nombre":"literal entero",
-									"tipo":"Int",
-									"valor":"10"
-								},
-								"nodoDer": {
-									"nodo": "Literal",
-									"nombre":"literal entero",
-									"tipo":"Int",
-									"valor":"100"
-								}
-							}						},
-						{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"ciudad"						},
-						{
-							"nodo": "Literal",
-							"nombre":"flag1",
-							"tipo":"Bool",
-							"valor":"null"						}
-					},
-
 				}
 				]
 		}
 	},
 	{
 		"nombreMetodo":"ladrar",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	}
-	]
-},
-{
-	"nombreImpl": "B",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	}
-	]
-},
-{
-	"nombreImpl": "C",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 

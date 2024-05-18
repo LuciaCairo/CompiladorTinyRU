@@ -16,6 +16,7 @@ public class AnalizadorSintactico {
     private static TablaSimbolos ts;
     private static AST ast;
     public static void main(String[] args) {
+
         /*if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
             System.out.println("Uso: java -jar etapa3.jar <ARCHIVO_FUENTE> ");
