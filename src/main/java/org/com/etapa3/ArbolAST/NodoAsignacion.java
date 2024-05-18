@@ -31,6 +31,7 @@ public class NodoAsignacion extends NodoLiteral {
         // Chequeo del nodoI
         this.nodoI.checkTypes(ts);
         // Chequeo del nodoD
+
         this.nodoD.checkTypes(ts);
         // Verificar que el nodoI y el nodoD sean del mismo tipo
         String typeNI = nodoI.getNodeType();

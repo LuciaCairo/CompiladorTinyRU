@@ -2,10 +2,105 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "A",
+	"nombreImpl": "Animal",
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Asignacion",
+						"tipo":"Perro",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"caniche",
+							"tipo":"Perro",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"metodo": "constructor",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"ciudad",
+								"tipo":"Str",
+								"valor":"null"							}					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Str",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"son",
+							"tipo":"Str",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"Guau"					
+						}
+
+				},				{
+					"nodo": "Sentencia Simple",
+					"tipo":"null",
+					"expresion": {
+						"nodo": "Llamada Metodo",
+						"metodo": "ladrar",						
+						"argumentos":[
+						{
+							"nodo": "Literal",
+							"nombre":"bulldog",
+							"tipo":"Perro",
+							"valor":"null"						},
+						{
+							"nodo": "Expresion Binaria",
+							"tipo":"Int",
+							"operador":"+",
+							"nodoIzq": {
+								"nodo": "Literal",
+								"nombre":"a",
+								"tipo":"Int",
+								"valor":"null"
+							},
+							"nodoDer": {
+								"nodo": "Expresion Binaria",
+								"tipo":"Int",
+								"operador":"*",
+								"nodoIzq": {
+									"nodo": "Literal",
+									"nombre":"literal entero",
+									"tipo":"Int",
+									"valor":"10"
+								},
+								"nodoDer": {
+									"nodo": "Literal",
+									"nombre":"literal entero",
+									"tipo":"Int",
+									"valor":"100"
+								}
+							}						},
+						{
+							"nodo": "Literal",
+							"nombre":"literal str",
+							"tipo":"Str",
+							"valor":"ciudad"						},
+						{
+							"nodo": "Literal",
+							"nombre":"flag1",
+							"tipo":"Bool",
+							"valor":"null"						}
+					},
+
+				}
+				]
+		}
+	},
+	{
+		"nombreMetodo":"ladrar",
 		"Bloque": {
 				"sentencias":[
 
@@ -46,6 +141,19 @@
 
 				]
 
+},
+{
+	"nombreImpl": "Perro",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	}
+	]
 }
 ]
 }

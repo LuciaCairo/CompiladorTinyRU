@@ -343,7 +343,9 @@ public class AnalizadorSemantico {
                     // Las sentencias pueden ser:
                     // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
                     if(!m.getSentencias().isEmpty()){
+
                         for (NodoLiteral s : m.getSentencias()) {
+
                             if(s.getName()!= null){
                                 if(s.getName()!= null && s.getName().equals("Retorno")){
                                     isRet = true;

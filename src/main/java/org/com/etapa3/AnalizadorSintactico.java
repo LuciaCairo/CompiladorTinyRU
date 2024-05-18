@@ -23,12 +23,14 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
         File inputFile = new File(input);
         fileName = inputFile.getName();
+
+
 
         // Verificar existencia del archivo
         File file = new File(input);
@@ -89,6 +91,7 @@ public class AnalizadorSintactico {
 
     // Método para emparejar el token actual con un token esperado
     private static void match(String expectedToken) {
+
         if(!flagMatch){
             if (currentToken.getLexema().equals(expectedToken) ||
                     currentToken.getName().equals(expectedToken)) {

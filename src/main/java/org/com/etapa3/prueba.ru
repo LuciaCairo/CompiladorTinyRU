@@ -1,20 +1,38 @@
 /? Acceso
-/? Verificar que haya error cuando se quiere hacer un acceso encadenado a un atributo que no existe en el struct
+/? Verificar que haya error cuando se quiere hacer un acceso de array en una id que no es de tipo array
 /? Salida esperada: ERROR: SEMANTICO - SENTENCIAS
-/? | LINEA 13 | COLUMNA 2 | El id "s" no esta declarado como atributo del struct 'B'.|
+/? No se definio un constructor para la clase "A"
 
-struct C{Int y;}
-impl C{ .(){}}
-
-struct A{}
-impl A{ .(Array Str a){
-Int s;
-Int y;
-y = a[s].s;
+struct Animal{Int a;
+Perro bulldog;
+Str son;
+Perro caniche;
 }
-} /? Aca esta el error acceso al atributo inexistente del struct B
+impl Animal{
 
-struct B{ Int y;}
-impl B{ .(){C s;}}
+    .(Int b){
+    Int a;
+    Str ciudad;
+    Bool flag1;
+    caniche = new Perro(ciudad) ;
+    son = "Guau";
 
-start{Int b;}
+    (ladrar(bulldog,a+10*100,"ciudad",flag1));
+
+
+    }
+    fn ladrar(Perro p, Int s,Str string, Bool flag) -> void{
+            }
+
+
+}
+
+struct Perro{}
+impl Perro{
+    .(Int nombre){
+
+
+    }
+}
+
+start{}

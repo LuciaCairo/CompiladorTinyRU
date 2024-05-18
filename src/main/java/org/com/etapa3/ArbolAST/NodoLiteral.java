@@ -27,7 +27,6 @@ public class NodoLiteral extends Nodo{
 
     @Override
     public boolean checkTypes(TablaSimbolos ts){
-        System.out.println(this.getName());
 
         // IGNORAMOS LOS LITERALES(INT,STR...) PORQUE YA TIENEN TIPO Y VALOR
         if(!(this.getName().equals("literal nulo") ||
@@ -88,7 +87,6 @@ public class NodoLiteral extends Nodo{
                         this.setNodeType((ts.getTableStructs().get(this.getParent()).getAtributos().get(this.getName())).getType());
                     }
                 }
-
             }
         }
         return true;
