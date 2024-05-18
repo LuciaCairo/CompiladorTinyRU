@@ -10,6 +10,7 @@ public class Nodo {
     private String value;
     private String nodeType;
     private String name;
+    private String parent = "";
     private LinkedList<NodoLiteral> sentencias;
 
 
@@ -58,10 +59,16 @@ public class Nodo {
     public String getValue() {
         return value;
     }
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
 
     // Setters
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
+    }
+    public String getParent() {
+        return parent;
     }
 
     // Functions

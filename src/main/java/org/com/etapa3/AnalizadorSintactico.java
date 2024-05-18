@@ -744,7 +744,10 @@ public class AnalizadorSintactico {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
         if (currentToken.getLexema().equals(";")){
+            NodoLiteral nodo = new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                    "punto y coma","void",";");
             match(";");
+            return nodo;
         } else if (currentToken.getLexema().equals("self") ||
                 currentToken.getName().equals("id") ){
             NodoLiteral nodo = asignacion(); // AST Asignaciones
@@ -843,7 +846,10 @@ public class AnalizadorSintactico {
             match(";");
             return nodo;
         }else if(currentToken.getLexema().equals(";")){
+            NodoLiteral nodo = new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+                    "punto y coma","void",";");
             match(";");
+            return nodo;
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
                     currentToken.getCol(),
@@ -851,7 +857,6 @@ public class AnalizadorSintactico {
                             "; , self, id , o new. Se encontró " + currentToken.getLexema(),
                     "sentencia2");
         }
-        return null;
     }
 
     private static void bloque() {
@@ -901,20 +906,15 @@ public class AnalizadorSintactico {
                             currentToken.getLexema(),null, null));
 
             }
-            NodoLiteral nodoD= accesoVarSimple();
+            NodoLiteral nodoI= accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
-
-            NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop(); // Lo creo y saco de la pila
-
-            if (nodoD != null){
-                nodoI = new NodoAcceso(currentToken.getLine(), currentToken.getCol(),
-                        nodoI,nodoD, nodoD.getNodeType());
+            if(nodoI == null){
+                nodoI = (NodoLiteral) ast.getProfundidad().pop();
             }
-
             match("=");
 
             // Ahora armo el lado derecho de la asignacion
-            nodoD = expresion();
+            NodoLiteral nodoD = expresion();
 
             // Se termino de armar la asignacion
             return new NodoAsignacion(currentToken.getLine(), currentToken.getCol(), nodoI,nodoD, null);
@@ -952,13 +952,21 @@ public class AnalizadorSintactico {
 
     private static NodoLiteral accesoVarSimple1() {
         if (currentToken.getLexema().equals(".")){
-           return encadenadosSimples();
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            NodoLiteral nodoD = encadenadosSimples();
+            if (nodoD != null){
+                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(),nodoD, nodoD.getNodeType());
+            }
+           return (NodoLiteral) ast.getProfundidad().pop();
         }else if(currentToken.getLexema().equals("[")){
-
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
             match("[");
-            NodoLiteral nodo = expresion();
+            NodoLiteral exp = expresion();
             match("]");
-            return nodo;
+            return new NodoAccesoArray(line, col, (NodoLiteral) ast.getProfundidad().pop(),exp, null);
+
         } else if(currentToken.getLexema().equals("=")) {
             // lambda
         } else{
@@ -972,7 +980,7 @@ public class AnalizadorSintactico {
 
     private static NodoLiteral encadenadosSimples() {
         NodoLiteral nodoI = encadenadoSimple();
-       ast.getProfundidad().push(nodoI);
+        ast.getProfundidad().push(nodoI);
         NodoLiteral nodoD = encadenadosSimples1();
        if(nodoD==null){
            ast.getProfundidad().pop();
@@ -1018,7 +1026,6 @@ public class AnalizadorSintactico {
     private static NodoLiteral encadenadoSimple() {
         match(".");
 
-
         NodoLiteral nodo= new NodoLiteral(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),null, null);
         match("id");
         return nodo;
@@ -1036,7 +1043,6 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
         // Armamos la expresion (unaria o binaria)
         NodoLiteral nodoI = expAnd();
-
         NodoLiteral nodoD = expresion1();
         if(nodoD == null){ // No hay lado derecho entonces es unaria
             return nodoI; // Es unaria
@@ -1453,11 +1459,11 @@ public class AnalizadorSintactico {
             int line = currentToken.getLine();
             int col = currentToken.getCol();
 
-            NodoLiteral nodoD = (NodoLiteral)operando1();
+            NodoLiteral nodoD = operando1();
+
             if (nodoD == null) {
                 return nodoI;
             }
-
             return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
 
         } else {
@@ -1543,7 +1549,7 @@ public class AnalizadorSintactico {
         if(currentToken.getLexema().equals("(")){
            return expresionParentizada();
         } else if(currentToken.getLexema().equals("self")){
-            return (NodoLiteral) accesoSelf();
+            return accesoSelf();
         } else if(currentToken.getName().equals("id")) {
 
             int line = currentToken.getLine();
@@ -1551,25 +1557,21 @@ public class AnalizadorSintactico {
             String identificador = currentToken.getLexema(); // Antes de que machee
             match("id");
             flagMatch = true;
-            String tipoId;
             if(currentToken.getLexema().equals("(")) {
-
 
                 NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),
                         ts.getCurrentStruct().getName(),identificador, null);
                 ast.getProfundidad().push(nodo);
-                return (NodoLiteral) llamadaMetodo();
+                return  llamadaMetodo();
             } else{
-
 
                 NodoLiteral nodoI = new NodoLiteral(line, col, identificador,null,null);
                 ast.getProfundidad().push(nodoI);
                 NodoLiteral nodoD = accesoVar();
-                ast.getProfundidad().pop();
                 if(nodoD == null){
-                    return nodoI;
+                    return (NodoLiteral) ast.getProfundidad().pop();
                 }
-                return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
             }
         } else if(currentToken.getName().equals("struct_name")){
             int line = currentToken.getLine();
@@ -1611,7 +1613,7 @@ public class AnalizadorSintactico {
         // Ejemplo: (exp) se accede a algo del tipo de su expresion dentro de los ()
 
         // Lado derecho del acceso
-        NodoLiteral nodoD = (NodoLiteral) expresionParentizada1();
+        NodoLiteral nodoD = expresionParentizada1();
         ast.getProfundidad().pop();
         if (nodoD == null){
             return nodoI;
@@ -1656,7 +1658,7 @@ public class AnalizadorSintactico {
                 ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null);
         ast.getProfundidad().push(nodoI);
         match("self");
-        NodoLiteral nodoD = (NodoLiteral) accesoSelf1();
+        NodoLiteral nodoD = accesoSelf1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
@@ -1700,22 +1702,26 @@ public class AnalizadorSintactico {
     }
     private static NodoLiteral accesoVar1() {
         if (currentToken.getLexema().equals(".")){
-            return encadenado();
-        } else if (currentToken.getLexema().equals("[")){
-
-
-            match("[");
-            NodoLiteral nodoI = expresion();
-            match("]");
             int line = currentToken.getLine();
             int col = currentToken.getCol();
-            ast.getProfundidad().push(new NodoLiteral(line,col,null));
-            NodoLiteral nodoD = (NodoLiteral) accesoVar2();
-            ast.getProfundidad().pop();
+            NodoLiteral nodoD = encadenado();
             if(nodoD == null){
-                return nodoI;
+                return (NodoLiteral) ast.getProfundidad().pop();
             }
-            return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+            return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(),nodoD, nodoD.getNodeType());
+        } else if (currentToken.getLexema().equals("[")){
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            NodoLiteral nodo = (NodoLiteral) ast.getProfundidad().pop();
+            match("[");
+            NodoLiteral exp = expresion();
+            match("]");
+            ast.getProfundidad().push(new NodoAccesoArray(line, col, nodo, exp, null));
+            NodoLiteral nodoD = accesoVar2();
+            if(nodoD == null){
+                return (NodoLiteral) ast.getProfundidad().pop();
+            }
+            return nodoD;
 
         }else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
@@ -1787,7 +1793,7 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
 
         ast.getProfundidad().push(new NodoLiteral(line, col, null));
-        NodoLiteral nodoD = (NodoLiteral) llamadaMetodo1();
+        NodoLiteral nodoD = llamadaMetodo1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
@@ -1845,7 +1851,7 @@ public class AnalizadorSintactico {
         int col = currentToken.getCol();
 
         ast.getProfundidad().push(new NodoLiteral(line, col, null));
-        NodoLiteral nodoD = (NodoLiteral) llamadaMetodoEstatico1();
+        NodoLiteral nodoD = llamadaMetodoEstatico1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
@@ -1908,7 +1914,7 @@ public class AnalizadorSintactico {
             int line = currentToken.getLine();
             int col = currentToken.getCol();
             ast.getProfundidad().push(new NodoLiteral(line, col,type));
-            NodoLiteral nodoD = (NodoLiteral) llamadaConstructor2();
+            NodoLiteral nodoD = llamadaConstructor2();
             ast.getProfundidad().pop();
             if(nodoD == null){
                 return nodoI;
@@ -2030,7 +2036,6 @@ public class AnalizadorSintactico {
     }
 
     private static NodoLiteral encadenado() {
-
         match(".");
         return encadenado1();
     }
@@ -2047,18 +2052,21 @@ public class AnalizadorSintactico {
 
                 ast.getProfundidad().push(new NodoLlamadaMetodo(line, col,ast.getProfundidad().peek().getName(),
                         ast.getProfundidad().peek().getNodeType(),lexema, null));
-                 return llamadaMetodoEncadenado();
+                return llamadaMetodoEncadenado();
 
             } else {
+                ast.getProfundidad().push(new NodoLiteral(line, col, lexema, null, null));
+                NodoLiteral nodoD = accesoVariableEncadenado();
+                if(nodoD == null){
+                    return (NodoLiteral) ast.getProfundidad().pop();
+                }
+                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
 
-                NodoLiteral nodoI = new NodoLiteral(line, col, lexema, null,null);
-                ast.getProfundidad().push(nodoI);
-                NodoLiteral nodoD = (NodoLiteral) accesoVariableEncadenado();
-                ast.getProfundidad().pop();
+                /*ast.getProfundidad().pop();
                 if(nodoD == null){
                     return nodoI;
                 }
-                return new NodoAcceso(line,col,nodoI, nodoD, nodoD.getNodeType());
+                return new NodoAcceso(line,col,nodoI, nodoD, nodoD.getNodeType());*/
             }
         }else{
             throw new SyntactErrorException(currentToken.getLine(),
@@ -2118,12 +2126,27 @@ public class AnalizadorSintactico {
     }
     private static NodoLiteral accesoVariableEncadenado1() {
         if (currentToken.getLexema().equals(".")){
-            return encadenado();
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            NodoLiteral nodoD = encadenado();
+            if(nodoD == null){
+                return (NodoLiteral) ast.getProfundidad().pop();
+            }
+            return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(),nodoD, nodoD.getNodeType());
+
         } else if(currentToken.getLexema().equals("[")){
+            int line = currentToken.getLine();
+            int col = currentToken.getCol();
+            NodoLiteral nodo = (NodoLiteral) ast.getProfundidad().pop();
             match("[");
-            expresion();
+            NodoLiteral exp = expresion();
             match("]");
-            accesoVariableEncadenado2();
+            ast.getProfundidad().push(new NodoAccesoArray(line, col, nodo, exp,null));
+            NodoLiteral nodoD = accesoVariableEncadenado2();
+            if(nodoD == null){
+                return (NodoLiteral) ast.getProfundidad().pop();
+            }
+            return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(),nodoD, nodoD.getNodeType());
 
         }else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
@@ -2151,9 +2174,9 @@ public class AnalizadorSintactico {
         }
         return null;
     }
-    private static void accesoVariableEncadenado2() {
+    private static NodoLiteral accesoVariableEncadenado2() {
         if (currentToken.getLexema().equals(".")){
-            encadenado();
+            return encadenado();
         } else if (currentToken.getLexema().equals(">=")||
                 currentToken.getLexema().equals("<=")||
                 currentToken.getLexema().equals(">")||
@@ -2178,5 +2201,6 @@ public class AnalizadorSintactico {
                     "Se esperaba: operador aritmetico, operador logico, ')' ,';' ,']' o ','. Se encontró " + currentToken.getLexema(),
                     "accesoVariableEncadenado2");
         }
+        return null;
     }
 }

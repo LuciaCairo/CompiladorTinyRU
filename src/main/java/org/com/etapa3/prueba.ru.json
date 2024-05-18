@@ -15,6 +15,32 @@
 	]
 },
 {
+	"nombreImpl": "B",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "C",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	}
+	]
+},
+{
 	"nombre": "start",
 				"sentencias":[
 

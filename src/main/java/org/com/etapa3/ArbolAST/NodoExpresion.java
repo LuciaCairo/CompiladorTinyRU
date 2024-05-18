@@ -61,6 +61,9 @@ public class NodoExpresion extends NodoLiteral {
                     this.setNodeType(exp.getNodeType());
                 }
             }
+        } else {
+            exp.checkTypes(ts); // Chequeo la expresion
+            this.setNodeType(exp.getNodeType());
         }
         return true;
     }
