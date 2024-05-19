@@ -36,9 +36,26 @@ public class NodoAsignacion extends NodoLiteral {
         // Verificar que el nodoI y el nodoD sean del mismo tipo
         String typeNI = nodoI.getNodeType();
         String typeND = nodoD.getNodeType();
-        if(!typeNI.equals(typeND)){
+
+        if(!typeNI.equals(typeND) ){
+            System.out.println("NodoDer"+typeND);
+            System.out.println(typeNI);
+            if(!(typeNI == "Int"||
+                    typeNI=="Str"||
+                    typeNI=="Char"||
+                    typeNI=="Bool")){
+                System.out.println("YES");
+                if((typeND.equals("nil")) || (!(typeND=="Int" || typeND =="Str"|| typeND=="Char"||typeND=="Bool"))) {
+                    return true;
+                } else{
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "Incompatibiliddddad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '"+nodoI.getName()+"' definida de tipo " + typeNI,
+                            "nodoAsignacion");
+                }
+
+            }
             throw new SemantErrorException(this.getLine(), this.getCol(),
-                    "Incompatibilidad de tipos. No se puede asignar un " + typeND + " a un " + typeNI,
+                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '"+nodoI.getName()+"' definida de tipo " + typeNI,
                     "nodoAsignacion");
         }
         // Setear el tipo

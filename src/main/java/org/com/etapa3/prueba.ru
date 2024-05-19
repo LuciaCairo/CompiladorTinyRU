@@ -1,37 +1,40 @@
-/? Acceso
-/? Verificar que haya error cuando se quiere hacer un acceso de array en una id que no es de tipo array
-/? Salida esperada: ERROR: SEMANTICO - SENTENCIAS
-/? No se definio un constructor para la clase "A"
+/? Prueba una asiganciones sobre vars de tipo clase
+/? Ejercita un poco mas las expresiones tambien y el uso de la clase Object
 
-struct Animal{Int a;
-Perro bulldog;
-Str son;
-Array Str caniche;
+struct A {
+    B a1;
 }
-impl Animal{
-
-    .(Int b){
-    Int a;
-    Str ciudad;
-    Bool flag1;
-    caniche = new Str[2+a];
-
-    caniche[1]="Chau";
-    caniche[2]="Adios";
-    caniche[3]="SI";
-
-    son = "Guau";
-    }
-    fn ladrar(Perro p, Int s,Str string, Bool flag) -> void{
-            }
-}
-
-struct Perro{}
-impl Perro{
-    .(Int nombre){
-
+impl A{
+    fn m1(B p1)->void
+    {
+        B v1;
+        Object v2;
+        Array Int agus;
+        agus= new Int[2];
+        v1 = p1;
+        a1 = (p1);
+        /?v1 = new C();
+        p1 = nil;
+        v2 = new Object();
+        v2 = p1;
+        v1 = self;
 
     }
+
+    fn m2()->void
+    {}
+    .(){}
 }
+
+
+struct B : A{}
+impl B {
+    .(){}
+}
+
+struct C : B{}
+impl C{.(){ }}
+
 
 start{}
+

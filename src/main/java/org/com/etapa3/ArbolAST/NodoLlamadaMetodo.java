@@ -68,6 +68,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su struct padre en la ts
         System.out.println(metodo);
+        System.out.println(this.getNodeType());
+        System.out.println(this.getName());
         if(metodo.equals("constructor")){
 
             EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
@@ -81,17 +83,27 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                     " debe crear el struct '"+this.getTypeStruct()+"'.",
                             "sentencia");
                 }else{
+                    String[] palabras = this.getNodeType().split(" ");
+                    String isArray = palabras[0];
+                    if (isArray.equals("Array")) {
 
-                    //evaluo la expresion
-                    argumentos.get(0).checkTypes(ts);
-                    //evaluo si parametro del array es int , ya que solo puede ser int new Int[1]
-                    if (!(argumentos.get(0).getNodeType().equals("Int"))){
-                        throw new SemantErrorException(this.getLine(), this.getCol(),
-                                "Incompatibilidad de tipos. No se puede definir el tamaño de un array como '"+argumentos.get(0).getName()+
-                                        "'.El tipo debe ser 'Int'",
-                                "sentencia");
+                        //evaluo la expresion
+                        argumentos.get(0).checkTypes(ts);
+                        //evaluo si parametro del array es int , ya que solo puede ser int new Int[1]
+                        if (!(argumentos.get(0).getNodeType().equals("Int"))) {
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Incompatibilidad de tipos. No se puede definir el tamaño de un array como '" + argumentos.get(0).getName() +
+                                            "'.El tipo debe ser 'Int'",
+                                    "sentencia");
+                        }
+                    }else{
+                        System.out.println(argumentos);
+                        if(!(argumentos.isEmpty())){
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Instancia de 'Objeto' mal definida. El constructor de la clase predefinida 'Objeto' no debe recibir parametros.",
+                                    "sentencia");
+                        }
                     }
-
                     return true;
                 }
 
