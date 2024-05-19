@@ -172,11 +172,19 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                 //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                 if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                    //si no es igual, tengo q tener en cuenta la herencia de clases
                     if(!(argumento.getNodeType().equals("Int")||
                             argumento.getNodeType().equals("Str")||
                             argumento.getNodeType().equals("Char")||
                             argumento.getNodeType().equals("Bool"))){
-                        if(!(ts.getTableStructs().get(argumento.getNodeType()).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
+                        String h=argumento.getNodeType();
+                        while(!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
+                            h=ts.getTableStructs().get(h).getHerencia();
+                            if(h.equals("Object")){
+                                break;
+                            }
+                        }
+                        if(h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()){
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
                                     "sentencia");

@@ -17,7 +17,7 @@ impl A{
         ciudad = "STRINGGGGGGGGGGG";
         v1 = p1;
         a1 = (p1);
-        v1 = new C();
+        v1 = new D();
         p1 = nil;
         v2 = new Object();
         v2 = p1;
@@ -27,8 +27,9 @@ impl A{
 
     fn m2()->void
     {
-    A objetoTipoC;
-    (m1(objetoTipoC));}
+    D objetoTipoC;
+    (m1(objetoTipoC));
+    }
     .(){}
 }
 
@@ -40,6 +41,9 @@ impl B {
 
 struct C : B{}
 impl C{.(){ }}
+
+struct D : C{}
+impl D{.(){ }}
 
 
 start{}

@@ -1,5 +1,6 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.ClasesSemantico.EntradaStruct;
 import org.com.etapa3.SemantErrorException;
 import org.com.etapa3.TablaSimbolos;
 
@@ -54,14 +55,29 @@ public class NodoAsignacion extends NodoLiteral {
                                 "nodoAsignacion");
                     }
                 }else { // si no es de tipoObject quiere decir que tengo q evaluar si NodI=NodoD
+                    //Primero evaluo el caso de que exista herencia de tipos, es decir: variable v1 sea de tipo
+                    // B y yo le asigne un objeto de tipo D, se podria hacer si D:C:B
+                    //primero evaluo: si el nodo izq es de tipo obj de clase
                     if(!(typeNI.equals("Int")||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char"))){
-                        if(!(ts.getTableStructs().get(typeND).getHerencia().equals(typeNI))){
+                        String hD=typeND;
+                        String hI=typeNI;
+                        // realizo un while para poder recorrer la herencia hacia arriba, salgo del while cuando hD
+                        //sea igual al tipo q estoy buscando
+                        while((!(ts.getTableStructs().get(hD).getHerencia().equals(hI)))  ){
+
+                            hD = ts.getTableStructs().get(hD).getHerencia();
+                            if(hD.equals("Object")){
+                                break;
+                            }
+                        }
+                        if(hD.equals("Object") && hD != hI){
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI+"."+
                                             "\n"+"Dentro de la variable, solo pueden guardarse objetos de clases, que hereden o sean del tipo '"+typeNI+"'.Es decir '"+typeND+ "' debe heredar de '"+typeNI+"'.",
                                     "nodoAsignacion");
                         }
-                    }else{
+
+                    }else{ //caso q no sean iguales, ni tampoco hereden.
                         throw new SemantErrorException(this.getLine(), this.getCol(),
                                 "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
                                 "nodoAsignacion");

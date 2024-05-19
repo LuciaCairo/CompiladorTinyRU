@@ -171,7 +171,7 @@
 						{
 							"nodo": "Literal",
 							"nombre":"objetoTipoC",
-							"tipo":"C",
+							"tipo":"D",
 							"valor":"null"						}
 					},
 
@@ -196,6 +196,19 @@
 },
 {
 	"nombreImpl": "C",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "D",
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",
