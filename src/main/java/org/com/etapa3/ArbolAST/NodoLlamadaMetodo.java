@@ -67,9 +67,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public boolean checkTypes(TablaSimbolos ts){
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su struct padre en la ts
-        System.out.println(metodo);
-        System.out.println(this.getNodeType());
-        System.out.println(this.getName());
         if(metodo.equals("constructor")){
 
             EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
@@ -97,7 +94,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                     "sentencia");
                         }
                     }else{
-                        System.out.println(argumentos);
+
                         if(!(argumentos.isEmpty())){
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "Instancia de 'Objeto' mal definida. El constructor de la clase predefinida 'Objeto' no debe recibir parametros.",
@@ -120,11 +117,25 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                     argumento.checkTypes(ts);
                     //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                     if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
-                        throw new SemantErrorException(this.getLine(), this.getCol(),
-                                "Llamada a constructor del struct '"+this.getTypeStruct()+"' incorrecta. El constructor espera un '"+
-                                        parametrosOrdenadosM1.get(i).getType()+"' y recibe el parametro '"+
-                                        argumento.getName()+"' de tipo '"+argumento.getNodeType()+"'.",
-                                "sentencia");
+                        if(!(argumento.getNodeType().equals("Int")||
+                                argumento.getNodeType().equals("Str")||
+                                argumento.getNodeType().equals("Char")||
+                                argumento.getNodeType().equals("Bool"))){
+                            if(!(ts.getTableStructs().get(argumento.getNodeType()).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "Llamada a constructor del struct '"+this.getTypeStruct()+"' incorrecta. El constructor espera un '"+
+                                                parametrosOrdenadosM1.get(i).getType()+"' y recibe el parametro '"+
+                                                argumento.getName()+"' de tipo '"+argumento.getNodeType()+"'.",
+                                        "sentencia");
+                            }
+                        }else{
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Llamada a constructor del struct '"+this.getTypeStruct()+"' incorrecta. El constructor espera un '"+
+                                            parametrosOrdenadosM1.get(i).getType()+"' y recibe el parametro '"+
+                                            argumento.getName()+"' de tipo '"+argumento.getNodeType()+"'.",
+                                    "sentencia");
+                        }
+
                     }
                     i++;
 
@@ -161,9 +172,20 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                 //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                 if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
-                    throw new SemantErrorException(this.getLine(), this.getCol(),
-                            "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
-                            "sentencia");
+                    if(!(argumento.getNodeType().equals("Int")||
+                            argumento.getNodeType().equals("Str")||
+                            argumento.getNodeType().equals("Char")||
+                            argumento.getNodeType().equals("Bool"))){
+                        if(!(ts.getTableStructs().get(argumento.getNodeType()).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                    "sentencia");
+                        }
+                    }else {
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                "sentencia");
+                    }
                 }
                 i++;
 

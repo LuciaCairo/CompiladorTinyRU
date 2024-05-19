@@ -51,6 +51,7 @@ public class NodoLiteral extends Nodo{
                 }
 
             } else { // CASO DE TODOS LOS DEMAS STRUCTS
+
                 if(this.getParent().isEmpty()){
                     // VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL METODO
                     if(!(ts.getCurrentMetod().getVariables().containsKey(this.getName()))){

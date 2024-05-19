@@ -2,19 +2,19 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "Animal",
+	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombreMetodo":"constructor",
+		"nombreMetodo":"m1",
 		"Bloque": {
 				"sentencias":[
 				{
 					"nodo": "Asignacion",
-						"tipo":"Array Str",
+						"tipo":"Array Int",
 						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"caniche",
-							"tipo":"Array Str",
+							"nombre":"agus",
+							"tipo":"Array Int",
 							"valor":"null"
 						},
 						"NodoDer":{
@@ -22,96 +22,10 @@
 							"metodo": "constructor",							
 							"argumentos":[
 							{
-								"nodo": "Expresion Binaria",
-								"tipo":"Int",
-								"operador":"+",
-								"nodoIzq": {
-									"nodo": "Literal",
-									"nombre":"literal entero",
-									"tipo":"Int",
-									"valor":"2"
-								},
-								"nodoDer": {
-									"nodo": "Literal",
-									"nombre":"a",
-									"tipo":"Int",
-									"valor":"null"
-								}							}					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Str",
-						"NodoIzq":{
-							"nodo": "Acceso Array",
-							"nodo": {
-								"nodo": "Literal",
-								"nombre":"caniche",
-								"tipo":"Array Str",
-								"valor":"null"
-							},
-							"indice": {
 								"nodo": "Literal",
 								"nombre":"literal entero",
 								"tipo":"Int",
-								"valor":"1"
-							}
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"Chau"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Str",
-						"NodoIzq":{
-							"nodo": "Acceso Array",
-							"nodo": {
-								"nodo": "Literal",
-								"nombre":"caniche",
-								"tipo":"Array Str",
-								"valor":"null"
-							},
-							"indice": {
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"2"
-							}
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"Adios"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Str",
-						"NodoIzq":{
-							"nodo": "Acceso Array",
-							"nodo": {
-								"nodo": "Literal",
-								"nombre":"caniche",
-								"tipo":"Array Str",
-								"valor":"null"
-							},
-							"indice": {
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"3"
-							}
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"SI"					
+								"valor":"2"							}					
 						}
 
 				},				{
@@ -119,7 +33,7 @@
 						"tipo":"Str",
 						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"son",
+							"nombre":"ciudad",
 							"tipo":"Str",
 							"valor":"null"
 						},
@@ -127,7 +41,108 @@
 							"nodo": "Literal",
 							"nombre":"literal str",
 							"tipo":"Str",
-							"valor":"Guau"					
+							"valor":"STRINGGGGGGGGGGG"					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"a1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+"nodo": "Expresion Parentizada",
+							"tipo":"B",
+							"expresion": {
+								"nodo": "Literal",
+								"nombre":"p1",
+								"tipo":"B",
+								"valor":"null"
+							},
+					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"metodo": "constructor",							
+							"argumentos":[]
+					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal nulo",
+							"tipo":"nil",
+							"valor":"nil"					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Object",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v2",
+							"tipo":"Object",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"metodo": "constructor",							
+							"argumentos":[]
+					
+						}
+
+				},				{
+					"nodo": "Asignacion",
+						"tipo":"Object",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v2",
+							"tipo":"Object",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"					
 						}
 
 				}
@@ -135,7 +150,55 @@
 		}
 	},
 	{
-		"nombreMetodo":"ladrar",
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	},
+	{
+		"nombreMetodo":"m2",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Sentencia Simple",
+					"tipo":"void",
+					"expresion": {
+						"nodo": "Llamada Metodo",
+						"metodo": "m1",						
+						"argumentos":[
+						{
+							"nodo": "Literal",
+							"nombre":"objetoTipoC",
+							"tipo":"C",
+							"valor":"null"						}
+					},
+
+				}
+				]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "B",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "C",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
 
@@ -150,19 +213,6 @@
 
 				]
 
-},
-{
-	"nombreImpl": "Perro",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	}
-	]
 }
 ]
 }

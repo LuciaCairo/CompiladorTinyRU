@@ -36,28 +36,42 @@ public class NodoAsignacion extends NodoLiteral {
         // Verificar que el nodoI y el nodoD sean del mismo tipo
         String typeNI = nodoI.getNodeType();
         String typeND = nodoD.getNodeType();
-
-        if(!typeNI.equals(typeND) ){
-            System.out.println("NodoDer"+typeND);
-            System.out.println(typeNI);
-            if(!(typeNI == "Int"||
-                    typeNI=="Str"||
-                    typeNI=="Char"||
-                    typeNI=="Bool")){
-                System.out.println("YES");
-                if((typeND.equals("nil")) || (!(typeND=="Int" || typeND =="Str"|| typeND=="Char"||typeND=="Bool"))) {
-                    return true;
-                } else{
-                    throw new SemantErrorException(this.getLine(), this.getCol(),
-                            "Incompatibiliddddad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '"+nodoI.getName()+"' definida de tipo " + typeNI,
-                            "nodoAsignacion");
-                }
-
+        //primero analizo el caso que el nodoD sea de tipo "nil", ya que de ser asi, si o si el nodoI debe ser de tipo Object o algunas clase definida
+        if(typeND.equals("nil")){
+            if (typeNI.equals("Int") ||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char")){ //si es nill, el nodoI no tiene q ser Int/Chat/Bool/Str
+                throw new SemantErrorException(this.getLine(), this.getCol(),
+                        "Incompatibilidad de tipos. No se puede asignar 'nil' a una variable de tipo '"+typeND+".",
+                        "nodoAsignacion");
             }
-            throw new SemantErrorException(this.getLine(), this.getCol(),
-                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '"+nodoI.getName()+"' definida de tipo " + typeNI,
-                    "nodoAsignacion");
+        }else{ // si el nodoD no es nill
+
+            if (!typeNI.equals(typeND)) { //si, no son del mismo tipo
+                if (typeNI.equals("Object")){ //si el nodoI es de tipo object
+                    //el nodoD debe ser si o si algo distinto a Int,Str,Bool,Char porque Object es una superclase
+                    if(typeND.equals("Int") ||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char")){
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
+                                "nodoAsignacion");
+                    }
+                }else { // si no es de tipoObject quiere decir que tengo q evaluar si NodI=NodoD
+                    if(!(typeNI.equals("Int")||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char"))){
+                        if(!(ts.getTableStructs().get(typeND).getHerencia().equals(typeNI))){
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI+"."+
+                                            "\n"+"Dentro de la variable, solo pueden guardarse objetos de clases, que hereden o sean del tipo '"+typeNI+"'.Es decir '"+typeND+ "' debe heredar de '"+typeNI+"'.",
+                                    "nodoAsignacion");
+                        }
+                    }else{
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
+                                "nodoAsignacion");
+                    }
+
+
+                }
+            }
         }
+
         // Setear el tipo
         this.setNodeType(typeNI);
         return true;

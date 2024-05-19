@@ -10,19 +10,25 @@ impl A{
         B v1;
         Object v2;
         Array Int agus;
+        Str ciudad;
+        Int entero;
         agus= new Int[2];
+
+        ciudad = "STRINGGGGGGGGGGG";
         v1 = p1;
         a1 = (p1);
-        /?v1 = new C();
+        v1 = new C();
         p1 = nil;
         v2 = new Object();
         v2 = p1;
-        v1 = self;
+       /? v1 = self;
 
     }
 
     fn m2()->void
-    {}
+    {
+    A objetoTipoC;
+    (m1(objetoTipoC));}
     .(){}
 }
 
