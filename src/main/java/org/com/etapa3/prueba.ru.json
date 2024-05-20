@@ -5,174 +5,37 @@
 	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombreMetodo":"m1",
-		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "Asignacion",
-						"tipo":"Array Int",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"agus",
-							"tipo":"Array Int",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[
-							{
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"2"							}					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Str",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"ciudad",
-							"tipo":"Str",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"STRINGGGGGGGGGGG"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"a1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-"nodo": "Expresion Parentizada",
-							"tipo":"B",
-							"expresion": {
-								"nodo": "Literal",
-								"nombre":"p1",
-								"tipo":"B",
-								"valor":"null"
-							},
-					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[]
-					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal nulo",
-							"tipo":"nil",
-							"valor":"nil"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Object",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v2",
-							"tipo":"Object",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[]
-					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Object",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v2",
-							"tipo":"Object",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"					
-						}
-
-				}
-				]
-		}
-	},
-	{
 		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	},
-	{
-		"nombreMetodo":"m2",
 		"Bloque": {
 				"sentencias":[
 				{
 					"nodo": "Sentencia Simple",
-					"tipo":"void",
+					"tipo":"null",
 					"expresion": {
-						"nodo": "Llamada Metodo",
-						"metodo": "m1",						
-						"argumentos":[
-						{
+						"nodo": "Acceso",
+						"tipo":"null",
+						"nodoIzq": {
 							"nodo": "Literal",
-							"nombre":"objetoTipoC",
-							"tipo":"D",
-							"valor":"null"						}
+							"nombre":"self",
+							"tipo":"IO",
+							"valor":"null"
+						},
+						"nodoDer": {
+							"nodo": "Acceso",
+							"tipo":"null",
+							"nodoIzq": {
+								"nodo": "Llamada Metodo",
+								"metodo": "in_str",								
+								"argumentos":[]
+
+							},
+							"nodoDer": {
+								"nodo": "Llamada Metodo",
+								"metodo": "length",								
+								"argumentos":[]
+
+							}
+						}
 					},
 
 				}
@@ -191,27 +54,9 @@
 
 				]
 		}
-	}
-	]
-},
-{
-	"nombreImpl": "C",
-	"metodos": [
+	},
 	{
-		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	}
-	]
-},
-{
-	"nombreImpl": "D",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
+		"nombreMetodo":"m1",
 		"Bloque": {
 				"sentencias":[
 

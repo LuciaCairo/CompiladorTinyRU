@@ -28,6 +28,11 @@ public class NodoLiteral extends Nodo{
     @Override
     public boolean checkTypes(TablaSimbolos ts){
 
+        // CASO ESPECIAL DE SELF
+        if(this.getName().equals("self")){
+            return true;
+        }
+
         // IGNORAMOS LOS LITERALES(INT,STR...) PORQUE YA TIENEN TIPO Y VALOR
         if(!(this.getName().equals("literal nulo") ||
                 this.getName().equals("literal bool")||

@@ -21,6 +21,7 @@ public class NodoAcceso extends NodoLiteral {
     @Override
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Acceso\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"nodoIzq\": {\n"+ this.nodoI.printSentencia(space+"\t") +"\n" + space +"},\n"
                 + space + "\"nodoDer\": {\n"+ this.nodoD.printSentencia(space+"\t") +"\n" + space +"}";
     }
@@ -33,7 +34,12 @@ public class NodoAcceso extends NodoLiteral {
             this.nodoI.setParent(this.getParent());
         }
         this.nodoI.checkTypes(ts);
-        this.nodoD.setParent(nodoI.getNodeType());
+        String[] palabras = this.nodoI.getNodeType().split(" ");
+        String isArray = palabras[0];
+        if(isArray.equals("Array")){
+            this.nodoD.setParent("Array");
+        } else {this.nodoD.setParent(nodoI.getNodeType());}
+
 
         // Verificar que el nodoI sea de tipo struct y que ese struct exista en la ts
         if (ts.getTableStructs().containsKey(this.nodoI.getNodeType())) {
@@ -52,7 +58,8 @@ public class NodoAcceso extends NodoLiteral {
                 // Chequeo del nodoD
                 this.nodoD.checkTypes(ts);
             }
-        } else if (this.nodoI.getNodeType().equals("IO") || this.nodoI.getNodeType().equals("Str")) {
+        } else if (this.nodoI.getNodeType().equals("IO") || this.nodoI.getNodeType().equals("Str") ||
+                isArray.equals("Array")) {
             if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
                 throw new SemantErrorException(this.nodoD.getLine(), this.nodoD.getCol(),
                         "Acceso incorrecto. No se puede acceder al atributo ya que no existe en el struct \"" + this.nodoI.getNodeType() + "\"",

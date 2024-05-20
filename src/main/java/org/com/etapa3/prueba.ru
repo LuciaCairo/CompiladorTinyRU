@@ -1,50 +1,23 @@
-/? Prueba una asiganciones sobre vars de tipo clase
-/? Ejercita un poco mas las expresiones tambien y el uso de la clase Object
+/? Acceso
+/? Verificar que haya error cuando se quiere hacer un acceso a un metodo que no existe en el struct
+/? Salida esperada: ERROR: SEMANTICO - SENTENCIAS
+/? | LINEA 8 | COLUMNA 3 | No se puede llamar a un metodo que no existe. Debe definir el metodo 's' en el struct 'B' o heredarlo.|
 
-struct A {
-    B a1;
-}
-impl A{
-    fn m1(B p1)->void
-    {
-        B v1;
-        Object v2;
-        Array Int agus;
-        Str ciudad;
-        Int entero;
-        agus= new Int[2];
+struct A{Str s;}
+impl A{ .(B a, Int e){
+(a.m1());}}
 
-        ciudad = "STRINGGGGGGGGGGG";
-        v1 = p1;
-        a1 = (p1);
-        v1 = new D();
-        p1 = nil;
-        v2 = new Object();
-        v2 = p1;
-       /? v1 = self;
-
-    }
-
-    fn m2()->void
-    {
-    D objetoTipoC;
-    (m1(objetoTipoC));
-    }
-    .(){}
-}
-
-
-struct B : A{}
+struct B{}
 impl B {
+    fn m1(B p1)->void{}
     .(){}
 }
 
-struct C : B{}
-impl C{.(){ }}
-
-struct D : C{}
-impl D{.(){ }}
-
+struct C{}
+impl C {
+    fn m(B p1)->void{}
+    .(){}
+}
 
 start{}
 

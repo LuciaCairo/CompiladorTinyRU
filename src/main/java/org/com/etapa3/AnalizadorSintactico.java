@@ -24,7 +24,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -545,6 +545,9 @@ public class AnalizadorSintactico {
 
     private static void sentencias() {
         NodoLiteral nodo = sentencia();
+        System.out.println(nodo.getClass());
+        System.out.println(ast.getProfundidad().peek().getClass());
+        System.out.println("pasoo");
         (ast.getProfundidad().peek()).insertSentencia(nodo);
         // Cuando terminaron las sentencias
         sentencias1();
@@ -926,7 +929,7 @@ public class AnalizadorSintactico {
         }else if(currentToken.getLexema().equals("self")){
             // Lado izquierdo de la asignacion
             ast.getProfundidad().push(new NodoLiteral(ts.getCurrentStruct().getLine(),ts.getCurrentStruct().getCol(),
-                    ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null));
+                    "self",ts.getCurrentStruct().getName(),null));
             NodoLiteral nodoD= accesoSelfSimple();
             NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop();
 
@@ -1562,13 +1565,11 @@ public class AnalizadorSintactico {
             match("id");
             flagMatch = true;
             if(currentToken.getLexema().equals("(")) {
-
                 NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),
                         ts.getCurrentStruct().getName(),identificador, null);
                 ast.getProfundidad().push(nodo);
-                return  llamadaMetodo();
+                return llamadaMetodo();
             } else{
-
                 NodoLiteral nodoI = new NodoLiteral(line, col, identificador,null,null);
                 ast.getProfundidad().push(nodoI);
                 NodoLiteral nodoD = accesoVar();
@@ -1581,11 +1582,11 @@ public class AnalizadorSintactico {
             int line = currentToken.getLine();
             int col = currentToken.getCol();
 
-            NodoLiteral nodoI = new NodoLiteral(line, col,
-                    (ts.getStructsPred().get(currentToken.getLexema()).getName()));
+            NodoLiteral nodoI = new NodoLiteral(line, col, "self", (ts.getStructsPred().get(currentToken.getLexema()).getName()), null);
             ast.getProfundidad().push(nodoI);
 
             NodoLiteral nodoD = llamadaMetodoEstatico();
+            ast.getProfundidad().pop();
 
             if(nodoD == null){
                 return nodoI;
@@ -1657,9 +1658,9 @@ public class AnalizadorSintactico {
     private static NodoLiteral accesoSelf() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        // Guardo a self como (nombre: A, type: A), en vez de normalmente : (nombre: a, type: A)
+        // Guardo a self como (nombre: self, type: A), en vez de normalmente : (nombre: a, type: A)
         NodoLiteral nodoI = new NodoLiteral(ts.getCurrentStruct().getLine(),ts.getCurrentStruct().getCol(),
-                ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null);
+                "self",ts.getCurrentStruct().getName(),null);
         ast.getProfundidad().push(nodoI);
         match("self");
         NodoLiteral nodoD = accesoSelf1();
@@ -1712,7 +1713,7 @@ public class AnalizadorSintactico {
             if(nodoD == null){
                 return (NodoLiteral) ast.getProfundidad().pop();
             }
-            return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(),nodoD, nodoD.getNodeType());
+            return nodoD;
         } else if (currentToken.getLexema().equals("[")){
             int line = currentToken.getLine();
             int col = currentToken.getCol();
@@ -1783,6 +1784,8 @@ public class AnalizadorSintactico {
         }
         return null;
     }
+
+
     private static NodoLiteral llamadaMetodo() {
         match("id");
         argumentosActuales();
@@ -1792,17 +1795,15 @@ public class AnalizadorSintactico {
 
         // Ahora es el caso de que se quiera acceder a algo con lo que retorna el metodo
         // ejemplo: metodo().acceso
-        // Veo que tipo retorna el metodo (para hacer un encadenado debe devolver algo de tipo idStruct)
-        int line = currentToken.getLine();
-        int col = currentToken.getCol();
 
-        ast.getProfundidad().push(new NodoLiteral(line, col, null));
+        ast.getProfundidad().push(nodoI);
         NodoLiteral nodoD = llamadaMetodo1();
-        ast.getProfundidad().pop();
+
         if(nodoD == null){
+            ast.getProfundidad().pop();
             return nodoI;
         }
-        return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
+        return nodoD;
     }
 
     private static NodoLiteral llamadaMetodo1() {
@@ -1835,36 +1836,30 @@ public class AnalizadorSintactico {
         return null;
     }
     private static NodoLiteral llamadaMetodoEstatico() {
+        String name = currentToken.getLexema();
         match("struct_name");
         match(".");
-
         NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
-                    ast.getProfundidad().peek().getName(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema()
-                    ,null);
-
+                    name, name, currentToken.getLexema(),name);
         ast.getProfundidad().push(nodo);
 
-
-        NodoLlamadaMetodo nodoI = (NodoLlamadaMetodo) llamadaMetodo();
-        ast.getProfundidad().pop();
+        NodoLiteral nodoI =  llamadaMetodo();
 
         // Ahora es el caso de que se quiera acceder a algo con lo que retorna el metodo
         // ejemplo: IO.metodo().acceso
-        // Veo que tipo retorna el metodo (para hacer un encadenado debe devolver algo de tipo idStruct)
+
         int line = currentToken.getLine();
         int col = currentToken.getCol();
 
-        ast.getProfundidad().push(new NodoLiteral(line, col, null));
+        ast.getProfundidad().push(nodoI);
         NodoLiteral nodoD = llamadaMetodoEstatico1();
         ast.getProfundidad().pop();
         if(nodoD == null){
             return nodoI;
         }
         return new NodoAcceso(line, col, nodoI, nodoD, nodoD.getNodeType());
-
-
-
     }
+
     private static NodoLiteral llamadaMetodoEstatico1() {
         if (currentToken.getLexema().equals(".")){
             return encadenado();
@@ -2051,12 +2046,14 @@ public class AnalizadorSintactico {
             String lexema = currentToken.getLexema();
             match("id");
             flagMatch = true;
-
             if(currentToken.getLexema().equals("(")){
-
                 ast.getProfundidad().push(new NodoLlamadaMetodo(line, col,ast.getProfundidad().peek().getName(),
                         ast.getProfundidad().peek().getNodeType(),lexema, null));
-                return llamadaMetodoEncadenado();
+                NodoLiteral nodoD = llamadaMetodoEncadenado();
+                if(nodoD == null){
+                    return (NodoLiteral) ast.getProfundidad().pop();
+                }
+                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
 
             } else {
                 ast.getProfundidad().push(new NodoLiteral(line, col, lexema, null, null));
@@ -2124,15 +2121,21 @@ public class AnalizadorSintactico {
         }
         return null;
     }
+
     private static NodoLiteral accesoVariableEncadenado() {
         match("id");
-        return accesoVariableEncadenado1();
+        NodoLiteral nodoD = accesoVariableEncadenado1();
+        if(nodoD == null){
+            return (NodoLiteral) ast.getProfundidad().pop();
+        }
+        return nodoD;
+
     }
     private static NodoLiteral accesoVariableEncadenado1() {
         if (currentToken.getLexema().equals(".")){
             int line = currentToken.getLine();
             int col = currentToken.getCol();
-            NodoLiteral nodoD = encadenado();
+            NodoLiteral nodoD = encadenado(); //111
             if(nodoD == null){
                 return (NodoLiteral) ast.getProfundidad().pop();
             }
