@@ -24,7 +24,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa3\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -926,7 +926,7 @@ public class AnalizadorSintactico {
         }else if(currentToken.getLexema().equals("self")){
             // Lado izquierdo de la asignacion
             ast.getProfundidad().push(new NodoLiteral(ts.getCurrentStruct().getLine(),ts.getCurrentStruct().getCol(),
-                    ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null));
+                    "self",ts.getCurrentStruct().getName(),null));
             NodoLiteral nodoD= accesoSelfSimple();
             NodoLiteral nodoI = (NodoLiteral) ast.getProfundidad().pop();
 
@@ -1568,14 +1568,14 @@ public class AnalizadorSintactico {
                 ast.getProfundidad().push(nodo);
                 return  llamadaMetodo();
             } else{
-
                 NodoLiteral nodoI = new NodoLiteral(line, col, identificador,null,null);
                 ast.getProfundidad().push(nodoI);
-                NodoLiteral nodoD = accesoVar();
+                NodoLiteral nodoD = accesoVar(); //1
                 if(nodoD == null){
                     return (NodoLiteral) ast.getProfundidad().pop();
                 }
-                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
+                return nodoD;
+                //return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
             }
         } else if(currentToken.getName().equals("struct_name")){
             int line = currentToken.getLine();
@@ -1657,9 +1657,9 @@ public class AnalizadorSintactico {
     private static NodoLiteral accesoSelf() {
         int line = currentToken.getLine();
         int col = currentToken.getCol();
-        // Guardo a self como (nombre: A, type: A), en vez de normalmente : (nombre: a, type: A)
+        // Guardo a self como (nombre: self, type: A), en vez de normalmente : (nombre: a, type: A)
         NodoLiteral nodoI = new NodoLiteral(ts.getCurrentStruct().getLine(),ts.getCurrentStruct().getCol(),
-                ts.getCurrentStruct().getName(),ts.getCurrentStruct().getName(),null);
+                "self",ts.getCurrentStruct().getName(),null);
         ast.getProfundidad().push(nodoI);
         match("self");
         NodoLiteral nodoD = accesoSelf1();
@@ -1708,7 +1708,7 @@ public class AnalizadorSintactico {
         if (currentToken.getLexema().equals(".")){
             int line = currentToken.getLine();
             int col = currentToken.getCol();
-            NodoLiteral nodoD = encadenado();
+            NodoLiteral nodoD = encadenado(); // 2
             if(nodoD == null){
                 return (NodoLiteral) ast.getProfundidad().pop();
             }
@@ -2060,11 +2060,11 @@ public class AnalizadorSintactico {
 
             } else {
                 ast.getProfundidad().push(new NodoLiteral(line, col, lexema, null, null));
-                NodoLiteral nodoD = accesoVariableEncadenado();
+                NodoLiteral nodoD = accesoVariableEncadenado(); //3
                 if(nodoD == null){
                     return (NodoLiteral) ast.getProfundidad().pop();
                 }
-                return new NodoAcceso(line, col, (NodoLiteral) ast.getProfundidad().pop(), nodoD, nodoD.getNodeType());
+                return nodoD;
 
                 /*ast.getProfundidad().pop();
                 if(nodoD == null){

@@ -34,6 +34,7 @@ public class NodoLiteral extends Nodo{
                 this.getName().equals("literal entero")||
                 this.getName().equals("literal str")||
                 this.getName().equals("punto y coma")||
+                this.getName().equals("self") ||
                 this.getName().equals("literal char"))){
 
             // CASO ESPECIAL DE START

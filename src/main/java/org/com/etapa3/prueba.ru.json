@@ -9,141 +9,32 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Asignacion",
-						"tipo":"Array Int",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"agus",
-							"tipo":"Array Int",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[
-							{
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"2"							}					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Str",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"ciudad",
-							"tipo":"Str",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal str",
-							"tipo":"Str",
-							"valor":"STRINGGGGGGGGGGG"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
+					"nodo": "Sentencia Simple",
+					"tipo":"Int",
+					"expresion": {
+						"nodo": "Acceso",
+						"nodoIzq": {
 							"nodo": "Literal",
 							"nombre":"a1",
 							"tipo":"B",
 							"valor":"null"
 						},
-						"NodoDer":{
-"nodo": "Expresion Parentizada",
-							"tipo":"B",
-							"expresion": {
+						"nodoDer": {
+							"nodo": "Acceso",
+							"nodoIzq": {
 								"nodo": "Literal",
-								"nombre":"p1",
-								"tipo":"B",
+								"nombre":"m",
+								"tipo":"C",
 								"valor":"null"
 							},
-					
+							"nodoDer": {
+								"nodo": "Literal",
+								"nombre":"b",
+								"tipo":"Int",
+								"valor":"null"
+							}
 						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[]
-					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"B",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"literal nulo",
-							"tipo":"nil",
-							"valor":"nil"					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Object",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v2",
-							"tipo":"Object",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-							"metodo": "constructor",							
-							"argumentos":[]
-					
-						}
-
-				},				{
-					"nodo": "Asignacion",
-						"tipo":"Object",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"v2",
-							"tipo":"Object",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Literal",
-							"nombre":"p1",
-							"tipo":"B",
-							"valor":"null"					
-						}
+					},
 
 				}
 				]
@@ -186,6 +77,14 @@
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+
+				]
+		}
+	},
+	{
+		"nombreMetodo":"m",
 		"Bloque": {
 				"sentencias":[
 
