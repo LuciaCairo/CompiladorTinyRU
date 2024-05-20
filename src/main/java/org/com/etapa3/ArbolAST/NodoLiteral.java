@@ -27,7 +27,7 @@ public class NodoLiteral extends Nodo{
 
     @Override
     public boolean checkTypes(TablaSimbolos ts){
-
+        System.out.println(this.getName());
         // IGNORAMOS LOS LITERALES(INT,STR...) PORQUE YA TIENEN TIPO Y VALOR
         if(!(this.getName().equals("literal nulo") ||
                 this.getName().equals("literal bool")||
@@ -35,6 +35,7 @@ public class NodoLiteral extends Nodo{
                 this.getName().equals("literal str")||
                 this.getName().equals("punto y coma")||
                 this.getName().equals("self") ||
+                this.getName().equals("IO") ||
                 this.getName().equals("literal char"))){
 
             // CASO ESPECIAL DE START
@@ -55,6 +56,7 @@ public class NodoLiteral extends Nodo{
 
                 if(this.getParent().isEmpty()){
                     // VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL METODO
+
                     if(!(ts.getCurrentMetod().getVariables().containsKey(this.getName()))){
 
                         // SI NO, VEMOS SI EL ID ESTA DECLARADO COMO PARAMETRO DEL METODO

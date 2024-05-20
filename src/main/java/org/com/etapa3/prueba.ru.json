@@ -5,42 +5,6 @@
 	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombreMetodo":"m1",
-		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "Sentencia Simple",
-					"tipo":"Int",
-					"expresion": {
-						"nodo": "Acceso",
-						"nodoIzq": {
-							"nodo": "Literal",
-							"nombre":"a1",
-							"tipo":"B",
-							"valor":"null"
-						},
-						"nodoDer": {
-							"nodo": "Acceso",
-							"nodoIzq": {
-								"nodo": "Literal",
-								"nombre":"m",
-								"tipo":"C",
-								"valor":"null"
-							},
-							"nodoDer": {
-								"nodo": "Literal",
-								"nombre":"b",
-								"tipo":"Int",
-								"valor":"null"
-							}
-						}
-					},
-
-				}
-				]
-		}
-	},
-	{
 		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[
@@ -49,22 +13,29 @@
 		}
 	},
 	{
-		"nombreMetodo":"m2",
+		"nombreMetodo":"m1",
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "Sentencia Simple",
-					"tipo":"void",
-					"expresion": {
-						"nodo": "Llamada Metodo",
-						"metodo": "m1",						
-						"argumentos":[
-						{
+					"nodo": "Asignacion",
+						"tipo":"Array Str",
+						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"objetoTipoC",
-							"tipo":"D",
-							"valor":"null"						}
-					},
+							"nombre":"agus",
+							"tipo":"Array Str",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+								"tipo":"Array Str",
+							"metodo": "constructor",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"5"							}					
+						}
 
 				}
 				]

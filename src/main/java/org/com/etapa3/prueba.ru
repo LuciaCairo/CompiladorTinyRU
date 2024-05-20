@@ -3,23 +3,22 @@
 
 struct A {
     B a1;
+    Int y;
+    Array Str agus;
 }
 impl A{
     fn m1(B p1)->void{
-        (a1.m.b.a);
+         /?(IO.in_str().a);
+
 
     }
 
-    fn m2()->void
-    {
-    D objetoTipoC;
-    (m1(objetoTipoC));
-    }
+
     .(){}
 }
 
 
-struct B : A{C m; }
+struct B : A{C m; Int a; }
 impl B {
     fn m()->void
          {

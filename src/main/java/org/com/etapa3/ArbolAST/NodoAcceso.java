@@ -62,6 +62,11 @@ public class NodoAcceso extends NodoLiteral {
                 this.nodoD.checkTypes(ts);
             }
         } else {
+            if (this.nodoI.getName() == null) { // cuando entras a funciones predefinidas que no tienen metodos ejemplo in_int
+                throw new SemantErrorException(this.nodoI.getLine(), this.nodoI.getCol(),
+                        "Acceso Incorrecto."+"\"" + this.nodoI.getNodeType() + "\" no es de tipo Struct por lo que no se puede usar usar para un acceso",
+                        "NodoAcceso");
+            }
             throw new SemantErrorException(this.nodoI.getLine(), this.nodoI.getCol(),
                     "\"" + this.nodoI.getName() + "\" no es de tipo Struct por lo que no se puede usar usar para un acceso",
                     "NodoAcceso");

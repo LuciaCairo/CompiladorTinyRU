@@ -58,7 +58,9 @@ public class NodoAsignacion extends NodoLiteral {
                     //Primero evaluo el caso de que exista herencia de tipos, es decir: variable v1 sea de tipo
                     // B y yo le asigne un objeto de tipo D, se podria hacer si D:C:B
                     //primero evaluo: si el nodo izq es de tipo obj de clase
-                    if(!(typeNI.equals("Int")||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char"))){
+
+                    if(!(typeNI.equals("Int")||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char") || typeNI.split(" ")[0].equals("Array"))
+                            && !(typeND.equals("Int")||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char") || typeND.split(" ")[0].equals("Array"))){
                         String hD=typeND;
                         String hI=typeNI;
                         // realizo un while para poder recorrer la herencia hacia arriba, salgo del while cuando hD

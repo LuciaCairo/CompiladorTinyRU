@@ -50,6 +50,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     @Override
     public String printSentencia(String space) {
         String json = space + "\"nodo\": \"Llamada Metodo\",\n"
+                + space + "\t\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"metodo\": \""+ this.metodo +"\"," + space +"\n";
         if (!this.argumentos.isEmpty() && !(this.argumentos.getFirst() == null) ) {
             json +=  space + "\"argumentos\":[\n";
@@ -144,62 +145,184 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             }
 
         }else { // si no es constructor
-            //Verificar que el metodo este definido en el struct padre
-            if (!(ts.getCurrentStruct().getMetodos().containsKey(metodo))) {
-                throw new SemantErrorException(this.getLine(), this.getCol(),
-                        "No se puede llamar a un metodo que no existe. Debe definir el metodo '" + metodo + "' en el struct '"
-                                + ts.getCurrentStruct().getName() + "' o heredarlo.",
-                        "sentencia");
-            }
-            //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
+            if(this.getParent().isEmpty()) { // y venga de acceso
+                //Verificar que el metodo este definido en el struct padre
+                if (!(ts.getCurrentStruct().getMetodos().containsKey(metodo))) {
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "No se puede llamar a un metodo que no existe. Debe definir el metodo '" + metodo + "' en el struct '"
+                                    + ts.getCurrentStruct().getName() + "' o heredarlo.",
+                            "sentencia");
+                }
+                //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
 
-            if (!(argumentos.size() == ts.getCurrentStruct().getMetodos().get(metodo).getParametros().size())) {
-                throw new SemantErrorException(this.getLine(), this.getCol(),
-                        "Cantidad de argumentos incorrectos en el metodo '" + metodo + "'. Para llamarlo debe pasar la cantidad de" +
-                                " parametros corresponientes indicados en su firma '",
-                        "sentencia");
-            }
-            //Ordeno los parametros del metodo que estan en la ts
+                if (!(argumentos.size() == ts.getCurrentStruct().getMetodos().get(metodo).getParametros().size())) {
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "Cantidad de argumentos incorrectos en el metodo '" + metodo + "'. Para llamarlo debe pasar la cantidad de" +
+                                    " parametros corresponientes indicados en su firma '",
+                            "sentencia");
+                }
+                //Ordeno los parametros del metodo que estan en la ts
 
-            List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>(ts.getCurrentStruct().getMetodos().get(metodo).getParametros().values());
-            parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
-            int i = 0;
+                List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>(ts.getCurrentStruct().getMetodos().get(metodo).getParametros().values());
+                parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
+                int i = 0;
 
-            //recorro los argumentos de la llamada y chequeo
-            for (NodoLiteral argumento : argumentos) {
-                //me traigo el tipo del argumento
-                argumento.checkTypes(ts);
+                //recorro los argumentos de la llamada y chequeo
+                for (NodoLiteral argumento : argumentos) {
+                    //me traigo el tipo del argumento
+                    argumento.checkTypes(ts);
 
-                //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
-                if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
-                    //si no es igual, tengo q tener en cuenta la herencia de clases
-                    if(!(argumento.getNodeType().equals("Int")||
-                            argumento.getNodeType().equals("Str")||
-                            argumento.getNodeType().equals("Char")||
-                            argumento.getNodeType().equals("Bool"))){
-                        String h=argumento.getNodeType();
-                        while(!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
-                            h=ts.getTableStructs().get(h).getHerencia();
-                            if(h.equals("Object")){
-                                break;
+                    //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
+                    if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                        //si no es igual, tengo q tener en cuenta la herencia de clases
+                        if (!(argumento.getNodeType().equals("Int") ||
+                                argumento.getNodeType().equals("Str") ||
+                                argumento.getNodeType().equals("Char") ||
+                                argumento.getNodeType().equals("Bool"))) {
+                            String h = argumento.getNodeType();
+                            while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                                h = ts.getTableStructs().get(h).getHerencia();
+                                if (h.equals("Object")) {
+                                    break;
+                                }
                             }
-                        }
-                        if(h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()){
+                            if (h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()) {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                        "sentencia");
+                            }
+                        } else {
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
                                     "sentencia");
                         }
-                    }else {
+                    }
+                    i++;
+
+                }
+                //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
+                this.setNodeType(ts.getCurrentStruct().getMetodos().get(metodo).getRet());
+
+            } else {
+                if(ts.getStructsPred().get(this.getParent()) != null){
+                    //Verificar que el metodo este definido en en padre
+                    if (!((ts.getStructsPred().get(this.getParent()).getMetodos().containsKey(metodo)))) {
                         throw new SemantErrorException(this.getLine(), this.getCol(),
-                                "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                "No se puede llamar a un metodo que no existe. Debe definir el metodo '" + metodo + "' en el struct '"
+                                        + (ts.getStructsPred().get(this.getParent()).getName()) + "' o heredarlo.",
                                 "sentencia");
                     }
+                    //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
+
+                    if (!(argumentos.size() == (ts.getStructsPred().get(this.getParent()).getMetodos().get(metodo).getParametros().size()))) {
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "Cantidad de argumentos incorrectos en el metodo '" + metodo + "'. Para llamarlo debe pasar la cantidad de" +
+                                        " parametros corresponientes indicados en su firma '",
+                                "sentencia");
+                    }
+                    //Ordeno los parametros del metodo que estan en la ts
+
+                    List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>((ts.getStructsPred().get(this.getParent()).getMetodos().get(metodo).getParametros().values()));
+                    parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
+                    int i = 0;
+
+                    //recorro los argumentos de la llamada y chequeo
+                    for (NodoLiteral argumento : argumentos) {
+                        //me traigo el tipo del argumento
+                        argumento.checkTypes(ts);
+
+                        //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
+                        if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                            //si no es igual, tengo q tener en cuenta la herencia de clases
+                            if (!(argumento.getNodeType().equals("Int") ||
+                                    argumento.getNodeType().equals("Str") ||
+                                    argumento.getNodeType().equals("Char") ||
+                                    argumento.getNodeType().equals("Bool"))) {
+                                String h = argumento.getNodeType();
+                                while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                                    h = ts.getTableStructs().get(h).getHerencia();
+                                    if (h.equals("Object")) {
+                                        break;
+                                    }
+                                }
+                                if (h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()) {
+                                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                                            "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                            "sentencia");
+                                }
+                            } else {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                        "sentencia");
+                            }
+                        }
+                        i++;
+
+                    }
+                    //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
+                    this.setNodeType(ts.getStructsPred().get(this.getParent()).getMetodos().get(metodo).getRet());
+
+                } else if(ts.getTableStructs().get(this.getParent()) != null){
+                    //Verificar que el metodo este definido en en padre
+                    if (!((ts.getTableStructs().get(this.getParent()).getMetodos().containsKey(metodo)))) {
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "No se puede llamar a un metodo que no existe. Debe definir el metodo '" + metodo + "' en el struct '"
+                                        + (ts.getTableStructs().get(this.getParent()).getName()) + "' o heredarlo.",
+                                "sentencia");
+                    }
+                    //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
+
+                    if (!(argumentos.size() == (ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo).getParametros().size()))) {
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "Cantidad de argumentos incorrectos en el metodo '" + metodo + "'. Para llamarlo debe pasar la cantidad de" +
+                                        " parametros corresponientes indicados en su firma '",
+                                "sentencia");
+                    }
+                    //Ordeno los parametros del metodo que estan en la ts
+
+                    List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>((ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo).getParametros().values()));
+                    parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
+                    int i = 0;
+
+                    //recorro los argumentos de la llamada y chequeo
+                    for (NodoLiteral argumento : argumentos) {
+                        //me traigo el tipo del argumento
+                        argumento.checkTypes(ts);
+
+                        //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
+                        if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                            //si no es igual, tengo q tener en cuenta la herencia de clases
+                            if (!(argumento.getNodeType().equals("Int") ||
+                                    argumento.getNodeType().equals("Str") ||
+                                    argumento.getNodeType().equals("Char") ||
+                                    argumento.getNodeType().equals("Bool"))) {
+                                String h = argumento.getNodeType();
+                                while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                                    h = ts.getTableStructs().get(h).getHerencia();
+                                    if (h.equals("Object")) {
+                                        break;
+                                    }
+                                }
+                                if (h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()) {
+                                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                                            "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                            "sentencia");
+                                }
+                            } else {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "El tipo del parametro '" + argumento.getName() + "' no coincide con el tipo del parametro en la firma del metodo '" + metodo + "'.",
+                                        "sentencia");
+                            }
+                        }
+                        i++;
+
+                    }
+                    //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
+                    this.setNodeType(ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo).getRet());
                 }
-                i++;
+
 
             }
-            //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
-            this.setNodeType(ts.getCurrentStruct().getMetodos().get(metodo).getRet());
         }
 
         return true;
