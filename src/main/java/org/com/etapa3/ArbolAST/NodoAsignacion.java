@@ -41,7 +41,7 @@ public class NodoAsignacion extends NodoLiteral {
         if(typeND.equals("nil")){
             if (typeNI.equals("Int") ||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char")){ //si es nill, el nodoI no tiene q ser Int/Chat/Bool/Str
                 throw new SemantErrorException(this.getLine(), this.getCol(),
-                        "Incompatibilidad de tipos. No se puede asignar 'nil' a una variable de tipo '"+typeND+".",
+                        "Incompatibilidad de tipos. No se puede asignar 'nil' a una variable de tipo '"+typeNI+"'.",
                         "nodoAsignacion");
             }
         }else{ // si el nodoD no es nill
@@ -53,7 +53,7 @@ public class NodoAsignacion extends NodoLiteral {
                     //el nodoD debe ser si o si algo distinto a Int,Str,Bool,Char porque Object es una superclase
                     if(typeND.equals("Int") ||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char")|| isArray.equals("Array")){
                         throw new SemantErrorException(this.getLine(), this.getCol(),
-                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
+                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable definida de tipo " + typeNI,
                                 "nodoAsignacion");
                     }
                 }else { // si no es de tipoObject quiere decir que tengo q evaluar si NodI=NodoD
@@ -83,14 +83,14 @@ public class NodoAsignacion extends NodoLiteral {
                         }
                         if(hD.equals("Object") && hD != hI){
                             throw new SemantErrorException(this.getLine(), this.getCol(),
-                                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI+"."+
+                                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable definida de tipo " + typeNI+"."+
                                             "\n"+"Dentro de la variable, solo pueden guardarse objetos de clases, que hereden o sean del tipo '"+typeNI+"'.Es decir '"+typeND+ "' debe heredar de '"+typeNI+"'.",
                                     "nodoAsignacion");
                         }
 
                     }else{ //caso q no sean iguales, ni tampoco hereden.
                         throw new SemantErrorException(this.getLine(), this.getCol(),
-                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
+                                "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable definida de tipo " + typeNI,
                                 "nodoAsignacion");
                     }
 

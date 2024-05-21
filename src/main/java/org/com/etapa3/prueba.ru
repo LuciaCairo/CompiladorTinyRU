@@ -1,38 +1,27 @@
-/? Prueba una asiganciones sobre vars de tipo clase
-/? Ejercita un poco mas las expresiones tambien y el uso de la clase Object
+/? If / While
+/? Verificar que haya error cuando se quiere hacer que la expresion no sea bool
+/? Salida esperada: ERROR: SEMANTICO - SENTENCIAS
+/? | LINEA 19 | COLUMNA 18 | La condicion del if debe ser de tipo Bool|
 
-struct A {
-    B a1;
+struct D{
+    Int a;
+    Int b;
+    Bool x;
 }
-impl A{
-    fn m1(B p1)->void
-    {
-        A v1;
-        Object v2;        
-        v1 = p1;
-        a1 = (p1);
-        v1 = new C();
-        p1 = nil;
-        v2 = new Object();
-        v2 = p1;
-        v1 = self;
-        
+impl D { .(){}}
+
+struct A :D{Int s;}
+impl A {
+    .(){}
+
+    fn m(Object c) -> void {
+        if(c){
+            while(1+2){
+                ret;
+            }
+        } /? Aca esta el error
+
     }
-    
-    fn m2()->void
-    {}
-    .(){}
 }
-
-
-struct B : A{}
-impl B {
-    .(){}
-}
-
-struct C : B{}
-impl C{.(){ }}
-
 
 start{}
-

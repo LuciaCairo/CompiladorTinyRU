@@ -44,7 +44,7 @@ public class NodoIf extends NodoLiteral {
             json = json.substring(0,json.length()-2);
         }
         json +="\n" + space + "],\n"
-                + space + this.nodoElse.printSentencia(space) + space +"},\n";
+                + space + this.nodoElse.printSentencia(space) + space +"\n";
         return json;
     }
 

@@ -51,7 +51,7 @@ public class NodoWhile extends NodoLiteral {
         // Verificar que el exp sea de tipo bool
         if(!(this.exp.getNodeType().equals("Bool"))){
             throw new SemantErrorException(this.exp.getLine(), this.exp.getCol(),
-                    "La condicion del if debe ser de tipo Bool",
+                    "La condicion del while debe ser de tipo Bool",
                     "sentencia");
         }
         // Hacer checkTypes de sus sentencias
