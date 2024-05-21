@@ -1,24 +1,18 @@
-struct Auto{
+/? MissingReturnException
+struct A {}
+impl A{
+    .(){
 
-    Int rueda;
+    }
+
+    fn loop() -> Int{
+        Int a;
+        while (true) {
+           (++a);
+
+            ret a;
+        }
+    }
 }
-impl Auto {
 
-    .(){}
-
-     fn metodo2 () -> void {
-
-    }
-
-    st fn metodo3 () -> void {
-
-    }
-
-
-    fn metodo1 () -> void {
-
-    }
-
-}
-start {}
-
+start{}
