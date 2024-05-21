@@ -2,46 +2,138 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "Auto",
+	"nombreImpl": "A",
 	"metodos": [
 	{
-		"nombreMetodo":"metodo1",
+		"nombreMetodo":"m1",
 		"Bloque": {
 				"sentencias":[
 				{
 					"nodo": "Asignacion",
-						"tipo":"Array Int",
+						"tipo":"A",
 						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"agus",
-							"tipo":"Array Int",
+							"nombre":"v1",
+							"tipo":"A",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"					
+						}
+				},
+				{
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"a1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+"nodo": "Expresion Parentizada",
+							"tipo":"B",
+							"expresion": {
+								"nodo": "Literal",
+								"nombre":"p1",
+								"tipo":"B",
+								"valor":"null"
+							}
+					
+						}
+				},
+				{
+					"nodo": "Asignacion",
+						"tipo":"A",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v1",
+							"tipo":"A",
 							"valor":"null"
 						},
 						"NodoDer":{
 							"nodo": "Llamada Metodo",
-							"tipo":"Array Int",
+							"tipo":"C",
 							"metodo": "constructor",							
-							"argumentos":[
-							{
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"5"
-							}]					
+							"argumentos":[]
+					
 						}
 				},
 				{
-					"nodo": "Retorno",
-					"tipo":"Object",
-					"expresion": {
-						"nodo": "Literal",
-						"nombre":"chevrolet",
+					"nodo": "Asignacion",
+						"tipo":"B",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"literal nulo",
+							"tipo":"nil",
+							"valor":"nil"					
+						}
+				},
+				{
+					"nodo": "Asignacion",
 						"tipo":"Object",
-						"valor":"null"
-					}
-
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v2",
+							"tipo":"Object",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"tipo":"Object",
+							"metodo": "constructor",							
+							"argumentos":[]
+					
+						}
+				},
+				{
+					"nodo": "Asignacion",
+						"tipo":"Object",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v2",
+							"tipo":"Object",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"p1",
+							"tipo":"B",
+							"valor":"null"					
+						}
+				},
+				{
+					"nodo": "Asignacion",
+						"tipo":"A",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"v1",
+							"tipo":"A",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Literal",
+							"nombre":"self",
+							"tipo":"A",
+							"valor":"null"					
+						}
 				}
 				]
+		}
+	},
+	{
+		"nombreMetodo":"m2",
+		"Bloque": {
+				"sentencias":[]
 		}
 	},
 	{
@@ -53,7 +145,7 @@
 	]
 },
 {
-	"nombreImpl": "D",
+	"nombreImpl": "B",
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",
@@ -64,7 +156,7 @@
 	]
 },
 {
-	"nombreImpl": "Rueda",
+	"nombreImpl": "C",
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",

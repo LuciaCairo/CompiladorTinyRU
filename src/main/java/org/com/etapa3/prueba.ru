@@ -1,34 +1,38 @@
+/? Prueba una asiganciones sobre vars de tipo clase
+/? Ejercita un poco mas las expresiones tambien y el uso de la clase Object
 
-struct Auto{
-    Rueda rueda;
-    Int numAuto;
+struct A {
+    B a1;
 }
-impl Auto {
+impl A{
+    fn m1(B p1)->void
+    {
+        A v1;
+        Object v2;        
+        v1 = p1;
+        a1 = (p1);
+        v1 = new C();
+        p1 = nil;
+        v2 = new Object();
+        v2 = p1;
+        v1 = self;
+        
+    }
+    
+    fn m2()->void
+    {}
     .(){}
-    fn metodo1 () -> Object {
-        Rueda rueda;
-        Object chevrolet;
-        Rueda pirelli;
-        Array Int agus;
-        agus = new Int[5];
-        pirelli = chevrolet;
-        ret chevrolet;
-    }
-
-}
-struct Rueda:Auto {
-    Int numRueda;
-}
-impl Rueda {
-    .(Auto corsa){
-    Int a1;
-    }
-}
-struct D{
-
-}
-impl D{
-.(){}
 }
 
-start {}
+
+struct B : A{}
+impl B {
+    .(){}
+}
+
+struct C : B{}
+impl C{.(){ }}
+
+
+start{}
+

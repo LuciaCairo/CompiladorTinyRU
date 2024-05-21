@@ -65,6 +65,7 @@ public class NodoAsignacion extends NodoLiteral {
                             && !(typeND.equals("Int")||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char") || typeND.split(" ")[0].equals("Array"))){
                         String hD=typeND;
                         String hI=typeNI;
+
                         if (hD.equals("Object") && !(hI.equals("Object"))) {
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "Incompatibilidad de tipos. No se puede asignar un objeto de tipo '" + hI + "' cuando el lado izquierdo de la asignacion es de tipo '"+hD+"' \n " +
