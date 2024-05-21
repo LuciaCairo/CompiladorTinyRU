@@ -2,100 +2,37 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "A",
+	"nombreImpl": "Auto",
 	"metodos": [
 	{
-		"nombreMetodo":"constructor",
+		"nombreMetodo":"metodo3",
 		"Bloque": {
-				"sentencias":[
-
-				]
+				"sentencias":[]
 		}
 	},
 	{
-		"nombreMetodo":"m1",
+		"nombreMetodo":"metodo2",
 		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "Asignacion",
-						"tipo":"Array Str",
-						"NodoIzq":{
-							"nodo": "Literal",
-							"nombre":"agus",
-							"tipo":"Array Str",
-							"valor":"null"
-						},
-						"NodoDer":{
-							"nodo": "Llamada Metodo",
-								"tipo":"Array Str",
-							"metodo": "constructor",							
-							"argumentos":[
-							{
-								"nodo": "Literal",
-								"nombre":"literal entero",
-								"tipo":"Int",
-								"valor":"5"							}					
-						}
-
-				}
-				]
-		}
-	}
-	]
-},
-{
-	"nombreImpl": "B",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
+				"sentencias":[]
 		}
 	},
 	{
-		"nombreMetodo":"m",
+		"nombreMetodo":"metodo1",
 		"Bloque": {
-				"sentencias":[
-
-				]
+				"sentencias":[]
 		}
-	}
-	]
-},
-{
-	"nombreImpl": "C",
-	"metodos": [
+	},
 	{
 		"nombreMetodo":"constructor",
 		"Bloque": {
-				"sentencias":[
-
-				]
-		}
-	}
-	]
-},
-{
-	"nombreImpl": "D",
-	"metodos": [
-	{
-		"nombreMetodo":"constructor",
-		"Bloque": {
-				"sentencias":[
-
-				]
+				"sentencias":[]
 		}
 	}
 	]
 },
 {
 	"nombre": "start",
-				"sentencias":[
-
-				]
-
+				"sentencias":[]
 }
 ]
 }

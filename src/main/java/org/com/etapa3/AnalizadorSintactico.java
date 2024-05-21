@@ -347,7 +347,7 @@ public class AnalizadorSintactico {
 
         // Fin del bloque del constructor
         // Inserto el constructor en su struct padre (el actual)
-        ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+        ast.getCurrentStruct().insertMetodo(nodo.getName(),nodo);
     }
 
     private static void atributo() {
@@ -408,7 +408,7 @@ public class AnalizadorSintactico {
 
             // Fin del bloque del metodo
             // Inserto el metodo en su struct padre (el actual)
-            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+            ast.getCurrentStruct().insertMetodo(nodo.getName(),nodo);
 
         } else if (currentToken.getLexema().equals("fn")) {
             match("fn");
@@ -434,7 +434,7 @@ public class AnalizadorSintactico {
 
             // Fin del bloque del metodo
             // Inserto el metodo en su struct padre (el actual)
-            ast.getCurrentStruct().insertMetodo(currentToken.getLexema(),nodo);
+            ast.getCurrentStruct().insertMetodo(nodo.getName(), nodo);
 
         } else {
             throw new SyntactErrorException(currentToken.getLine(),
@@ -811,7 +811,8 @@ public class AnalizadorSintactico {
             match("else");
             NodoLiteral s = sentencia();
             (ast.getProfundidad().peek()).insertSentencia(s);
-        }else if(currentToken.getLexema().equals(";")||
+        }else if(currentToken.getLexema().equals("}")||
+                currentToken.getLexema().equals(";")||
                 currentToken.getLexema().equals("if")||
                 currentToken.getLexema().equals("while")||
                 currentToken.getLexema().equals("ret")||
