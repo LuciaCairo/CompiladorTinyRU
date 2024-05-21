@@ -111,6 +111,11 @@ public class NodoLiteral extends Nodo{
                 }
             }
         }
+        // No puede haber self en el start
+        if(this.getName().equals("self") && ts.getCurrentStruct().getName().equals("start")){
+            throw new SemantErrorException(this.getLine(), this.getCol(),
+                    "No se puede realizar un self en start", "encadenadoSimple");
+        }
         return true;
     }
 }
