@@ -27,7 +27,13 @@ public class NodoLiteral extends Nodo{
 
     @Override
     public boolean checkTypes(TablaSimbolos ts){
-        System.out.println(this.getName());
+
+        // Caso para llamada de metodos estaticos
+        if(this.getValue()!= null){
+            if(this.getValue().equals("st") && (ts.getTableStructs().containsKey(this.getName()))){
+                return true;
+            }
+        }
         // IGNORAMOS LOS LITERALES(INT,STR...) PORQUE YA TIENEN TIPO Y VALOR
         if(!(this.getName().equals("literal nulo") ||
                 this.getName().equals("literal bool")||
@@ -41,15 +47,27 @@ public class NodoLiteral extends Nodo{
             // CASO ESPECIAL DE START
             if(ts.getCurrentStruct().getName().equals("start")){
 
-                // SOLO VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL START
-                if(!(ts.getCurrentStruct().getVariables().containsKey(this.getName()))){
+                if(!this.getParent().isEmpty()){ // Viene de un acceso
+                    // VEMOS SI EL ID ESTA DECLARADO COMO ATRIBUTO DEL STRUCT DEL QUE SE ACCEDE
+                    if (!(ts.getTableStructs().get(this.getParent()).getAtributos().containsKey(this.getName()))) {
+                        // SI EL ID NO ESTA DECLARADO, ERROR
+                        throw new SemantErrorException(this.getLine(),
+                                this.getCol(), "El id \"" + this.getName() +
+                                "\" no esta declarado como atributo del struct '" + this.getParent() + "'.", "encadenadoSimple");
+                    } else {
+                        this.setNodeType((ts.getTableStructs().get(this.getParent()).getAtributos().get(this.getName())).getType());
+                    }
+                } else {
+                    // SOLO VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL START
+                    if (!(ts.getCurrentStruct().getVariables().containsKey(this.getName()))) {
 
-                    // SI EL ID NO ESTA DECLARADO, ERROR
-                    throw new SemantErrorException(this.getLine(),
-                                    this.getCol(), "El id \"" + this.getName() +
-                                    "\" no esta declarado en el struct '"+ts.getCurrentStruct().getName()+"'.", "");
-                }else{
-                    this.setNodeType(ts.getCurrentStruct().getVariables().get(this.getName()).getType());
+                        // SI EL ID NO ESTA DECLARADO, ERROR
+                        throw new SemantErrorException(this.getLine(),
+                                this.getCol(), "El id \"" + this.getName() +
+                                "\" no esta declarado en el struct '" + ts.getCurrentStruct().getName() + "'.", "");
+                    } else {
+                        this.setNodeType(ts.getCurrentStruct().getVariables().get(this.getName()).getType());
+                    }
                 }
 
             } else { // CASO DE TODOS LOS DEMAS STRUCTS

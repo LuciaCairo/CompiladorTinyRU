@@ -17,16 +17,18 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     private String typeStruct;
     private String nameStruct;
     private String metodo;
-    private String ret= "void";
+
+    private boolean isStatic = false;
     private LinkedList<NodoLiteral> argumentos;
 
 
-    public NodoLlamadaMetodo(int line, int col, String nameStruct,String typeStruct, String metodo, String type){
+    public NodoLlamadaMetodo(int line, int col, String nameStruct,String typeStruct, String metodo, String type, boolean isStatic){
         super(line, col, type);
         this.nameStruct = nameStruct;
         this.typeStruct = typeStruct;
         this.metodo = metodo;
         this.argumentos = new LinkedList<>();
+        this.isStatic = isStatic;
     }
 
     // Getters
@@ -36,11 +38,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public String getTypeStruct() {
         return typeStruct;
     }
-
     public String getMetodo() {
         return metodo;
     }
-    // Setters
+    public boolean getisStatic() {
+        return isStatic;
+    }
 
     // Functions
     public void insertArgumento(NodoLiteral argumento) {
@@ -50,14 +53,14 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     @Override
     public String printSentencia(String space) {
         String json = space + "\"nodo\": \"Llamada Metodo\",\n"
-                + space + "\t\"tipo\":\""+ this.getNodeType() +"\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"metodo\": \""+ this.metodo +"\"," + space +"\n";
         if (!this.argumentos.isEmpty() && !(this.argumentos.getFirst() == null) ) {
             json +=  space + "\"argumentos\":[\n";
             for (int i = 0; i < this.argumentos.size(); i++) {
-                json += space + "{\n" + this.argumentos.get(i).printSentencia(space + "\t") + space + "},\n";
+                json += space + "{\n" + this.argumentos.get(i).printSentencia(space + "\t") + "\n"+ space + "},\n";
             }
-            json = json.substring(0, json.length() - 2);
+            json = json.substring(0, json.length() - 2) + "]";
         } else {
             json +=  space + "\"argumentos\":[]\n";
         }
@@ -145,7 +148,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             }
 
         }else { // si no es constructor
-            if(this.getParent().isEmpty()) { // y venga de acceso
+            if(this.getParent().isEmpty()) {
+
                 //Verificar que el metodo este definido en el struct padre
                 if (!(ts.getCurrentStruct().getMetodos().containsKey(metodo))) {
                     throw new SemantErrorException(this.getLine(), this.getCol(),
@@ -153,6 +157,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                     + ts.getCurrentStruct().getName() + "' o heredarlo.",
                             "sentencia");
                 }
+
                 //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
 
                 if (!(argumentos.size() == ts.getCurrentStruct().getMetodos().get(metodo).getParametros().size())) {
@@ -203,8 +208,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
                 this.setNodeType(ts.getCurrentStruct().getMetodos().get(metodo).getRet());
 
-            } else {
-                if(ts.getStructsPred().get(this.getParent()) != null){
+            } else { // CASO ESPECIAL DE QUE VENGA DE UN ACCESO
+                if(ts.getStructsPred().get(this.getParent()) != null){ // Acceso desde un struct predefinido
                     //Verificar que el metodo este definido en en padre
                     if (!((ts.getStructsPred().get(this.getParent()).getMetodos().containsKey(metodo)))) {
                         throw new SemantErrorException(this.getLine(), this.getCol(),
@@ -262,14 +267,27 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                     //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
                     this.setNodeType(ts.getStructsPred().get(this.getParent()).getMetodos().get(metodo).getRet());
 
-                } else if(ts.getTableStructs().get(this.getParent()) != null){
-                    //Verificar que el metodo este definido en en padre
+                } else if(ts.getTableStructs().get(this.getParent()) != null){ // acceso desde un struct creado
+                    //Verificar que el metodo este definido en el padre
                     if (!((ts.getTableStructs().get(this.getParent()).getMetodos().containsKey(metodo)))) {
                         throw new SemantErrorException(this.getLine(), this.getCol(),
                                 "No se puede llamar a un metodo que no existe. Debe definir el metodo '" + metodo + "' en el struct '"
                                         + (ts.getTableStructs().get(this.getParent()).getName()) + "' o heredarlo.",
                                 "sentencia");
                     }
+
+                    // Caso especial de que venga de un acceso de llamada de metodo estatico
+                        if(this.getisStatic()){
+                            // Hay que verificar que el metodo sea st
+                            if (!((ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo)).getSt())) {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "No se puede realizar la llamada al metodo ya que este no es st. Debe definir el metodo '" + metodo + "' en el struct '"
+                                                + (ts.getTableStructs().get(this.getParent()).getName()) + "' como estatico.",
+                                        "sentencia");
+                            }
+                        }
+
+
                     //verificar que la cantidad de argumentos en la llamada sea la misma de la firma del metodo
 
                     if (!(argumentos.size() == (ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo).getParametros().size()))) {

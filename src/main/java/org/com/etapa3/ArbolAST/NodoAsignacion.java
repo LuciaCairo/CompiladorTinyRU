@@ -23,7 +23,7 @@ public class NodoAsignacion extends NodoLiteral {
         return "\"nodo\": \"Asignacion\",\n"
                 + space + "\t\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\t\"NodoIzq\":{\n"+ this.nodoI.printSentencia(space+"\t\t")+"\n\t"+ space +"},\n"
-                + space + "\t\"NodoDer\":{\n"+ this.nodoD.printSentencia(space+"\t\t")+ space +"\n\t" + space + "}\n";
+                + space + "\t\"NodoDer\":{\n"+ this.nodoD.printSentencia(space+"\t\t")+ space +"\n\t" + space + "}";
     }
 
     @Override

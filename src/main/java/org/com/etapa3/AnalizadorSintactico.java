@@ -1565,7 +1565,7 @@ public class AnalizadorSintactico {
             if(currentToken.getLexema().equals("(")) {
 
                 NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(line, col,ts.getCurrentStruct().getName(),
-                        ts.getCurrentStruct().getName(),identificador, null);
+                        ts.getCurrentStruct().getName(),identificador, null, false);
                 ast.getProfundidad().push(nodo);
                 return  llamadaMetodo();
             } else{
@@ -1583,10 +1583,10 @@ public class AnalizadorSintactico {
             int col = currentToken.getCol();
 
             NodoLiteral nodoI = new NodoLiteral(line, col,
-                    (ts.getStructsPred().get(currentToken.getLexema()).getName()), (ts.getStructsPred().get(currentToken.getLexema()).getName()), null);
+                    currentToken.getLexema(), currentToken.getLexema(), "st");
             ast.getProfundidad().push(nodoI);
 
-            NodoLiteral nodoD = llamadaMetodoEstatico(); // 1
+            NodoLiteral nodoD = llamadaMetodoEstatico();
 
             ast.getProfundidad().pop();
 
@@ -1843,7 +1843,7 @@ public class AnalizadorSintactico {
 
         NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
                     ast.getProfundidad().peek().getNodeType(), ast.getProfundidad().peek().getNodeType(), currentToken.getLexema()
-                    ,null);
+                    ,null, true);
 
         ast.getProfundidad().push(nodo);
 
@@ -1907,7 +1907,7 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("struct_name")){ // a = new Fibonacci();
             String type = currentToken.getLexema();
             ast.getProfundidad().push(new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(), currentToken.getLexema(),
-                    currentToken.getLexema(), "constructor", currentToken.getLexema()));
+                    currentToken.getLexema(), "constructor", currentToken.getLexema(), false));
             // El tipo de un constructor es el tipo de su struct:
             // Ejemplo: a = new Fibonacci(), se crea una instancia de tipo Fibonacci
 
@@ -1934,7 +1934,7 @@ public class AnalizadorSintactico {
                 currentToken.getLexema().equals("Int")||
                 currentToken.getLexema().equals("Char")){
             NodoLlamadaMetodo nodo = new NodoLlamadaMetodo(currentToken.getLine(), currentToken.getCol(),
-                    currentToken.getLexema(), currentToken.getLexema(), "constructor", "Array " + currentToken.getLexema());
+                    currentToken.getLexema(), currentToken.getLexema(), "constructor", "Array " + currentToken.getLexema(), false);
             // El tipo de un constructor de Array es del tipo Array + (Str, Bool, Int o Char segun corrresponda):
             // Ejemplo: a = new String[6], se crea una instancia de un array de strings
             tipoPrimitivo();
@@ -2059,7 +2059,7 @@ public class AnalizadorSintactico {
             if(currentToken.getLexema().equals("(")){
 
                 ast.getProfundidad().push(new NodoLlamadaMetodo(line, col,ast.getProfundidad().peek().getName(),
-                        ast.getProfundidad().peek().getNodeType(),lexema, null));
+                        ast.getProfundidad().peek().getNodeType(),lexema, null , false));
                 return llamadaMetodoEncadenado(); // 2
 
             } else {

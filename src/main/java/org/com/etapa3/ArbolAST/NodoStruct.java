@@ -56,14 +56,16 @@ public class NodoStruct extends Nodo{
 
     public String printNodoStart(){
         String json = "";
-        json += "\t\t\t\t\"sentencias\":[\n";
         if(!this.sentencias.isEmpty()){
+            json += "\t\t\t\t\"sentencias\":[\n";
             for (int i = 0; i < this.sentencias.size(); i++) {
                 json +="\t\t\t\t{\n\t\t\t\t\t"+ this.sentencias.get(i).printSentencia("\t\t\t\t\t")+"\n\t\t\t\t},";
             }
             json = json.substring(0,json.length()-1);
+            json +="\n\t\t\t\t]\n";
+        } else {
+            json += "\t\t\t\t\"sentencias\":[]";
         }
-        json +="\n\t\t\t\t]\n";
         return json;
     }
 
