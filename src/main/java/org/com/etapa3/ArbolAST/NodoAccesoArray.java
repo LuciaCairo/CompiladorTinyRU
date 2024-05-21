@@ -34,7 +34,6 @@ public class NodoAccesoArray extends NodoLiteral {
         // Verifico que sea de tipo Array
         String[] palabras = nodo.getNodeType().split(" ");
         String isArray = palabras[0];
-        String type = palabras[1];
         if(isArray.equals("Array")){
             // Chequeo de la expresion
             this.exp.checkTypes(ts);
@@ -50,6 +49,7 @@ public class NodoAccesoArray extends NodoLiteral {
             // Setear al NodoAccesoArray el tipo correspondiente
             // El tipo de un acceso array es el tipo del elemento que se accede:
             // Ejemplo: Array Int a, entonces a[1] esta accediento a un Int
+            String type = palabras[1];
             this.setNodeType(type);
             this.setParent(type); // En caso de acceso
 

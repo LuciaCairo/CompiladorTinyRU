@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 struct Auto{
     Rueda rueda;
     Int numAuto;
@@ -29,3 +30,23 @@ impl D{
 }
 
 start {}
+=======
+/? MissingReturnException
+struct A {}
+impl A{
+    .(){
+
+    }
+
+    fn loop() -> Int{
+        Int a;
+        while (true) {
+           (++a);
+
+            ret a;
+        }
+    }
+}
+
+start{}
+>>>>>>> c00ef937d2e83f4012281782f153eb9ac82cafb9

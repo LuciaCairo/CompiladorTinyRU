@@ -2,9 +2,10 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "Auto",
+	"nombreImpl": "A",
 	"metodos": [
 	{
+<<<<<<< HEAD
 		"nombreMetodo":"metodo1",
 		"Bloque": {
 				"sentencias":[
@@ -29,6 +30,51 @@
 								"valor":"null"
 							}]					
 						}
+=======
+		"nombreMetodo":"loop",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "While",
+					"expresion": {
+						"nodo": "Literal",
+						"nombre":"literal bool",
+						"tipo":"Bool",
+						"valor":"true"
+					},
+					"sentencias":[
+					{
+						"nodo": "Bloque",
+						"sentencias":[
+						{
+							"nodo": "Sentencia Simple",
+							"tipo":"Int",
+							"expresion": {
+								"nodo": "Expresion Unaria",
+								"tipo":"Int",
+								"valor":"Int",
+								"operador":"++",
+								"expresion": {
+									"nodo": "Literal",
+									"nombre":"a",
+									"tipo":"Int",
+									"valor":"null"
+								}
+							}
+						},
+						{
+							"nodo": "Retorno",
+							"tipo":"Int",
+							"expresion": {
+								"nodo": "Literal",
+								"nombre":"a",
+								"tipo":"Int",
+								"valor":"null"
+							}
+						}
+						]
+					}
+>>>>>>> c00ef937d2e83f4012281782f153eb9ac82cafb9
 				}
 				]
 		}

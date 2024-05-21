@@ -24,7 +24,7 @@ public class NodoExpUn extends NodoLiteral {
                 + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"valor\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"operador\":\""+ this.op +"\",\n"
-                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\"";
+                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n"+ space +"}";
 
     }
 

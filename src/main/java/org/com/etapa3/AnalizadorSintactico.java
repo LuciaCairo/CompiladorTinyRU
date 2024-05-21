@@ -802,6 +802,9 @@ public class AnalizadorSintactico {
             match("ret"); // AST Retorno
             NodoLiteral exp = sentencia2();
 
+            if(isStart){
+                return new NodoExpresion(line,col,"Retorno","void", ";", exp);
+            }
             return new NodoExpresion(line,col,"Retorno",ts.getCurrentMetod().getRet(), ";", exp);
         }
         return null;
@@ -895,22 +898,9 @@ public class AnalizadorSintactico {
         if (currentToken.getName().equals("id")){
             // AST
             // Me encuentro con un identificador
-            // Caso especial de start
-            if(isStart){
-                if(ts.getStruct("start").getVariables().get(currentToken.getLexema()) == null){
-                    throw new SemantErrorException(currentToken.getLine(), currentToken.getCol(),
-                            "El identificador con el nombre \"" + currentToken.getLexema() + "\" no esta declarado en el metodo \"" +
-                                    ts.getCurrentMetod().getName() + "\"", "asignacion");
-                } else {
-                    String tipoId = ts.getStruct("start").getVariables().get(currentToken.getLexema()).getType();
-                    ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
-                            currentToken.getLexema(),tipoId, null));
-                }
-            } else {
-                    ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
+            ast.getProfundidad().push(new NodoLiteral(currentToken.getLine(),currentToken.getCol(),
                             currentToken.getLexema(),null, null));
 
-            }
             NodoLiteral nodoI= accesoVarSimple();
             // Ya puedo guardar el lado izquierdo de la asignacion
             if(nodoI == null){
