@@ -6,7 +6,6 @@ public class LexicalErrorException extends IllegalArgumentException {
     private String description;
 
     public LexicalErrorException(int lineNumber, int columnNumber, String description) {
-        //super("| LINEA " + lineNumber + " | COLUMNA " + columnNumber + " | " + description);
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.description = description;

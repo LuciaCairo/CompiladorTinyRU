@@ -10,16 +10,18 @@ struct D{
 }
 impl D { .(){}}
 
-struct A :D{Int s;}
+struct A :D{Str s;}
 impl A {
     .(){}
 
     fn m(Object c) -> void {
-        if(c){
-            while(1+2){
+        if(1||2){
+            while(false){
                 ret;
             }
-        } /? Aca esta el error
+        } else {
+            (s.length());
+        }
 
     }
 }

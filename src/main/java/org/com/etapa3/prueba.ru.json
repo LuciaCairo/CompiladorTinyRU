@@ -17,10 +17,21 @@
 				{
 					"nodo": "If",
 					"expresion": {
-						"nodo": "Literal",
-						"nombre":"literal bool",
+						"nodo": "Expresion Binaria",
 						"tipo":"Bool",
-						"valor":"true"
+						"operador":"||",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"1"
+						},
+						"nodoDer": {
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"2"
+						}
 					},
 					"sentencias":[
 					{
@@ -29,32 +40,10 @@
 						{
 							"nodo": "While",
 							"expresion": {
-								"nodo": "Expresion Binaria",
+								"nodo": "Literal",
+								"nombre":"literal bool",
 								"tipo":"Bool",
-								"operador":"||",
-								"nodoIzq": {
-									"nodo": "Expresion Binaria",
-									"tipo":"Int",
-									"operador":"+",
-									"nodoIzq": {
-										"nodo": "Literal",
-										"nombre":"literal entero",
-										"tipo":"Int",
-										"valor":"1"
-									},
-									"nodoDer": {
-										"nodo": "Literal",
-										"nombre":"literal entero",
-										"tipo":"Int",
-										"valor":"2"
-									}
-								},
-								"nodoDer": {
-									"nodo": "Literal",
-									"nombre":"literal entero",
-									"tipo":"Int",
-									"valor":"1"
-								}
+								"valor":"false"
 							},
 							"sentencias":[
 							{
@@ -71,11 +60,38 @@
 									}
 								}
 								]
-							}						}
+							}]
+						}
 						]
 					}
 					],
-					"sentenciasElse ":[]
+					"sentenciasElse ":[
+					{
+						"nodo": "Bloque",
+						"sentencias":[
+						{
+							"nodo": "Sentencia Simple",
+							"tipo":"Int",
+							"expresion": {
+								"nodo": "Acceso",
+								"nodoIzq": {
+									"nodo": "Literal",
+									"nombre":"s",
+									"tipo":"Str",
+									"valor":"null"
+								},
+								"nodoDer": {
+									"nodo": "Llamada Metodo",
+									"tipo":"Int",
+									"metodo": "length",									
+									"argumentos":[]
+
+								}
+							}
+						}
+						]
+					}
+					]
 					
 
 				}

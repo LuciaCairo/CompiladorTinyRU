@@ -32,12 +32,11 @@ public class NodoWhile extends NodoLiteral {
         String json = "\"nodo\": \"While\",\n"
                 + space + "\"expresion\": {\n" + this.exp.printSentencia(space + "\t") + "\n" + space + "},\n";
         if (!this.sentencias.isEmpty() && !(this.sentencias.getFirst() == null) ) {
-            System.out.println(sentencias);
             json +=  space + "\"sentencias\":[\n";
             for (int i = 0; i < this.sentencias.size(); i++) {
-                json += space + "{\n\t" + space + this.sentencias.get(i).printSentencia(space + "\t") + space + "},\n";
+                json += space + "{\n\t" + space + this.sentencias.get(i).printSentencia(space + "\t") + space + "}],\n";
             }
-            json = json.substring(0, json.length() - 2);
+            json = json.substring(0, json.length() - 2) + "\n";
         } else {
             json +=  space + "\"sentencias\":[]\n";
         }

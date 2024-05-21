@@ -7,7 +7,6 @@ public class SemantErrorException extends IllegalArgumentException {
     private String functionName;
 
     public SemantErrorException(int lineNumber, int columnNumber, String description, String functionName) {
-        //super("| LINEA " + lineNumber + " | COLUMNA " + columnNumber + " | " + description);
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.description = description;
