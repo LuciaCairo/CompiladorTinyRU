@@ -71,9 +71,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public boolean checkTypes(TablaSimbolos ts){
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su struct padre en la ts
+        System.out.println(metodo);
         if(metodo.equals("constructor")){
 
             EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
+
             //evaluo si el tipo de la instacia del objeto existe como struct
             if(StructConstructor == null){
                 //si no existe, busco en los struct pred
@@ -83,7 +85,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                             "No se puede crear una instancia de '"+this.getTypeStruct()+"' porque no existe el struct.Primero"+
                                     " debe crear el struct '"+this.getTypeStruct()+"'.",
                             "sentencia");
-                }else{
+                }else{ //constructor Array
                     String[] palabras = this.getNodeType().split(" ");
                     String isArray = palabras[0];
                     if (isArray.equals("Array")) {
@@ -110,28 +112,49 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
 
             }else{ // si existe el constructor en los Structs
-
+                if (!(argumentos.size() == StructConstructor.getMetodos().get(metodo).getParametros().size())) {
+                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                            "Cantidad de argumentos incorrectos en la llamada a metodo '" + metodo + "'. Para llamarlo debe pasar la cantidad \n de" +
+                                    " parametros corresponientes indicados en su firma.Se esperaban "+StructConstructor.getMetodos().get(metodo).getParametros().size()+
+                            " parametros y llegaron "+argumentos.size()+".",
+                            "sentencia");
+                }
                 List<EntradaParametro> parametrosOrdenadosM1 = new ArrayList<>(StructConstructor.getMetodos().get("constructor").getParametros().values());
                 parametrosOrdenadosM1.sort(Comparator.comparingInt(EntradaParametro::getPos));
                 int i = 0;
 
                 //recorro los argumentos de la llamada y chequeo
                 for (NodoLiteral argumento : argumentos) {
+                    System.out.println("HOLA");
                     //me traigo el tipo del argumento
                     argumento.checkTypes(ts);
                     //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                     if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
+                        System.out.println(isArray);
+                        System.out.println(argumento.getNodeType());
                         if(!(argumento.getNodeType().equals("Int")||
                                 argumento.getNodeType().equals("Str")||
                                 argumento.getNodeType().equals("Char")||
-                                argumento.getNodeType().equals("Bool"))){
-                            if(!(ts.getTableStructs().get(argumento.getNodeType()).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))){
+                                argumento.getNodeType().equals("Bool")||
+                                isArray.equals(("Array")))){
+                            String h = argumento.getNodeType();
+                            while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                                h = ts.getTableStructs().get(h).getHerencia();
+                                if (h.equals("Object")) {
+                                    break;
+                                }
+                            }
+                            if (h.equals("Object") && h != parametrosOrdenadosM1.get(i).getType()) {
                                 throw new SemantErrorException(this.getLine(), this.getCol(),
                                         "Llamada a constructor del struct '"+this.getTypeStruct()+"' incorrecta. El constructor espera un '"+
                                                 parametrosOrdenadosM1.get(i).getType()+"' y recibe el parametro '"+
                                                 argumento.getName()+"' de tipo '"+argumento.getNodeType()+"'.",
                                         "sentencia");
                             }
+
+
                         }else{
                             throw new SemantErrorException(this.getLine(), this.getCol(),
                                     "Llamada a constructor del struct '"+this.getTypeStruct()+"' incorrecta. El constructor espera un '"+
@@ -174,16 +197,20 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                 //recorro los argumentos de la llamada y chequeo
                 for (NodoLiteral argumento : argumentos) {
+
                     //me traigo el tipo del argumento
                     argumento.checkTypes(ts);
 
                     //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                     if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
                         //si no es igual, tengo q tener en cuenta la herencia de clases
                         if (!(argumento.getNodeType().equals("Int") ||
                                 argumento.getNodeType().equals("Str") ||
                                 argumento.getNodeType().equals("Char") ||
-                                argumento.getNodeType().equals("Bool"))) {
+                                argumento.getNodeType().equals("Bool"))||
+                                isArray.equals("Array")) {
                             String h = argumento.getNodeType();
                             while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                 h = ts.getTableStructs().get(h).getHerencia();
@@ -233,6 +260,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                     //recorro los argumentos de la llamada y chequeo
                     for (NodoLiteral argumento : argumentos) {
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
                         //me traigo el tipo del argumento
                         argumento.checkTypes(ts);
 
@@ -242,7 +271,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                             if (!(argumento.getNodeType().equals("Int") ||
                                     argumento.getNodeType().equals("Str") ||
                                     argumento.getNodeType().equals("Char") ||
-                                    argumento.getNodeType().equals("Bool"))) {
+                                    argumento.getNodeType().equals("Bool")||
+                                    isArray.equals("Array"))) {
                                 String h = argumento.getNodeType();
                                 while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                     h = ts.getTableStructs().get(h).getHerencia();
@@ -304,6 +334,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                     //recorro los argumentos de la llamada y chequeo
                     for (NodoLiteral argumento : argumentos) {
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
                         //me traigo el tipo del argumento
                         argumento.checkTypes(ts);
 
@@ -313,7 +345,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                             if (!(argumento.getNodeType().equals("Int") ||
                                     argumento.getNodeType().equals("Str") ||
                                     argumento.getNodeType().equals("Char") ||
-                                    argumento.getNodeType().equals("Bool"))) {
+                                    argumento.getNodeType().equals("Bool") ||
+                                    isArray.equals("Array"))) {
                                 String h = argumento.getNodeType();
                                 while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                     h = ts.getTableStructs().get(h).getHerencia();

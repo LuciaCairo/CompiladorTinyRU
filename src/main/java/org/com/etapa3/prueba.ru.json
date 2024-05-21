@@ -5,27 +5,72 @@
 	"nombreImpl": "Auto",
 	"metodos": [
 	{
-		"nombreMetodo":"metodo3",
-		"Bloque": {
-				"sentencias":[]
-		}
-	},
-	{
-		"nombreMetodo":"metodo2",
-		"Bloque": {
-				"sentencias":[]
-		}
-	},
-	{
 		"nombreMetodo":"metodo1",
 		"Bloque": {
-				"sentencias":[]
+				"sentencias":[
+				{
+					"nodo": "Asignacion",
+						"tipo":"Rueda",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"rueda",
+							"tipo":"Rueda",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"tipo":"Rueda",
+							"metodo": "constructor",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"chevrolet",
+								"tipo":"D",
+								"valor":"null"
+							}]					
+						}
+				}
+				]
 		}
 	},
 	{
 		"nombreMetodo":"constructor",
 		"Bloque": {
 				"sentencias":[]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "D",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[]
+		}
+	}
+	]
+},
+{
+	"nombreImpl": "Rueda",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Retorno",
+					"tipo":"void",
+					"expresion": {
+						"nodo": "Literal",
+						"nombre":"punto y coma",
+						"tipo":"void",
+						"valor":";"
+					},
+
+				}
+				]
 		}
 	}
 	]

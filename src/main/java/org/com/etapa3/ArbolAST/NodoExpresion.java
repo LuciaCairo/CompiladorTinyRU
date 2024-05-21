@@ -53,6 +53,7 @@ public class NodoExpresion extends NodoLiteral {
 
                 exp.checkTypes(ts); // Chequeo la expresion
                 if(!(this.getNodeType().equals(exp.getNodeType())) && !(this.exp.getNodeType().equals("nil"))){
+
                     throw new SemantErrorException(this.getLine(), this.getCol(),
                             "El retorno del metodo no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ this.getNodeType() +"'",
                             "sentencia");
