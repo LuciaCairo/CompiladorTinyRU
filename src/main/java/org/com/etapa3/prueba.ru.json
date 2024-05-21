@@ -2,79 +2,44 @@
 "nombre": "AST-prueba.ru",
 "structs": [
 {
-	"nombreImpl": "A",
+	"nombreImpl": "Auto",
 	"metodos": [
 	{
-<<<<<<< HEAD
 		"nombreMetodo":"metodo1",
 		"Bloque": {
 				"sentencias":[
 				{
 					"nodo": "Asignacion",
-						"tipo":"Rueda",
+						"tipo":"Array Int",
 						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"rueda",
-							"tipo":"Rueda",
+							"nombre":"agus",
+							"tipo":"Array Int",
 							"valor":"null"
 						},
 						"NodoDer":{
 							"nodo": "Llamada Metodo",
-							"tipo":"Rueda",
+							"tipo":"Array Int",
 							"metodo": "constructor",							
 							"argumentos":[
 							{
 								"nodo": "Literal",
-								"nombre":"chevrolet",
-								"tipo":"D",
-								"valor":"null"
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"5"
 							}]					
 						}
-=======
-		"nombreMetodo":"loop",
-		"Bloque": {
-				"sentencias":[
+				},
 				{
-					"nodo": "While",
+					"nodo": "Retorno",
+					"tipo":"Object",
 					"expresion": {
 						"nodo": "Literal",
-						"nombre":"literal bool",
-						"tipo":"Bool",
-						"valor":"true"
-					},
-					"sentencias":[
-					{
-						"nodo": "Bloque",
-						"sentencias":[
-						{
-							"nodo": "Sentencia Simple",
-							"tipo":"Int",
-							"expresion": {
-								"nodo": "Expresion Unaria",
-								"tipo":"Int",
-								"valor":"Int",
-								"operador":"++",
-								"expresion": {
-									"nodo": "Literal",
-									"nombre":"a",
-									"tipo":"Int",
-									"valor":"null"
-								}
-							}
-						},
-						{
-							"nodo": "Retorno",
-							"tipo":"Int",
-							"expresion": {
-								"nodo": "Literal",
-								"nombre":"a",
-								"tipo":"Int",
-								"valor":"null"
-							}
-						}
-						]
+						"nombre":"chevrolet",
+						"tipo":"Object",
+						"valor":"null"
 					}
->>>>>>> c00ef937d2e83f4012281782f153eb9ac82cafb9
+
 				}
 				]
 		}
@@ -104,19 +69,7 @@
 	{
 		"nombreMetodo":"constructor",
 		"Bloque": {
-				"sentencias":[
-				{
-					"nodo": "Retorno",
-					"tipo":"void",
-					"expresion": {
-						"nodo": "Literal",
-						"nombre":"punto y coma",
-						"tipo":"void",
-						"valor":";"
-					},
-
-				}
-				]
+				"sentencias":[]
 		}
 	}
 	]

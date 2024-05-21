@@ -48,8 +48,10 @@ public class NodoAsignacion extends NodoLiteral {
 
             if (!typeNI.equals(typeND)) { //si, no son del mismo tipo
                 if (typeNI.equals("Object")){ //si el nodoI es de tipo object
+                    String[] palabras = typeNI.split(" ");
+                    String isArray = palabras[0];
                     //el nodoD debe ser si o si algo distinto a Int,Str,Bool,Char porque Object es una superclase
-                    if(typeND.equals("Int") ||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char")){
+                    if(typeND.equals("Int") ||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char")|| isArray.equals("Array")){
                         throw new SemantErrorException(this.getLine(), this.getCol(),
                                 "Incompatibilidad de tipos. No se puede asignar un objeto de tipo " + typeND + " a la variable '" + nodoI.getName() + "' definida de tipo " + typeNI,
                                 "nodoAsignacion");
@@ -63,6 +65,12 @@ public class NodoAsignacion extends NodoLiteral {
                             && !(typeND.equals("Int")||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char") || typeND.split(" ")[0].equals("Array"))){
                         String hD=typeND;
                         String hI=typeNI;
+                        if (hD.equals("Object") && !(hI.equals("Object"))) {
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Incompatibilidad de tipos. No se puede asignar un objeto de tipo '" + hI + "' cuando el lado izquierdo de la asignacion es de tipo '"+hD+"' \n " +
+                                            "debido a que no se encuentra en su arbol de herencia.",
+                                    "nodoAsignacion");
+                        }
                         // realizo un while para poder recorrer la herencia hacia arriba, salgo del while cuando hD
                         //sea igual al tipo q estoy buscando
                         while((!(ts.getTableStructs().get(hD).getHerencia().equals(hI)))  ){

@@ -71,7 +71,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public boolean checkTypes(TablaSimbolos ts){
         // NodoLlamadaMetodo: metodo(lista expresiones)
         // Verificar que el metodo exista en su struct padre en la ts
-        System.out.println(metodo);
+
         if(metodo.equals("constructor")){
 
             EntradaStruct StructConstructor = (ts.getStruct(this.getTypeStruct()));
@@ -125,21 +125,26 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                 //recorro los argumentos de la llamada y chequeo
                 for (NodoLiteral argumento : argumentos) {
-                    System.out.println("HOLA");
+
                     //me traigo el tipo del argumento
                     argumento.checkTypes(ts);
                     //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                     if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
                         String[] palabras = argumento.getNodeType().split(" ");
                         String isArray = palabras[0];
-                        System.out.println(isArray);
-                        System.out.println(argumento.getNodeType());
+
                         if(!(argumento.getNodeType().equals("Int")||
                                 argumento.getNodeType().equals("Str")||
                                 argumento.getNodeType().equals("Char")||
                                 argumento.getNodeType().equals("Bool")||
                                 isArray.equals(("Array")))){
                             String h = argumento.getNodeType();
+                            if (h.equals("Object")) {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "Incompatibilidad de tipos. No se puede llamar a un metodo, pasando un parametro de tipo " + argumento.getNodeType() + " cuando la firma del metodo expecifica que espera un tipo '"+parametrosOrdenadosM1.get(i).getType()+"' \n " +
+                                                "debido a que no se encuentra en su arbol de herencia.",
+                                        "nodoAsignacion");
+                            }
                             while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                 h = ts.getTableStructs().get(h).getHerencia();
                                 if (h.equals("Object")) {
@@ -212,6 +217,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                 argumento.getNodeType().equals("Bool"))||
                                 isArray.equals("Array")) {
                             String h = argumento.getNodeType();
+                            if (h.equals("Object")) {
+                                throw new SemantErrorException(this.getLine(), this.getCol(),
+                                        "Incompatibilidad de tipos. No se puede llamar a un metodo, pasando un parametro de tipo " + argumento.getNodeType() + " cuando la firma del metodo expecifica que espera un tipo '"+parametrosOrdenadosM1.get(i).getType()+"' \n " +
+                                                "debido a que no se encuentra en su arbol de herencia.",
+                                        "nodoAsignacion");
+                            }
                             while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                 h = ts.getTableStructs().get(h).getHerencia();
                                 if (h.equals("Object")) {
@@ -274,6 +285,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                     argumento.getNodeType().equals("Bool")||
                                     isArray.equals("Array"))) {
                                 String h = argumento.getNodeType();
+                                if (h.equals("Object")) {
+                                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                                            "Incompatibilidad de tipos. No se puede llamar a un metodo, pasando un parametro de tipo " + argumento.getNodeType() + " cuando la firma del metodo expecifica que espera un tipo '"+parametrosOrdenadosM1.get(i).getType()+"' \n " +
+                                                    "debido a que no se encuentra en su arbol de herencia.",
+                                            "nodoAsignacion");
+                                }
                                 while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                     h = ts.getTableStructs().get(h).getHerencia();
                                     if (h.equals("Object")) {
@@ -348,6 +365,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                                     argumento.getNodeType().equals("Bool") ||
                                     isArray.equals("Array"))) {
                                 String h = argumento.getNodeType();
+                                if (h.equals("Object")) {
+                                    throw new SemantErrorException(this.getLine(), this.getCol(),
+                                            "Incompatibilidad de tipos. No se puede llamar a un metodo, pasando un parametro de tipo " + argumento.getNodeType() + " cuando la firma del metodo expecifica que espera un tipo '"+parametrosOrdenadosM1.get(i).getType()+"' \n " +
+                                                    "debido a que no se encuentra en su arbol de herencia.",
+                                            "nodoAsignacion");
+                                }
                                 while (!(ts.getTableStructs().get(h).getHerencia().equals(parametrosOrdenadosM1.get(i).getType()))) {
                                     h = ts.getTableStructs().get(h).getHerencia();
                                     if (h.equals("Object")) {

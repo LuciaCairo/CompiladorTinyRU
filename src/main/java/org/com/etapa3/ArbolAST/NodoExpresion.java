@@ -57,9 +57,37 @@ public class NodoExpresion extends NodoLiteral {
                 exp.checkTypes(ts); // Chequeo la expresion
                 if(!(this.getNodeType().equals(exp.getNodeType())) && !(this.exp.getNodeType().equals("nil"))){
 
-                    throw new SemantErrorException(this.getLine(), this.getCol(),
-                            "El retorno del metodo no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '"+ this.getNodeType() +"'",
-                            "sentencia");
+                    String[] palabras = exp.getNodeType().split(" ");
+                    String isArray = palabras[0];
+                    if(!(exp.getNodeType().equals("Int")||
+                            exp.getNodeType().equals("Str")||
+                            exp.getNodeType().equals("Char")||
+                            exp.getNodeType().equals("Bool")||
+                            isArray.equals(("Array")))) {
+                        String h = exp.getNodeType();
+                        if (h.equals("Object")) {
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Incompatibilidad de tipos. No se puede retornar un objeto de tipo " + exp.getNodeType() + " cuando la firma del metodo define que retorna un objeto de tipo '"+this.getNodeType()+"' \n " +
+                                            "debido a que no se encuentra en su arbol de herencia.",
+                                    "nodoAsignacion");
+                        }
+                        while (!(ts.getTableStructs().get(h).getHerencia().equals(this.getNodeType()))) {
+                            h = ts.getTableStructs().get(h).getHerencia();
+                            if (h.equals("Object")) {
+                                break;
+                            }
+                        }
+
+                        if (h.equals("Object") && h != this.getNodeType()) {
+                            throw new SemantErrorException(this.getLine(), this.getCol(),
+                                    "Incompatibilidad de tipos. No se puede retornar un objeto de tipo " + exp.getNodeType() + " cuando la firma del metodo define que retorna un objeto de tipo '"+this.getNodeType()+"'.",
+                                    "nodoAsignacion");
+                        }
+                    }else {
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "El retorno del metodo no puede ser '" + exp.getNodeType() + "' porque en su firma esta declarado como '" + this.getNodeType() + "'",
+                                "sentencia");
+                    }
                 } else {
                     // Setear el tipo correspondiente
                     this.setNodeType(exp.getNodeType());
