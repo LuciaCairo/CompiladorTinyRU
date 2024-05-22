@@ -82,7 +82,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 EntradaStructPredef  StructPredConstructor =  (ts.getStructPred(this.getTypeStruct()));
                 if (StructPredConstructor== null){
                     throw new SemantErrorException(this.getLine(), this.getCol(),
-                            "No se puede crear una instancia de '"+this.getTypeStruct()+"' porque no existe el struct.Primero"+
+                            "No se puede crear una instancia de '"+this.getTypeStruct()+"' porque no existe el struct. Primero"+
                                     " debe crear el struct '"+this.getTypeStruct()+"'.",
                             "sentencia");
                 }else{ //constructor Array
@@ -271,10 +271,10 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                     //recorro los argumentos de la llamada y chequeo
                     for (NodoLiteral argumento : argumentos) {
-                        String[] palabras = argumento.getNodeType().split(" ");
-                        String isArray = palabras[0];
                         //me traigo el tipo del argumento
                         argumento.checkTypes(ts);
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
 
                         //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                         if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {
@@ -351,10 +351,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                     //recorro los argumentos de la llamada y chequeo
                     for (NodoLiteral argumento : argumentos) {
-                        String[] palabras = argumento.getNodeType().split(" ");
-                        String isArray = palabras[0];
                         //me traigo el tipo del argumento
                         argumento.checkTypes(ts);
+
+                        String[] palabras = argumento.getNodeType().split(" ");
+                        String isArray = palabras[0];
 
                         //comparo si el tipo del argumento de la llamada es igual al tipo del argumento de la tabla
                         if (!(argumento.getNodeType().equals(parametrosOrdenadosM1.get(i).getType()))) {

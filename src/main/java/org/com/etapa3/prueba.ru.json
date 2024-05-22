@@ -15,84 +15,64 @@
 		"Bloque": {
 				"sentencias":[
 				{
-					"nodo": "If",
-					"expresion": {
-						"nodo": "Expresion Binaria",
-						"tipo":"Bool",
-						"operador":"||",
-						"nodoIzq": {
+					"nodo": "Asignacion",
+						"tipo":"Array Int",
+						"NodoIzq":{
 							"nodo": "Literal",
-							"nombre":"literal entero",
-							"tipo":"Int",
-							"valor":"1"
+							"nombre":"a",
+							"tipo":"Array Int",
+							"valor":"null"
 						},
-						"nodoDer": {
-							"nodo": "Literal",
-							"nombre":"literal entero",
-							"tipo":"Int",
-							"valor":"2"
-						}
-					},
-					"sentencias":[
-					{
-						"nodo": "Bloque",
-						"sentencias":[
-						{
-							"nodo": "While",
-							"expresion": {
-								"nodo": "Literal",
-								"nombre":"literal bool",
-								"tipo":"Bool",
-								"valor":"false"
-							},
-							"sentencias":[
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"tipo":"Array Int",
+							"metodo": "constructor",							
+							"argumentos":[
 							{
-								"nodo": "Bloque",
-								"sentencias":[
-								{
-									"nodo": "Retorno",
-									"tipo":"void",
-									"expresion": {
-										"nodo": "Literal",
-										"nombre":"punto y coma",
-										"tipo":"void",
-										"valor":";"
-									}
-								}
-								]
-							}]
+								"nodo": "Literal",
+								"nombre":"b",
+								"tipo":"Int",
+								"valor":"null"
+							}]					
 						}
-						]
-					}
-					],
-					"sentenciasElse ":[
-					{
-						"nodo": "Bloque",
-						"sentencias":[
-						{
-							"nodo": "Sentencia Simple",
-							"tipo":"Int",
-							"expresion": {
-								"nodo": "Acceso",
-								"nodoIzq": {
-									"nodo": "Literal",
-									"nombre":"s",
-									"tipo":"Str",
-									"valor":"null"
-								},
-								"nodoDer": {
-									"nodo": "Llamada Metodo",
-									"tipo":"Int",
-									"metodo": "length",									
-									"argumentos":[]
-
-								}
-							}
+				},
+				{
+					"nodo": "Asignacion",
+						"tipo":"R",
+						"NodoIzq":{
+							"nodo": "Literal",
+							"nombre":"c",
+							"tipo":"R",
+							"valor":"null"
+						},
+						"NodoDer":{
+							"nodo": "Llamada Metodo",
+							"tipo":"R",
+							"metodo": "constructor",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"self",
+								"tipo":"A",
+								"valor":"null"
+							},
+							{
+								"nodo": "Literal",
+								"nombre":"b",
+								"tipo":"Int",
+								"valor":"null"
+							}]					
 						}
-						]
+				},
+				{
+					"nodo": "Retorno",
+					"tipo":"A",
+					"expresion": {
+						"nodo": "Literal",
+						"nombre":"self",
+						"tipo":"A",
+						"valor":"null"
 					}
-					]
-					
 
 				}
 				]
@@ -101,7 +81,7 @@
 	]
 },
 {
-	"nombreImpl": "D",
+	"nombreImpl": "R",
 	"metodos": [
 	{
 		"nombreMetodo":"constructor",
@@ -112,8 +92,218 @@
 	]
 },
 {
+	"nombreImpl": "D",
+	"metodos": [
+	{
+		"nombreMetodo":"constructor",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Sentencia Simple",
+					"tipo":"D",
+					"expresion": {
+						"nodo": "Llamada Metodo",
+						"tipo":"D",
+						"metodo": "metodo",						
+						"argumentos":[
+						{
+							"nodo": "Literal",
+							"nombre":"literal entero",
+							"tipo":"Int",
+							"valor":"1"
+						},
+						{
+							"nodo": "Acceso",
+							"nodoIzq": {
+								"nodo": "Literal",
+								"nombre":"self",
+								"tipo":"D",
+								"valor":"null"
+							},
+							"nodoDer": {
+								"nodo": "Literal",
+								"nombre":"b",
+								"tipo":"Int",
+								"valor":"null"
+							}
+						}]
+					}
+
+				}
+				]
+		}
+	},
+	{
+		"nombreMetodo":"metodo",
+		"Bloque": {
+				"sentencias":[
+				{
+					"nodo": "Sentencia Simple",
+					"tipo":"Int",
+					"expresion": {
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Acceso Array",
+							"array": {
+								"nodo": "Literal",
+								"nombre":"t",
+								"tipo":"Array Str",
+								"valor":"null"
+							},
+							"indice": {
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"1"
+							}
+						},
+						"nodoDer": {
+							"nodo": "Llamada Metodo",
+							"tipo":"Int",
+							"metodo": "length",							
+							"argumentos":[]
+
+						}
+					}
+
+				},
+				{
+					"nodo": "Sentencia Simple",
+					"tipo":"Int",
+					"expresion": {
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"IO",
+							"tipo":"IO",
+							"valor":"st"
+						},
+						"nodoDer": {
+							"nodo": "Acceso",
+							"nodoIzq": {
+								"nodo": "Llamada Metodo",
+								"tipo":"Str",
+								"metodo": "in_str",								
+								"argumentos":[]
+
+							},
+							"nodoDer": {
+								"nodo": "Acceso",
+								"nodoIzq": {
+									"nodo": "Llamada Metodo",
+									"tipo":"Str",
+									"metodo": "concat",									
+									"argumentos":[
+									{
+										"nodo": "Literal",
+										"nombre":"literal str",
+										"tipo":"Str",
+										"valor":"hola"
+									}]
+								},
+								"nodoDer": {
+									"nodo": "Llamada Metodo",
+									"tipo":"Int",
+									"metodo": "length",									
+									"argumentos":[]
+
+								}
+							}
+						}
+					}
+
+				},
+				{
+					"nodo": "Retorno",
+					"tipo":"D",
+					"expresion": {
+						"nodo": "Llamada Metodo",
+						"tipo":"A",
+						"metodo": "constructor",						
+						"argumentos":[
+						{
+							"nodo": "Llamada Metodo",
+							"tipo":"D",
+							"metodo": "constructor",							
+							"argumentos":[]
+
+						}]
+					}
+
+				}
+				]
+		}
+	}
+	]
+},
+{
 	"nombre": "start",
-				"sentencias":[]
+				"sentencias":[
+				{
+					"nodo": "Sentencia Simple",
+					"tipo":"D",
+					"expresion": {
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"claseA",
+							"tipo":"A",
+							"valor":"null"
+						},
+						"nodoDer": {
+							"nodo": "Llamada Metodo",
+							"tipo":"D",
+							"metodo": "metodo",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"1"
+							},
+							{
+								"nodo": "Literal",
+								"nombre":"literal entero",
+								"tipo":"Int",
+								"valor":"2"
+							}]
+						}
+					}
+
+				},				{
+					"nodo": "Sentencia Simple",
+					"tipo":"A",
+					"expresion": {
+						"nodo": "Acceso",
+						"nodoIzq": {
+							"nodo": "Literal",
+							"nombre":"A",
+							"tipo":"A",
+							"valor":"st"
+						},
+						"nodoDer": {
+							"nodo": "Llamada Metodo",
+							"tipo":"A",
+							"metodo": "m",							
+							"argumentos":[
+							{
+								"nodo": "Literal",
+								"nombre":"y",
+								"tipo":"R",
+								"valor":"null"
+							},
+							{
+								"nodo": "Literal",
+								"nombre":"claseA",
+								"tipo":"A",
+								"valor":"null"
+							}]
+						}
+					}
+
+				}
+				]
+
 }
 ]
 }

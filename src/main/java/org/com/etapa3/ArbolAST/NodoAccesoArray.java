@@ -21,7 +21,7 @@ public class NodoAccesoArray extends NodoLiteral {
     @Override
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Acceso Array\",\n"
-                + space + "\"nodo\": {\n"+ this.nodo.printSentencia(space+"\t") +"\n" + space +"},\n"
+                + space + "\"array\": {\n"+ this.nodo.printSentencia(space+"\t") +"\n" + space +"},\n"
                 + space + "\"indice\": {\n"+ this.exp.printSentencia(space+"\t") +"\n" + space +"}";
     }
 
