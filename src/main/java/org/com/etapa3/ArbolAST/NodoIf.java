@@ -1,10 +1,13 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.TablaSimbolos;
+
 import java.util.LinkedList;
 
 public class NodoIf extends NodoLiteral {
     private NodoLiteral exp;
-    private LinkedList<NodoSentencia> sentencias;
+    private LinkedList<NodoLiteral> sentencias;
     private NodoElse nodoElse = null;
 
     // Constructor
@@ -19,8 +22,13 @@ public class NodoIf extends NodoLiteral {
         this.nodoElse = nodoElse;
     }
 
+    // Getters
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
+    }
+
     // Functions
-    public void insertSentencia(NodoSentencia sentencia) {
+    public void insertSentencia(NodoLiteral sentencia) {
         this.sentencias.add(sentencia);
     }
 
@@ -36,70 +44,32 @@ public class NodoIf extends NodoLiteral {
             json = json.substring(0,json.length()-2);
         }
         json +="\n" + space + "],\n"
-                + space + this.nodoElse.printSentencia(space) + space +"},\n";
+                + space + this.nodoElse.printSentencia(space) + space +"\n";
         return json;
     }
 
-    /*private NodoExpresion declaracion;
-    private LinkedList<NodoSentencia> loop;
-    private boolean scoped = false;
-
-    public NodoWhile(int filaTok,int colTok){
-        super(filaTok,colTok);
-        this.loop = new LinkedList<>();
-        this.scoped = false;
-    }
-
-    public void setDeclaracion(NodoExpresion declaracion) {
-        this.declaracion = declaracion;
-    }
-
-
-    public void addSentencia(NodoSentencia e){
-        this.loop.add(e);
-    }
-
-    //como es la verificacion del while? como saber cuando cortar? deberia verificarlo yo? o solo verificar que sea todo correcto?
-    // verificar condicion y loop si es correcto semanticamente.. es suficiente?
 
     @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        if(!this.declaracion.checkIsBoolean(ts)){
-            throw new ExcepcionSemantica(this.declaracion.getFila(),this.declaracion.getCol(),"No es una declaracion de tipo booleana",this.declaracion.getTipo(ts),false);
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoIf: if(exp){sentencias} else
+        exp.checkTypes(ts); // Chequeo la expresion
+        // Verificar que el exp sea de tipo bool
+        if(!(this.exp.getNodeType().equals("Bool"))){
+            throw new SemantErrorException(this.exp.getLine(), this.exp.getCol(),
+                    "La condicion del if debe ser de tipo Bool",
+                    "sentencia");
         }
-        this.loop.forEach((elem)  -> {
-            try{
-                elem.verifica(ts);
-            }catch(ExcepcionSemantica eS){}
-        });
+        // Hacer checkTypes de sus sentencias
+        if(!this.getSentencias().isEmpty()) {
+            for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
+                s.checkTypes(ts);
+            }
+        }
+        // Hacer checkTypes de sus sentenciasElse
+        this.nodoElse.checkTypes(ts);
+        // Setear el tipo correspondiente una vez que se chequeo
+        this.setNodeType(null);
         return true;
     }
 
-    public void setScoped(boolean scoped) {
-        this.scoped = scoped;
-    }
-
-    public boolean isScoped() {
-        return scoped;
-    }
-
-    public LinkedList<NodoSentencia> getLoop() {
-        return loop;
-    }
-
-
-    @Override
-    public String imprimeSentencia() {
-        String json= "\"nodo\": \"NodoWhile\",\n"
-                + "\"declaracion\":{\n"+this.declaracion.imprimeSentencia()+"\n},\n"
-                + "\"Bloque\":[";
-        for (int i = 0; i < loop.size(); i++) {
-            json += "\n{"+ this.loop.get(i).imprimeSentencia() +"},";
-        }
-        json = json.substring(0,json.length()-1);
-        json += "]";
-
-
-        return json;
-    }*/
 }

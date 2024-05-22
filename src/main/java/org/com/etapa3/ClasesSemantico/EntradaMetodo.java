@@ -13,6 +13,7 @@ public class EntradaMetodo {
     private String nombre;
     private boolean isStatic = false;
     private String ret = "void"; //tipo de retorno
+    private boolean hasRet = false;
     private int pos, line, col;
     private Hashtable<String, EntradaParametro> parametros;
     private Hashtable<String, EntradaVariable> variables;
@@ -74,8 +75,15 @@ public class EntradaMetodo {
     public Hashtable<String, EntradaVariable> getVariables() {
         return variables;
     }
+    public boolean isHasRet() {
+        return hasRet;
+    }
+
 
     // Setters
+    public void setHasRet(boolean hasRet) {
+        this.hasRet = hasRet;
+    }
     public void setRet(String ret) {
         this.ret = ret;
     }

@@ -142,14 +142,6 @@ public class EntradaStruct {
         this.metodos.put(name, metodo);
     }
 
-    public String isDeclaredAtributo(String name) {
-        if(this.atributos.containsKey(name)){
-            return this.atributos.get(name).getType();
-        } else {
-            return null;
-        }
-    }
-
     public String printJSON_Struct(){
         String json = "";
         this.constructor = this.metodos.remove("constructor");

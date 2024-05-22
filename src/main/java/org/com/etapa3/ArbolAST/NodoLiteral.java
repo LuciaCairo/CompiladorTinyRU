@@ -1,86 +1,121 @@
 package org.com.etapa3.ArbolAST;
 
-public class NodoLiteral extends NodoSentencia {
+import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.TablaSimbolos;
 
-    public NodoLiteral(int line, int col) {
+public class NodoLiteral extends Nodo{
+
+    public NodoLiteral(int line, int col){
         super(line, col);
     }
-    public NodoLiteral(int line, int col, String type) {
+    public NodoLiteral(int line, int col, String type){
         super(line, col, type);
     }
-    public NodoLiteral(int line, int col, String type, String value) {
-        super(line, col,type, value);
+    public NodoLiteral(int line, int col, String type, String value){
+        super(line, col, type,value);
+    }
+    public NodoLiteral(int line, int col, String name, String type, String value){
+        super(line, col, name, type,value);
     }
 
-    public NodoLiteral(int line, int col, String name, String type, String value) {
-        super(line, col, name, type, value);
-    }
-
-
-
-    // Getters
-
-
-/*
-    public NodoLiteral(int filaTok,int colTok,String nombre, String tipo){
-        super(filaTok,colTok);
-        this.nombre = nombre;
-        this.tipo = tipo;
-    }
-
-    public NodoLiteral(int filaTok,int colTok,String nombre){
-        super(filaTok,colTok);
-        this.nombre = nombre;
-    }
-
-    public String getTipoImpreso(){
-        return this.tipo;
-    }
-
-    public boolean checkIsBoolean(TablaDeSimbolos ts) throws ExcepcionSemantica{
-        return this.tipo.equals("Bool");
-    }
-
-    public String getTipo(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        return tipo;
-    }
-
-
-
-    public void setValor(Object valor) {
-        this.valor = valor;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public Object getValor() {
-        return valor;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String printSentencia(String space) {
+        return space + "\"nodo\": \"Literal\",\n"
+                + space + "\"nombre\":\""+ this.getName() +"\",\n"
+                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
+                + space + "\"valor\":\""+ this.getValue() +"\"";
     }
 
     @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
+    public boolean checkTypes(TablaSimbolos ts){
+
+        // Caso para llamada de metodos estaticos
+        if(this.getValue()!= null){
+            if(this.getValue().equals("st") && (ts.getTableStructs().containsKey(this.getName()))){
+                return true;
+            }
+        }
+        // IGNORAMOS LOS LITERALES(INT,STR...) PORQUE YA TIENEN TIPO Y VALOR
+        if(!(this.getName().equals("literal nulo") ||
+                this.getName().equals("literal bool")||
+                this.getName().equals("literal entero")||
+                this.getName().equals("literal str")||
+                this.getName().equals("punto y coma")||
+                this.getName().equals("self") ||
+                this.getName().equals("IO") ||
+                this.getName().equals("literal char"))){
+
+            // CASO ESPECIAL DE START
+            if(ts.getCurrentStruct().getName().equals("start")){
+
+                if(!this.getParent().isEmpty()){ // Viene de un acceso
+                    // VEMOS SI EL ID ESTA DECLARADO COMO ATRIBUTO DEL STRUCT DEL QUE SE ACCEDE
+                    if (!(ts.getTableStructs().get(this.getParent()).getAtributos().containsKey(this.getName()))) {
+                        // SI EL ID NO ESTA DECLARADO, ERROR
+                        throw new SemantErrorException(this.getLine(),
+                                this.getCol(), "El id \"" + this.getName() +
+                                "\" no esta declarado como atributo del struct '" + this.getParent() + "'.", "encadenadoSimple");
+                    } else {
+                        this.setNodeType((ts.getTableStructs().get(this.getParent()).getAtributos().get(this.getName())).getType());
+                    }
+                } else {
+                    // SOLO VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL START
+                    if (!(ts.getCurrentStruct().getVariables().containsKey(this.getName()))) {
+
+                        // SI EL ID NO ESTA DECLARADO, ERROR
+                        throw new SemantErrorException(this.getLine(),
+                                this.getCol(), "El id \"" + this.getName() +
+                                "\" no esta declarado en el struct '" + ts.getCurrentStruct().getName() + "'.", "");
+                    } else {
+                        this.setNodeType(ts.getCurrentStruct().getVariables().get(this.getName()).getType());
+                    }
+                }
+
+            } else { // CASO DE TODOS LOS DEMAS STRUCTS
+
+                if(this.getParent().isEmpty()){
+                    // VEMOS SI EL ID ESTA DECLARADO COMO VARIABLE DEL METODO
+
+                    if(!(ts.getCurrentMetod().getVariables().containsKey(this.getName()))){
+
+                        // SI NO, VEMOS SI EL ID ESTA DECLARADO COMO PARAMETRO DEL METODO
+                        if (!(ts.getCurrentMetod().getParametros().containsKey(this.getName()))){
+
+                            // SI NO, VEMOS SI EL ID ESTA DECLARADO COMO ATRIBUTO DEL STRUCT
+                            if(!(ts.getCurrentStruct().getAtributos().containsKey(this.getName()))){
+
+                                // SI EL ID NO ESTA DECLARADO EN NINGUN LUGAR, ERROR
+                                throw new SemantErrorException(this.getLine(),
+                                        this.getCol(), "El id \"" + this.getName() +
+                                        "\" no esta declarado en el struct '"+ts.getCurrentStruct().getName()+"' ni en el metodo '"+
+                                        ts.getCurrentMetod().getName()+ "'", "encadenadoSimple");
+                            }else{
+                                this.setNodeType((ts.getCurrentStruct().getAtributos().get(this.getName())).getType());
+                            }
+                        }else{
+                            this.setNodeType((ts.getCurrentMetod().getParametros().get(this.getName())).getType());
+                        }
+                    }else{
+                        this.setNodeType((ts.getCurrentMetod().getVariables().get(this.getName())).getType());
+                    }
+                } else {
+
+                    // VEMOS SI EL ID ESTA DECLARADO COMO ATRIBUTO DEL STRUCT
+                    if (!(ts.getTableStructs().get(this.getParent()).getAtributos().containsKey(this.getName()))) {
+                        // SI EL ID NO ESTA DECLARADO, ERROR
+                        throw new SemantErrorException(this.getLine(),
+                                this.getCol(), "El id \"" + this.getName() +
+                                "\" no esta declarado como atributo del struct '" + this.getParent() + "'.", "encadenadoSimple");
+                    } else {
+                        this.setNodeType((ts.getTableStructs().get(this.getParent()).getAtributos().get(this.getName())).getType());
+                    }
+                }
+            }
+        }
+        // No puede haber self en el start
+        if(this.getName().equals("self") && ts.getCurrentStruct().getName().equals("start")){
+            throw new SemantErrorException(this.getLine(), this.getCol(),
+                    "No se puede realizar un self en start", "encadenadoSimple");
+        }
         return true;
     }
-
-    @Override
-    public String imprimeSentencia() {
-        String valor = this.valor == null ? "null" : this.valor.toString().replace("\"", "\\\"");
-        return "\"nodo\":\"NodoLiteral\",\n\"nombre\":\""+this.nombre+"\",\n\"tipo\":\""+this.tipo+"\",\n\"valor\":\""+valor+"\"";
-    }*/
-@Override
-public String printSentencia(String space) {
-    return space + "\"nodo\": \"Literal\",\n"
-            + space + "\"nombre\":\""+ this.getName() +"\",\n"
-            + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-            + space + "\"valor\":\""+ this.getValue() +"\"";
 }
-
-
-}
-

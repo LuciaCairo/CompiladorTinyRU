@@ -1,34 +1,18 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.TablaSimbolos;
+
 public class NodoExpBin extends NodoLiteral {
-    private NodoLiteral izq;
-    private NodoLiteral der;
+    private NodoLiteral nodoI;
+    private NodoLiteral nodoD;
     private String op;
 
     // Constructor
-    public NodoExpBin(int line, int col, NodoLiteral izq, String op, NodoLiteral der, String type){
+    public NodoExpBin(int line, int col, NodoLiteral nodoI, String op, NodoLiteral nodoD, String type){
         super(line,col,type);
-        this.der = der;
-        this.izq = izq;
-        this.op = op;
-    }
-
-    public NodoExpBin(int line,int col){
-        super(line,col);
-    }
-
-    // Getters
-
-    // Setters
-    public void setNodoD(NodoLiteral der) {
-        this.der = der;
-    }
-
-    public void setNodoI(NodoLiteral izq) {
-        this.izq = izq;
-    }
-
-    public void setOp(String op) {
+        this.nodoD = nodoD;
+        this.nodoI = nodoI;
         this.op = op;
     }
 
@@ -37,86 +21,46 @@ public class NodoExpBin extends NodoLiteral {
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Expresion Binaria\",\n"
                 + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-                + space + "\"valor\":\""+ this.getValue() +"\",\n"
                 + space + "\"operador\":\""+ this.op +"\",\n"
-                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +"\n" + space +"},\n"
-                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +"\n" + space +"}";
+                + space + "\"nodoIzq\": {\n"+ this.nodoI.printSentencia(space+"\t") +"\n" + space +"},\n"
+                + space + "\"nodoDer\": {\n"+ this.nodoD.printSentencia(space+"\t") +"\n" + space +"}";
     }
 
-    /*
+    @Override
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoExpBin: nodoI op nodoD
+        this.nodoI.checkTypes(ts);
+        this.nodoD.checkTypes(ts);
+        String typeNI = this.nodoI.getNodeType();
+        String typeND = this.nodoD.getNodeType();
 
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-
-        if(this.oper.equals("||") || this.oper.equals("&&")){
-            if(der.getTipo(ts).equals(izq.getTipo(ts)) && der.getTipo(ts).equals("Bool")){
-                return true;
-            }else{
-                String comp = izq+ " y "+der;
-                throw new ExcepcionSemantica(this.getFila(),this.getCol(),"La expresion contiene tipos incompatibles",comp,false);
+        // Caso de expresion binaria con operadores logicos
+        if(this.op.equals("||") || this.op.equals("&&") || this.op.equals("==") || this.op.equals("!=")) {
+            if(!typeNI.equals(typeND)){
+                throw new SemantErrorException(this.getLine(), this.getLine(),
+                            "Incompatibilidad de tipos. No se puede realizar una operacion \"" + this.op +"\" " +
+                                    "entre un " + typeNI + " y un " + typeND,
+                            "NodoExpBin");
             }
-        }else{
-            if(this.oper.equals("*") && this.oper.equals("/") && this.oper.equals("%") && this.oper.equals("-") && this.oper.equals("<") && this.oper.equals(">") && this.oper.equals("<=") && this.oper.equals(">=") && this.oper.equals("==") ){
-                if(der.getTipo(ts).equals(izq.getTipo(ts)) && der.getTipo(ts).equals("Int")){
-                    return true;
-                }else{
-                    String comp = izq+ " y "+der;
-                    throw new ExcepcionSemantica(this.getFila(),this.getCol(),"La expresion contiene tipos incompatibles",comp,false);
+            // Setear el tipo correspondiente
+            this.setNodeType("Bool");
 
+        } else{ // Caso de expresion binaria con operadores aritmeticos
+            if(typeNI.equals("Int") && typeND.equals("Int")){
+                if(this.op.equals("<") || this.op.equals(">") ||
+                        this.op.equals("<=") || this.op.equals(">=")){
+                    this.setNodeType("Bool");
+                } else {
+                    // Setear el tipo correspondiente
+                    this.setNodeType("Int");
                 }
-            }else{
-                if(this.oper.equals("+")){
-                    if(der.getTipo(ts).equals(izq.getTipo(ts)) && (der.getTipo(ts).equals("Int") || der.getTipo(ts).equals("String") || der.getTipo(ts).equals("Char"))){
-                        return true;
-                    }else{
-                        String comp = izq+ " y "+der;
-                        throw new ExcepcionSemantica(this.getFila(),this.getCol(),"La expresion contiene tipos incompatibles",comp,false);
-                    }
-                }
+            } else{
+                throw new SemantErrorException(this.getLine(), this.getLine(),
+                        "Incompatibilidad de tipos. No se puede realizar una operacion \"" + this.op +"\" " +
+                                "entre un " + typeNI + " y un " + typeND+ ". Ambos deben ser enteros",
+                        "NodoExpBin");
             }
         }
-        System.out.println("tipo no manejado:: "+this.oper);
-        return false;
+        return true;
     }
-
-    public String getOper() {
-        return oper;
-    }
-
-
-
-    public void setOper(String oper) {
-        this.oper = oper;
-    }
-
-    public NodoLiteral getIzq() {
-        return izq;
-    }
-
-    @Override
-    public String getTipo(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        if(this.oper.equals("<") || this.oper.equals(">") || this.oper.equals("<=") || this.oper.equals(">=") || this.oper.equals("==") || this.oper.equals("!=")){
-            if(der.getTipo(ts).equals(izq.getTipo(ts)) && der.getTipo(ts).equals("Int")){
-                return "Bool";
-            }
-        }
-        return der.getTipo(ts);
-    }
-
-    @Override
-    public boolean checkIsBoolean(TablaDeSimbolos ts) throws ExcepcionSemantica  {
-        return (this.getTipo(ts).equals("Bool"));
-    }
-
-
-
-    @Override
-    public String imprimeSentencia() {
-        return "\"nodo\": \"NodoExpresionBinaria\",\n"
-                + "\"ladoIzq\":{\n"+this.izq.imprimeSentencia()+"\n},\n"
-                + "\"operador\":\""+this.oper+"\",\n"
-                + "\"ladoDer\":{"+this.der.imprimeSentencia()+"\n}";
-    }
-
-*/
-
 }

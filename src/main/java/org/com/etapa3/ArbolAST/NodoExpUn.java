@@ -1,6 +1,9 @@
 package org.com.etapa3.ArbolAST;
 
-// Nodo para expresiones unarias (por ejemplo: ++a, --a, !a, etc)
+import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.TablaSimbolos;
+
+// Nodo para expresiones unarias (por ejemplo: ++a, --a, !a)
 public class NodoExpUn extends NodoLiteral {
 
     private String op; // Operador unario y
@@ -13,26 +16,6 @@ public class NodoExpUn extends NodoLiteral {
         this.op = op;
     }
 
-    public NodoExpUn(int line,int col){
-        super(line,col);
-    }
-
-    // Getters
-    public String getOp() {
-        return op;
-    }
-    public NodoLiteral getExp() {
-        return exp;
-    }
-
-    // Setters
-    public void setExp(NodoLiteral exp) {
-        this.exp = exp;
-    }
-
-    public void setOp(String op) {
-        this.op = op;
-    }
 
     // Functions
     @Override
@@ -41,54 +24,34 @@ public class NodoExpUn extends NodoLiteral {
                 + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"valor\":\""+ this.getNodeType() +"\",\n"
                 + space + "\"operador\":\""+ this.op +"\",\n"
-                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\"";
+                + space + "\"expresion\": {\n"+ this.exp.printSentencia(space+"\t") +"\n"+ space +"}";
 
     }
 
-    /*
-
     @Override
-    public boolean checkIsBoolean(TablaDeSimbolos ts) throws ExcepcionSemantica  {
-        return (this.oper.equals("!") && der.getTipo(ts).equals("Bool"));
-    }
-
-
-    @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        String derT = der.getTipo(ts);
-        if(this.oper.equals("!") ){
-
-            if(derT.equals("Bool")){
-                return true;
-            }else{
-                throw new ExcepcionSemantica(super.getFila(),super.getCol(),"La expresion contiene tipos incompatibles","operador: "+this.oper+" y tipo: "+derT,false);
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoExpUn: opUnario exp
+        this.exp.checkTypes(ts);
+        // Verificar que exp sea "Bool" cuando el operador es "!"
+        if(op.equals("!")){
+            if(!this.exp.getNodeType().equals("Bool")){
+                throw new SemantErrorException(this.getLine(),this.getCol(),
+                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
+                        "expCompuesta1");
             }
-        }else{
-            if(oper.equals("-") && oper.equals("+") ){
-                if(derT.equals("Int")){
-                    return true;
-                }else{
-                    throw new ExcepcionSemantica(super.getFila(),super.getCol(),"La expresion contiene tipos incompatibles","operador: "+this.oper+" y tipo: "+derT,false);
+            // Setear el tipo correspondiente
+            this.setNodeType("Bool");
 
-                }
+        } else { // Verificar que exp sea "Int" en todos los demas casos ++ --
+            if(!this.exp.getNodeType().equals("Int")){
+                throw new SemantErrorException(this.getLine(),this.getCol(),
+                        "Incompatibilidad de tipos. No se puede realizar una operacion de \"" + op + "\" con un " + exp.getNodeType(),
+                        "expCompuesta1");
             }
+            // Setear el tipo correspondiente
+            this.setNodeType("Int");
         }
-        return false;
+
+        return true;
     }
-
-
-
-    @Override
-    public String getTipo(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        return this.der.getTipo(ts);
-    }
-
-    @Override
-    public String imprimeSentencia() {
-        return "\"nodo\": \"NodoExpresionUnaria\",\n"
-                + "\"operador\":\""+this.oper+"\",\n"
-                + "\"ladoDer\":{"+this.der.imprimeSentencia()+"\n}";
-    }
-
-     */
 }

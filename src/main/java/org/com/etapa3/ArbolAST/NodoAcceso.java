@@ -1,86 +1,84 @@
 package org.com.etapa3.ArbolAST;
 
-// Nodo para las asignaciones (expresion = expresion)
+import org.com.etapa3.SemantErrorException;
+import org.com.etapa3.TablaSimbolos;
+
+// Nodo para los Accesos (noodI.nodoD)
 public class NodoAcceso extends NodoLiteral {
 
-    private NodoLiteral izq;
-    private NodoLiteral der;
+    private NodoLiteral nodoI;
+    private NodoLiteral nodoD;
 
 
     // Constructores
-    public NodoAcceso(int line, int col, NodoLiteral izq, NodoLiteral der, String type){
+    public NodoAcceso(int line, int col, NodoLiteral nodoI, NodoLiteral nodoD, String type){
         super(line, col, type);
-        this.der = der;
-        this.izq = izq;
+        this.nodoD = nodoD;
+        this.nodoI = nodoI;
     }
 
+    // Functions
     @Override
     public String printSentencia(String space) {
         return space + "\"nodo\": \"Acceso\",\n"
-                + space + "\"nodoIzq\": {\n"+ this.izq.printSentencia(space+"\t") +"\n" + space +"},\n"
-                + space + "\"nodoDer\": {\n"+ this.der.printSentencia(space+"\t") +"\n" + space +"}";
-    }
-
-    /*
-
-
-
-    public NodoAsignacion(int filaTok,int colTok,NodoLiteral izqui,String tipo){
-        super(filaTok,colTok);
-        this.izq = izqui;
-        this.tipoAsig = tipo;
-    }
-
-    public void setDer(NodoLiteral der) {
-        this.der = der;
-    }
-
-    public void setIzq(NodoLiteral izq) {
-        this.izq = izq;
+                + space + "\"nodoIzq\": {\n"+ this.nodoI.printSentencia(space+"\t") +"\n" + space +"},\n"
+                + space + "\"nodoDer\": {\n"+ this.nodoD.printSentencia(space+"\t") +"\n" + space +"}";
     }
 
     @Override
-    public String getTipo(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        return this.izq.getTipo(ts);
-    }
-
-    public String getTipoAsig() {
-        return tipoAsig;
-    }
-
-    public NodoLiteral getIzq() {
-        return izq;
-    }
-
-    public NodoLiteral getDer() {
-        return der;
-    }
-
-
-
-    @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        //TODO verificar herencias y compatibilidades
-        //TODO if tipoAsig es != primitivo throw err
-        if(izq.getTipo(ts).equals(der.getTipo(ts)) || der.getTipo(ts).equals("nil")){
-            return true;
-        }else{
-
-            String comp = this.izq.getTipo(ts)+ " y "+this.der.getTipo(ts);
-            throw new ExcepcionSemantica(this.getFila(),this.getCol(),"La asignacion contiene tipos incompatibles",comp,false);
+    public boolean checkTypes(TablaSimbolos ts) {
+        // NodoAcceso: nodoI.nodoD
+        // Chequeo del nodoI
+        if (!this.getParent().isEmpty()) {
+            this.nodoI.setParent(this.getParent());
         }
+        this.nodoI.checkTypes(ts);
+        this.nodoD.setParent(nodoI.getNodeType());
+
+        // Verificar que el nodoI sea de tipo struct y que ese struct exista en la ts
+        if (ts.getTableStructs().containsKey(this.nodoI.getNodeType())) {
+            if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
+                // Verificar que el nodoD sea un atributo existente del struct
+                if (!(ts.getTableStructs().get(this.nodoI.getNodeType()).getAtributos().containsKey(nodoD.getName()))) {
+                    // Si el atributo no existe en el struct ERROR
+                    throw new SemantErrorException(this.nodoD.getLine(), this.nodoD.getCol(),
+                            "Acceso incorrecto. No se puede acceder al atributo \"" + this.nodoD.getName() +
+                                    "\" ya que no existe en el struct \"" + this.nodoI.getNodeType() + "\"",
+                            "NodoAcceso");
+                }
+                String type = ts.getTableStructs().get(this.nodoI.getNodeType()).getAtributos().get(nodoD.getName()).getType();
+                this.nodoD.setNodeType(type);
+            } else {
+                // Chequeo del nodoD
+                this.nodoD.checkTypes(ts);
+            }
+        } else if (this.nodoI.getNodeType().equals("IO") || this.nodoI.getNodeType().equals("Str")) {
+            if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
+                throw new SemantErrorException(this.nodoD.getLine(), this.nodoD.getCol(),
+                        "Acceso incorrecto. No se puede acceder al atributo ya que no existe en el struct \"" + this.nodoI.getNodeType() + "\"",
+                        "NodoAcceso");
+            } else {
+                // Chequeo del nodoD
+                this.nodoD.checkTypes(ts);
+            }
+        } else {
+            if (this.nodoI.getName() == null) { // cuando entras a funciones predefinidas que no tienen metodos ejemplo in_int
+                throw new SemantErrorException(this.nodoI.getLine(), this.nodoI.getCol(),
+                        "Acceso Incorrecto."+"\"" + this.nodoI.getNodeType() + "\" no es de tipo Struct por lo que no se puede usar usar para un acceso",
+                        "NodoAcceso");
+            }
+            throw new SemantErrorException(this.nodoI.getLine(), this.nodoI.getCol(),
+                    "\"" + this.nodoI.getName() + "\" no es de tipo Struct por lo que no se puede usar usar para un acceso",
+                    "NodoAcceso");
+        }
+
+
+        // Setear al NodoAcceso el tipo correspondiente
+        // El tipo de un acceso es el tipo de su nodo derecho porque:
+        // Ejemplo 1: a().b, se accede a algo del tipo del atributo b
+        // Ejemplo 2: a().b(), se accede a algo del tipo de retorno del metodo b
+        this.setNodeType(nodoD.getNodeType());
+
+        return true;
     }
-
-
-}
-
-
-    @Override
-    public String printSentencia(String space) {
-        return "\"nodo\": \"Acceso\",\n"
-                + space + "\"tipo\":\""+ this.getNodeType() +"\",\n"
-                + space + "\"NodoIzq\":{\n"+ this.izq.printSentencia(space+"\t")+"\n"+ space +"},\n"
-                + space + "\"NodoDer\":{\n"+ this.der.printSentencia(space+"\t")+ space +"\n" + space + "}\n";
-    }*/
-
 }

@@ -1,9 +1,11 @@
 package org.com.etapa3.ArbolAST;
 
+import org.com.etapa3.TablaSimbolos;
+
 import java.util.LinkedList;
 
 public class NodoElse extends NodoLiteral {
-    private LinkedList<NodoSentencia> sentencias;
+    private LinkedList<NodoLiteral> sentencias;
     private NodoIf nodoIf;
 
     // Constructor
@@ -13,8 +15,15 @@ public class NodoElse extends NodoLiteral {
         this.sentencias = new LinkedList<>();
     }
 
+    // Getters
+
+
+    public LinkedList<NodoLiteral> getSentencias() {
+        return sentencias;
+    }
+
     // Functions
-    public void insertSentencia(NodoSentencia sentencia) {
+    public void insertSentencia(NodoLiteral sentencia) {
         this.sentencias.add(sentencia);
     }
 
@@ -36,66 +45,17 @@ public class NodoElse extends NodoLiteral {
         return json;
     }
 
-    /*private NodoExpresion declaracion;
-    private LinkedList<NodoSentencia> loop;
-    private boolean scoped = false;
-
-    public NodoWhile(int filaTok,int colTok){
-        super(filaTok,colTok);
-        this.loop = new LinkedList<>();
-        this.scoped = false;
-    }
-
-    public void setDeclaracion(NodoExpresion declaracion) {
-        this.declaracion = declaracion;
-    }
-
-
-    public void addSentencia(NodoSentencia e){
-        this.loop.add(e);
-    }
-
-    //como es la verificacion del while? como saber cuando cortar? deberia verificarlo yo? o solo verificar que sea todo correcto?
-    // verificar condicion y loop si es correcto semanticamente.. es suficiente?
-
     @Override
-    public boolean verifica(TablaDeSimbolos ts) throws ExcepcionSemantica {
-        if(!this.declaracion.checkIsBoolean(ts)){
-            throw new ExcepcionSemantica(this.declaracion.getFila(),this.declaracion.getCol(),"No es una declaracion de tipo booleana",this.declaracion.getTipo(ts),false);
+    public boolean checkTypes(TablaSimbolos ts){
+        // NodoElse: else {sentencias}
+        // Chequeo de sentencias
+        if(!this.getSentencias().isEmpty()) {
+            for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del else
+                s.checkTypes(ts);
+            }
         }
-        this.loop.forEach((elem)  -> {
-            try{
-                elem.verifica(ts);
-            }catch(ExcepcionSemantica eS){}
-        });
+        this.setNodeType(null);
         return true;
     }
 
-    public void setScoped(boolean scoped) {
-        this.scoped = scoped;
-    }
-
-    public boolean isScoped() {
-        return scoped;
-    }
-
-    public LinkedList<NodoSentencia> getLoop() {
-        return loop;
-    }
-
-
-    @Override
-    public String imprimeSentencia() {
-        String json= "\"nodo\": \"NodoWhile\",\n"
-                + "\"declaracion\":{\n"+this.declaracion.imprimeSentencia()+"\n},\n"
-                + "\"Bloque\":[";
-        for (int i = 0; i < loop.size(); i++) {
-            json += "\n{"+ this.loop.get(i).imprimeSentencia() +"},";
-        }
-        json = json.substring(0,json.length()-1);
-        json += "]";
-
-
-        return json;
-    }*/
 }

@@ -24,11 +24,11 @@ public class AST {
     public NodoStruct getCurrentStruct() {
         return currentStruct;
     }
-    public NodoMetodo getCurrentMetodo() {
-        return currentMetodo;
-    }
     public Stack<Nodo> getProfundidad() {
         return profundidad;
+    }
+    public HashMap<String,NodoStruct> getStructs() {
+        return structs;
     }
 
 
@@ -44,14 +44,6 @@ public class AST {
     public void insertStruct(String name, NodoStruct nodo) {
         this.structs.put(name, nodo);
     }
-    public String checkTypes(Nodo nodo1 , Nodo nodo2){
-        String n1= nodo1.getNodeType();
-        String n2= nodo2.getNodeType();
-        if(n1.equals(n2)){
-            return (nodo1.getNodeType());
-        }
-        return null;
-    }
 
     public String printJSON_Arbol(String input){
         String json = "{\n";
@@ -59,7 +51,7 @@ public class AST {
         json += "\"structs\": [\n";
         for(Map.Entry<String, NodoStruct> entry : structs.entrySet()) {
             NodoStruct value = entry.getValue();
-            if(value.getName().equals("START")){
+            if(value.getName().equals("start")){
                 json +="{\n\t\"nombre\": \""+ value.getName() + "\",\n"+ value.printNodoStart()+"\n},\n";
             } else {
             json +="{\n\t\"nombreImpl\": \""+ value.getName() + "\",\n"+ value.printNodoStruct()+"\n},\n";
@@ -84,37 +76,6 @@ public class AST {
         }
     }
 
-    /*
-
-
-
-
-    public NodoAST popScope() {
-        return this.scope.pop();
-    }
-
-    public void pushScope(NodoAST scope) {
-        this.scope.push(scope);
-    }
-
-    public NodoAST peekScope(){
-        return this.scope.peek();
-    }
-
-    public Stack<NodoAST> getScope() {
-        return scope;
-    }
-
-
-
-
-    public boolean verifica(TablaDeSimbolos ts)throws ExcepcionSemantica{
-        for (int i = 0; i < scope.size(); i++) {
-            NodoClase nC = (NodoClase) scope.get(i);
-            nC.verifica(ts);
-        }
-        return true;
-    }*/
 
 }
 

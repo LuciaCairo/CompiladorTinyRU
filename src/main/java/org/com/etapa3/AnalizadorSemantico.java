@@ -1,5 +1,9 @@
 package org.com.etapa3;
 
+import org.com.etapa3.ArbolAST.AST;
+import org.com.etapa3.ArbolAST.NodoMetodo;
+import org.com.etapa3.ArbolAST.NodoLiteral;
+import org.com.etapa3.ArbolAST.NodoStruct;
 import org.com.etapa3.ClasesSemantico.*;
 
 
@@ -7,12 +11,14 @@ import java.util.*;
 
 public class AnalizadorSemantico {
     TablaSimbolos ts;
+    AST ast;
     HashSet<String> enProgreso = new HashSet<>();
     HashSet<String> visitados = new HashSet<>();
 
     // Constructor
-    public AnalizadorSemantico(TablaSimbolos ts){
+    public AnalizadorSemantico(TablaSimbolos ts, AST ast){
         this.ts = ts;
+        this.ast = ast;
     }
 
     // Funcion para el chequeo de Declaraciones
@@ -290,5 +296,70 @@ public class AnalizadorSemantico {
         }
 
         // Si pasó todas las verificaciones, no hay error
+    }
+
+    // Funcion para el chequeo de Sentencias
+    public void checkSent() {
+        // En esta funcion se recorren los nodos del AST y
+        // para cada uno de ellos se realiza un chequeo de sus tipos
+        // Recorro cada struct
+        for (Map.Entry<String, NodoStruct> entry : ast.getStructs().entrySet()) {
+            NodoStruct value = entry.getValue();
+            ast.setCurrentStruct(value);
+
+            // Primero verifico si el struct es start (ya que es un caso especial de struct)
+            if(value.getName().equals("start")){
+                // El start no tiene metodos
+                // start{ sentencias }
+                ts.setCurrentStruct(ts.getStruct(value.getName()));
+                // Recorro las sentencias del start
+                // Las sentencias pueden ser:
+                // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
+                if(!value.getSentencias().isEmpty()) {
+                    for (NodoLiteral s : value.getSentencias()) {
+                        if (s.getName() != null) {
+                            if (s.getName().equals("Retorno")) {
+                                throw new SemantErrorException(value.getLine(), value.getCol(),
+                                        "El struct de inicio de programa (\"start\") no debe tener retorno.",
+                                        "sentencia");
+                            }
+                        }
+
+                        // Para cada sentencia asigno y verifico sus tipos
+                        s.checkTypes(ts);
+
+                    }
+                }
+
+            } else { // Ahora para los demas structs que no son start
+
+                // Recorro todos los nodos metodos del struct
+                for (NodoMetodo m : value.getMetodos().values()) {
+                    ts.setCurrentStruct(ts.getStruct(value.getName()));
+                    ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
+
+                    // Recorro las sentencias del metodo
+                    // Las sentencias pueden ser:
+                    // (1)sentencia simple, (2)asignacion, (3)bloque, (4)if, (5)while o (6)retorno
+                    if(!m.getSentencias().isEmpty()){
+
+                        for (NodoLiteral s : m.getSentencias()) {
+
+                            // Para cada sentencia asigno y verifico sus tipos
+                            s.checkTypes(ts);
+
+                        }
+                    }
+                    if(!ts.getCurrentMetod().isHasRet()){
+                        if( !(ts.getStruct(value.getName()).getMetodos().get(m.getName()).getRet().equals("void"))){
+                            throw new SemantErrorException(m.getLine(), m.getCol(),
+                                    "Falta sentencia de retorno. El metodo esta delarado para retornar " +
+                                            ts.getStruct(value.getName()).getMetodos().get(m.getName()).getRet(),
+                                    "sentencia");
+                        }
+                    }
+                }
+            }
+        }
     }
 }
