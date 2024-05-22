@@ -116,6 +116,11 @@ public class NodoLiteral extends Nodo{
             throw new SemantErrorException(this.getLine(), this.getCol(),
                     "No se puede realizar un self en start", "encadenadoSimple");
         }
+        // No puede haber self en el metodo st
+        if(this.getName().equals("self") && ts.getCurrentMetod().getSt()){
+            throw new SemantErrorException(this.getLine(), this.getCol(),
+                    "No se puede realizar un self en un metodo estatico", "encadenadoSimple");
+        }
         return true;
     }
 }

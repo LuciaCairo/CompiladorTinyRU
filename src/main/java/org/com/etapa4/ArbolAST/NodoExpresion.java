@@ -89,6 +89,11 @@ public class NodoExpresion extends NodoLiteral {
                                 "sentencia");
                     }
                 } else {
+                    if(this.exp.getNodeType().equals("nil") && this.getNodeType().equals("void")){
+                        throw new SemantErrorException(this.getLine(), this.getCol(),
+                                "El retorno del metodo no puede ser \"nil\" porque en su firma esta declarado como void",
+                                "sentencia");
+                    }
                     // Setear el tipo correspondiente
                     this.setNodeType(exp.getNodeType());
                 }
