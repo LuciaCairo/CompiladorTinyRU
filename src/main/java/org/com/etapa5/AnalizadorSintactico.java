@@ -76,7 +76,7 @@ public class AnalizadorSintactico {
             //String json = ast.printJSON_Arbol(fileName);
             //ast.saveJSON(json, fileName + ".json");
             g.generateCode();
-            System.out.println("CORRECTO: SEMANTICO - SENTENCIAS\n");
+            System.out.println("CORRECTO GENERACION DE CODIGO\n");
 
         } catch (LexicalErrorException e) {
             System.out.println("ERROR: LEXICO\n| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |");

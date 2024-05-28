@@ -4,6 +4,7 @@ import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
 public class NodoLiteral extends Nodo{
+    private static int registerCounter = 0;
 
     public NodoLiteral(int line, int col){
         super(line, col);
@@ -123,4 +124,40 @@ public class NodoLiteral extends Nodo{
         }
         return true;
     }
+
+    // Método para generar el código MIPS para un nodo literal
+    public String generateNodeCode(){
+        String register = getNewRegister();
+        String code = "";
+        String value = this.getValue();
+
+        switch (this.getNodeType()) {
+            case "Int":
+                //System.out.println("li " + register + ", " + value);
+                break;
+            case "Char":
+                //System.out.println("li " + register + ", '" + value + "'");
+                break;
+            case "Bool":
+                int boolValue = value.equals("true") ? 1 : 0;
+                //System.out.println("li " + register + ", " + boolValue);
+                break;
+            case "Str":
+                // Manejo de strings puede ser más complejo, aquí un ejemplo simplificado
+                //System.out.println("la " + register + ", " + value);
+                break;
+            default:
+                // Falta caso de ID y IDSTRUCT
+                //System.out.println("tipo ID" + this.getName());
+
+        }
+
+        return code; // Retornar el código MIPS generado
+    }
+
+    // Método para obtener un nuevo registro
+    private String getNewRegister() {
+        return "$t" + (registerCounter++);
+    }
+
 }
