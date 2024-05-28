@@ -1,3 +1,4 @@
 start{
-    (IO.out_str("f_"));
+    Int a;
+    a = 1;
 }

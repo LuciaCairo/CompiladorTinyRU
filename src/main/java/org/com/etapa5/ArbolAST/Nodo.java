@@ -83,7 +83,7 @@ public class Nodo {
         return true;
     }
 
-    public String generateNodeCode(){
+    public String generateNodeCode(TablaSimbolos ts){
         // Esta funcion es diferente para cada nodo
         return "";
     }

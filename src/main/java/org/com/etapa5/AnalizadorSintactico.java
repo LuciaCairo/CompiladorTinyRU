@@ -1323,9 +1323,8 @@ public class AnalizadorSintactico {
         //int line = currentToken.getLine();
         //int col = currentToken.getCol();
         // Caso de expresion unaria
-        // currentToken.getLexema().equals("+") ||
-        //                currentToken.getLexema().equals("-") || ?? va o no
-        if (
+        if ( currentToken.getLexema().equals("+") ||
+                currentToken.getLexema().equals("-") ||
                 currentToken.getLexema().equals("!") ||
                 currentToken.getLexema().equals("++") ||
                 currentToken.getLexema().equals("--")){

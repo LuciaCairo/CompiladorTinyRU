@@ -104,11 +104,9 @@ public class NodoAsignacion extends NodoLiteral {
     }
 
     // Funcion para generar el codigo en MIPS de una asignacion
-    public String generateNodeCode(){
+    public String generateNodeCode(TablaSimbolos ts){
         // Esta funcion es diferente para cada nodo
-        this.nodoI.generateNodeCode();
-        this.nodoD.generateNodeCode();
-        return "";
+        return this.nodoD.generateNodeCode(ts) + this.nodoI.generateNodeCode(ts);
     }
 
 }

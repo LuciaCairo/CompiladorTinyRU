@@ -126,33 +126,28 @@ public class NodoLiteral extends Nodo{
     }
 
     // Método para generar el código MIPS para un nodo literal
-    public String generateNodeCode(){
+    public String generateNodeCode(TablaSimbolos ts){
         String register = getNewRegister();
-        String code = "";
         String value = this.getValue();
+        System.out.println("STARTeeeeeeeeeeeee");
 
-        switch (this.getNodeType()) {
-            case "Int":
-                //System.out.println("li " + register + ", " + value);
-                break;
+        switch (this.getName()) {
+            // falta caso nil // arreglas case
+            case "literal entero":
+                return "li " + register + ", " + value + "\n";
             case "Char":
-                //System.out.println("li " + register + ", '" + value + "'");
-                break;
+                return "li " + register + ", '" + value + "'\n";
             case "Bool":
-                int boolValue = value.equals("true") ? 1 : 0;
-                //System.out.println("li " + register + ", " + boolValue);
-                break;
+                int boolValue = (value.equals("true")) ? 1 : 0;
+                return "li " + register + ", " + boolValue + "\n";
             case "Str":
-                // Manejo de strings puede ser más complejo, aquí un ejemplo simplificado
-                //System.out.println("la " + register + ", " + value);
-                break;
+                // Manejo de strings puede ser más complejo, revisar casos
+                return "la " + register + ", " + value;
             default:
                 // Falta caso de ID y IDSTRUCT
-                //System.out.println("tipo ID" + this.getName());
+                return "sw $t0, a   # Almacenar el valor de $t0 en la variable a \n"; // ACA NO ES A SINO STRUCT_MET_A
 
         }
-
-        return code; // Retornar el código MIPS generado
     }
 
     // Método para obtener un nuevo registro

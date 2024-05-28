@@ -267,15 +267,15 @@ public class CodeGenerator {
 
             // Primero verifico si el struct es start (ya que es un caso especial de struct)
             if(value.getName().equals("start")){
+
                 // El start no tiene metodos start{ sentencias }
                 ts.setCurrentStruct(ts.getStruct(value.getName()));
 
                 // Recorro las sentencias del start
                 if(!value.getSentencias().isEmpty()) {
                     for (NodoLiteral s : value.getSentencias()) {
-
                         // Para cada sentencia genero codigo
-                        s.generateNodeCode();
+                        this.text += s.generateNodeCode(ts);
 
                     }
                 }
@@ -286,6 +286,7 @@ public class CodeGenerator {
                 for (NodoMetodo m : value.getMetodos().values()) {
                     ts.setCurrentStruct(ts.getStruct(value.getName()));
                     ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
+                    ast.setCurrentMetodo(m);
 
                     // Recorro las sentencias del metodo
                     if(!m.getSentencias().isEmpty()){
@@ -293,7 +294,7 @@ public class CodeGenerator {
                         for (NodoLiteral s : m.getSentencias()) {
 
                             // Para cada nodo genero codigo
-                            s.generateNodeCode();
+                            this.text += s.generateNodeCode(ts);
 
                         }
                     }
@@ -324,11 +325,10 @@ public class CodeGenerator {
         // Código MIPS para la función out_str
         // st fn out_str(Str s)->void: imprime el argumento
 
-        text += "IO_out_str: \n";
-        text += "# Asume que el argumento s está en $a0\n";
+        /*text += "IO_out_str: \n";
         text += "li $v0, 4  # Código de syscall para imprimir cadena\n";
         text += "syscall # Llamada al sistema para imprimir\n";
-        text += "jr $ra  # Retorno\n";
+        text += "jr $ra  # Retorno\n";*/
 
     }
 
