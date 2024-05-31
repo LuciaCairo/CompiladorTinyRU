@@ -129,30 +129,64 @@ public class NodoLiteral extends Nodo{
     public String generateNodeCode(TablaSimbolos ts){
         String register = getNewRegister();
         String value = this.getValue();
-        System.out.println("STARTeeeeeeeeeeeee");
 
         switch (this.getName()) {
-            // falta caso nil // arreglas case
+            case "nil":
+                return "li " + register + ", 0\n";
             case "literal entero":
                 return "li " + register + ", " + value + "\n";
-            case "Char":
-                return "li " + register + ", '" + value + "'\n";
-            case "Bool":
+            case "literal char":
+                return "li " + register + "," + value + "\n";
+            case "literal bool":
                 int boolValue = (value.equals("true")) ? 1 : 0;
                 return "li " + register + ", " + boolValue + "\n";
-            case "Str":
+            case "literal str":
+                //int pos = ts.getLastString();
+                // ts.putLabel("string_"+pos+":", ".asciiz "+this.valor);
+                // return "\tla $t1, string_"+pos+"\n";
+                //return "\tla $t1, "+valor.toString().replace("\"", "'") +"\n";
                 // Manejo de strings puede ser más complejo, revisar casos
                 return "la " + register + ", " + value;
             default:
+                if(ts.getCurrentStruct().getName().equals("start")){
+                    int numVar = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4 * (-1);
+                    return "sw " + register + ", " + numVar + "($fp)\n";
+
+                } else{
+
+                }
+                /* if(ts.getMetodoActual().getVariablesMet().containsKey(this.nombre)){
+                //var de metodo
+                int pos = (ts.getMetodoActual().getVariablesMet().get(this.nombre).getPosicion() + 1 )*4 + ts.getMetodoActual().getTamañoParam() ;
+                return "\tla $t1, "+pos+"($fp)\n";
+                }else{
+                    if(ts.getClaseActual().getVariablesInst().containsKey(this.nombre)){
+                        //var de clase
+                        return "\tla $t1, var_"+this.getNombre()+"_"+ts.getClaseActual().getNombre()+"\n";
+                    }else{
+                        if(ts.getMetodoActual().getConstanteMet().containsKey(this.nombre)){
+                            int pos = (ts.getMetodoActual().getConstanteMet().get(this.nombre).getPosicion() + 1 )*4 + ts.getMetodoActual().getTamañoParam() ;
+                            return "\tla $t1, "+pos+"($fp)\n";
+                        }else{
+                            if(ts.getMetodoActual().getParByName(nombre) != null){
+                                int pos = (ts.getMetodoActual().getParByName(nombre).getPosicion() + 1 )*4;
+                                return "\tla $t1, "+pos+"($fp)\n";
+                            }
+                            System.out.println("Paso por aqui");//parametros
+                        }
+                    }
+            }
+            return "A IMPLEMENTAR \n";
+        }*/
                 // Falta caso de ID y IDSTRUCT
-                return "sw $t0, a   # Almacenar el valor de $t0 en la variable a \n"; // ACA NO ES A SINO STRUCT_MET_A
+                return "sw" + register +  ",start_a   # Almacenar el valor de $t0 en la variable a \n"; // ACA NO ES A SINO STRUCT_MET_A
 
         }
     }
 
     // Método para obtener un nuevo registro
     private String getNewRegister() {
-        return "$t" + (registerCounter++);
+        return "$t0"; //+ (registerCounter++);
     }
 
 }

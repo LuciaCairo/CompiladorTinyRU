@@ -1,4 +1,6 @@
 start{
     Int a;
-    a = 1;
+    Int b;
+    a = 8;
+    b = 10 + a;
 }

@@ -48,10 +48,10 @@ public class CodeGenerator {
             code += d.getValue() + "\n";
         }
 
-        code += "\n.text\n";
+        code += ".text\n";
         code += this.text;
 
-        code +="li $v0, 10\n syscall";
+        code +="li $v0, 10\nsyscall";
         System.out.println(code);
     }
 
@@ -267,6 +267,10 @@ public class CodeGenerator {
 
             // Primero verifico si el struct es start (ya que es un caso especial de struct)
             if(value.getName().equals("start")){
+                int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4 * (-1);
+                this.text += "addi $sp, $sp," + numVar +
+                        "\nsw $fp, " + ((numVar + 4) * -1) + "($sp)" +
+                        "\nmove $fp, $sp\n";
 
                 // El start no tiene metodos start{ sentencias }
                 ts.setCurrentStruct(ts.getStruct(value.getName()));

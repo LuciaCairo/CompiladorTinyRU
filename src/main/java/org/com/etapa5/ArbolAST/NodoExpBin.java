@@ -67,8 +67,13 @@ public class NodoExpBin extends NodoLiteral {
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts){
         // Esta funcion es diferente para cada nodo
-        this.nodoI.generateNodeCode(ts);
-        this.nodoD.generateNodeCode(ts);
-        return "";
+        String textI = this.nodoI.generateNodeCode(ts);
+        String textD = "";
+        String op = this.op.equals("+")? "add" : "";
+        if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral") &&
+                !this.nodoD.getName().split(" ")[0].equals("literal")) {
+            textD = "lw $t2, 0($fp)\n" + op +" $t3,$t1,$t2\n";
+        }
+        return textI + textD;
     }
 }
