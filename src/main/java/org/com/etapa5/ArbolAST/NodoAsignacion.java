@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -104,10 +105,28 @@ public class NodoAsignacion extends NodoLiteral {
     }
 
     // Funcion para generar el codigo en MIPS de una asignacion
-    public String generateNodeCode(TablaSimbolos ts){
-        String textI = this.nodoI.generateNodeCode(ts);
-        String textD = this.nodoD.generateNodeCode(ts);
-        return textD + textI + "la $t1, 0($fp)\nla $t1, -4($fp)\n";
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para evaluar el nodo derecho (nodoD)
+        code.append(this.nodoD.generateNodeCode(ts));
+        int rightReg = CodeGenerator.registerCounter - 1;
+
+        // Generar código para evaluar el nodo izquierdo (nodoI)
+        // Este código debe obtener la dirección de la variable en memoria
+        if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
+            int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
+            code.append("sw $t" + CodeGenerator.getBefRegister()+ ", " + offset + "($fp)\n");
+        } else{
+            code.append(this.nodoI.generateNodeCode(ts));
+            int leftReg = CodeGenerator.registerCounter - 1;
+        }
+
+
+        // Generar código para almacenar el resultado de nodoD en la dirección de nodoI
+        //code.append("lw $t").append(rightReg).append(", 0($fp)\n");
+
+        return code.toString();
     }
 
 }

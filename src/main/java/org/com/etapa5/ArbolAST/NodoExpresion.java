@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 import org.com.etapa5.Exceptions.SemantErrorException;
 
@@ -106,8 +107,19 @@ public class NodoExpresion extends NodoLiteral {
     }
 
     // Funcion para generar el codigo en MIPS de una asignacion
-    public String generateNodeCode(TablaSimbolos ts){
-        // Esta funcion es diferente para cada nodo
-        return this.exp.generateNodeCode(ts);
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para la expresión
+        code.append(this.exp.generateNodeCode(ts));
+        int expRegister = CodeGenerator.registerCounter - 1;
+
+        // Si es una expresión de retorno, mover el resultado al registro $v0 (que se usa para valores de retorno en MIPS)
+        if (this.getName().equals("Retorno")) {
+            code.append("move $v0, $t").append(expRegister).append("\n");
+        }
+
+        return code.toString();
     }
 }

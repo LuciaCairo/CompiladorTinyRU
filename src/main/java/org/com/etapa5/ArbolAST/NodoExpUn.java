@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -53,5 +54,38 @@ public class NodoExpUn extends NodoLiteral {
         }
 
         return true;
+    }
+
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para la expresión
+        code.append(this.exp.generateNodeCode(ts));
+
+        // Obtener el registro utilizado por la expresión
+        int exprRegister = CodeGenerator.registerCounter - 1;
+
+        switch (op) {
+            case "!": // Negación lógica
+                int resultRegister = CodeGenerator.getNextRegister();
+                code.append("li $t").append(resultRegister).append(", 1\n");
+                code.append("xor $t").append(resultRegister).append(", $t").append(exprRegister).append(", $t").append(resultRegister).append("\n");
+                break;
+            case "++": // Incremento
+                code.append("addi $t").append(exprRegister).append(", $t").append(exprRegister).append(", 1\n");
+                break;
+            case "--": // Decremento
+                code.append("addi $t").append(exprRegister).append(", $t").append(exprRegister).append(", -1\n");
+                break;
+            case "+": // Operador unario +
+                // En MIPS, +x es simplemente x, así que no se necesita generar código adicional.
+                break;
+            case "-": // Operador unario -
+                code.append("neg $t").append(exprRegister).append(", $t").append(exprRegister).append("\n");
+                break;
+        }
+        CodeGenerator.getNextRegister();
+        return code.toString();
     }
 }

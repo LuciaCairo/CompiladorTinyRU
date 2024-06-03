@@ -1,10 +1,10 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
 public class NodoLiteral extends Nodo{
-    private static int registerCounter = 0;
 
     public NodoLiteral(int line, int col){
         super(line, col);
@@ -126,67 +126,32 @@ public class NodoLiteral extends Nodo{
     }
 
     // Método para generar el código MIPS para un nodo literal
-    public String generateNodeCode(TablaSimbolos ts){
-        String register = getNewRegister();
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        String code = "";
         String value = this.getValue();
-
-        switch (this.getName()) {
-            case "nil":
-                return "li " + register + ", 0\n";
-            case "literal entero":
-                return "li " + register + ", " + value + "\n";
-            case "literal char":
-                return "li " + register + "," + value + "\n";
-            case "literal bool":
-                int boolValue = (value.equals("true")) ? 1 : 0;
-                return "li " + register + ", " + boolValue + "\n";
-            case "literal str":
-                //int pos = ts.getLastString();
-                // ts.putLabel("string_"+pos+":", ".asciiz "+this.valor);
-                // return "\tla $t1, string_"+pos+"\n";
-                //return "\tla $t1, "+valor.toString().replace("\"", "'") +"\n";
-                // Manejo de strings puede ser más complejo, revisar casos
-                return "la " + register + ", " + value;
-            default:
-                if(ts.getCurrentStruct().getName().equals("start")){
-                    int numVar = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4 * (-1);
-                    return "sw " + register + ", " + numVar + "($fp)\n";
-
-                } else{
-
-                }
-                /* if(ts.getMetodoActual().getVariablesMet().containsKey(this.nombre)){
-                //var de metodo
-                int pos = (ts.getMetodoActual().getVariablesMet().get(this.nombre).getPosicion() + 1 )*4 + ts.getMetodoActual().getTamañoParam() ;
-                return "\tla $t1, "+pos+"($fp)\n";
-                }else{
-                    if(ts.getClaseActual().getVariablesInst().containsKey(this.nombre)){
-                        //var de clase
-                        return "\tla $t1, var_"+this.getNombre()+"_"+ts.getClaseActual().getNombre()+"\n";
-                    }else{
-                        if(ts.getMetodoActual().getConstanteMet().containsKey(this.nombre)){
-                            int pos = (ts.getMetodoActual().getConstanteMet().get(this.nombre).getPosicion() + 1 )*4 + ts.getMetodoActual().getTamañoParam() ;
-                            return "\tla $t1, "+pos+"($fp)\n";
-                        }else{
-                            if(ts.getMetodoActual().getParByName(nombre) != null){
-                                int pos = (ts.getMetodoActual().getParByName(nombre).getPosicion() + 1 )*4;
-                                return "\tla $t1, "+pos+"($fp)\n";
-                            }
-                            System.out.println("Paso por aqui");//parametros
-                        }
-                    }
-            }
-            return "A IMPLEMENTAR \n";
-        }*/
-                // Falta caso de ID y IDSTRUCT
-                return "sw" + register +  ",start_a   # Almacenar el valor de $t0 en la variable a \n"; // ACA NO ES A SINO STRUCT_MET_A
-
+        String n = this.getName();
+        if (n.equals("literal entero")) {
+            code = "li $t" + CodeGenerator.registerCounter + ", " + value + "\n";
+        } else if (n.equals("literal str")) {
+            // Los literales de cadena pueden necesitar una etiqueta en la sección .data
+            String label = "str" + CodeGenerator.registerCounter;
+            code = ".data\n" + label + ": .asciiz \"" + value + "\"\n";
+            code += ".text\nla $t" + CodeGenerator.registerCounter+ ", " + label + "\n";
+        } else if (n.equals("literal char")) {
+            int charValue = (int) value.charAt(0); // Obtiene el valor ASCII del caracter
+            code = "li $t" + CodeGenerator.registerCounter + ", " + charValue + "\n";
+        } else if (n.equals("literal bool")) {
+            int boolValue = value.equals("true") ? 1 : 0;
+            code = "li $t" + CodeGenerator.registerCounter + ", " + boolValue + "\n";
+        } else if (n.equals("nil")) {
+            code = "li $t" + CodeGenerator.registerCounter + ", 0\n";
+        } else {
+            int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
+            code = "lw $t" + CodeGenerator.registerCounter+ ", " + offset + "($fp)\n";
         }
-    }
-
-    // Método para obtener un nuevo registro
-    private String getNewRegister() {
-        return "$t0"; //+ (registerCounter++);
+        CodeGenerator.getNextRegister();
+        return code;
     }
 
 }

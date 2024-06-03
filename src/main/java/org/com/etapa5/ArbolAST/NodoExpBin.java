@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -65,15 +66,60 @@ public class NodoExpBin extends NodoLiteral {
     }
 
     // Funcion para generar el codigo en MIPS de una asignacion
-    public String generateNodeCode(TablaSimbolos ts){
-        // Esta funcion es diferente para cada nodo
-        String textI = this.nodoI.generateNodeCode(ts);
-        String textD = "";
-        String op = this.op.equals("+")? "add" : "";
-        if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral") &&
-                !this.nodoD.getName().split(" ")[0].equals("literal")) {
-            textD = "lw $t2, 0($fp)\n" + op +" $t3,$t1,$t2\n";
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para el nodo izquierdo
+        code.append(this.nodoI.generateNodeCode(ts));
+        int leftRegister = CodeGenerator.registerCounter - 1;
+
+        // Generar código para el nodo derecho
+        code.append(this.nodoD.generateNodeCode(ts));
+        int rightRegister = CodeGenerator.registerCounter - 1;
+
+        int resultRegister = CodeGenerator.getNextRegister();
+
+        switch (op) {
+            case "+":
+                code.append("add $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "-":
+                code.append("sub $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "*":
+                code.append("mul $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "/":
+                code.append("div $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "||":
+                code.append("or $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "&&":
+                code.append("and $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "==":
+                code.append("seq $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "!=":
+                code.append("sne $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "<":
+                code.append("slt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case ">":
+                code.append("sgt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case "<=":
+                code.append("sle $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            case ">=":
+                code.append("sge $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                break;
+            default:
+                System.out.println("SE ESCAPO UN CASO NODOEXPBIN " + op);
         }
-        return textI + textD;
+        return code.toString();
     }
 }

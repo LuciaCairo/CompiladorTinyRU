@@ -16,7 +16,7 @@ public class CodeGenerator {
     private List<AbstractMap.SimpleEntry<String, String>> data = new ArrayList<>();
     private String text = "";
     String code = "";
-
+    public static int registerCounter = 0;
 
     // Constructor
     public CodeGenerator(TablaSimbolos ts, AST ast){
@@ -69,7 +69,7 @@ public class CodeGenerator {
             // Entonces solo recorro los metodos del struct
             for (EntradaMetodo m : struct.getMetodos().values()) {
                 //this.data.put(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName());
-                this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
+                //this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
 
                 // Recorro los parametros del metodo
                 for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
@@ -280,9 +280,12 @@ public class CodeGenerator {
                     for (NodoLiteral s : value.getSentencias()) {
                         // Para cada sentencia genero codigo
                         this.text += s.generateNodeCode(ts);
-
                     }
                 }
+
+                this.text += "move $sp, $fp" +
+                        "\nlw $fp, " + ((numVar + 4) * -1) + "($sp)" +
+                        "\naddi $sp, $sp," + numVar + "\n";
 
             } else { // Ahora para los demas structs que no son start
 
@@ -334,6 +337,24 @@ public class CodeGenerator {
         text += "syscall # Llamada al sistema para imprimir\n";
         text += "jr $ra  # Retorno\n";*/
 
+    }
+
+
+    public static int getNextRegister() {
+        if(registerCounter == 9){
+            resetRegisterCounter();
+            return registerCounter;
+        } else {
+            return registerCounter++;
+        }
+    }
+
+    public static int getBefRegister() {
+        return registerCounter - 1;
+    }
+
+    public static void resetRegisterCounter() {
+        registerCounter = 0;
     }
 
 }
