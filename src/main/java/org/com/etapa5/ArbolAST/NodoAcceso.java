@@ -88,7 +88,13 @@ public class NodoAcceso extends NodoLiteral {
         StringBuilder code = new StringBuilder();
 
         // Generar código para evaluar el nodo izquierdo (nodoI)
-        code.append(this.nodoI.generateNodeCode(ts));
+        if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
+            code.append(this.nodoD.generateNodeCode(ts));
+            return code.toString();
+        }
+
+        // ++++++++++++++++++++++++++++++
+        code.append(this.nodoI.generateNodeCode(ts)); // x
         int leftReg = CodeGenerator.registerCounter - 1;
 
         // Obtener la dirección base del nodo izquierdo

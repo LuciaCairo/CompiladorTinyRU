@@ -112,7 +112,6 @@ public class NodoAsignacion extends NodoLiteral {
             if(this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){
                 CodeGenerator.lit = nodoI.getName();
                 code.append(this.nodoD.generateNodeCode(ts));
-                code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n");
             } else {
                 CodeGenerator.lit = nodoI.getName();
                 code.append(this.nodoD.generateNodeCode(ts));
