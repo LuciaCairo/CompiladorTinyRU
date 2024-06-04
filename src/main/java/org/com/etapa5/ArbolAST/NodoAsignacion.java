@@ -108,16 +108,19 @@ public class NodoAsignacion extends NodoLiteral {
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
 
-        // Generar código para evaluar el nodo derecho (nodoD)
-        code.append(this.nodoD.generateNodeCode(ts));
-        int rightReg = CodeGenerator.registerCounter - 1;
-
-        // Generar código para evaluar el nodo izquierdo (nodoI)
-        // Este código debe obtener la dirección de la variable en memoria
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
-            int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
-            code.append("sw $t" + CodeGenerator.getBefRegister()+ ", " + offset + "($fp)\n");
+            if(this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){
+                CodeGenerator.lit = nodoI.getName();
+                code.append(this.nodoD.generateNodeCode(ts));
+                code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n");
+            } else {
+                CodeGenerator.lit = nodoI.getName();
+                code.append(this.nodoD.generateNodeCode(ts));
+                int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
+                code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($fp)\n");
+            }
         } else{
+            code.append(this.nodoD.generateNodeCode(ts));
             code.append(this.nodoI.generateNodeCode(ts));
             int leftReg = CodeGenerator.registerCounter - 1;
         }

@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.TablaDeSimbolos.EntradaParametro;
 import org.com.etapa5.TablaDeSimbolos.EntradaStruct;
 import org.com.etapa5.TablaDeSimbolos.EntradaStructPredef;
@@ -399,6 +400,50 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         }
 
         return true;
+    }
+
+    // Funcion para generar el codigo en MIPS de una asignacion
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+        if(metodo.equals("constructor")){
+            code.append("la $a0, " + CodeGenerator.generateLabel(ts,CodeGenerator.lit) + "\n");
+            code.append("jal, " + this.getNodeType() + "_constructor\n");
+            // la $a0, nombre de la variable
+            // jal struct_constructor
+        }
+
+        /*String asm = "\tsw $fp, 0($sp)\n\taddiu $sp, $sp, -4\n";
+        if (this.isMetodo()) {
+            for (int i = 0; i < args.size(); i++) {
+                NodoExpresion argAux = args.get(i);
+                int size = argAux.getTipoImpreso().equals("String") ? 32 : 4;
+                //int pos = (i + 1 )* size;
+                asm += argAux.getCodigo(ts);
+                if (!argAux.getNombre().equals("literal")) {
+                    asm += "\tlw $t1, 0($t1)\n";
+                }
+//                asm +="\tsw $t1, 0($sp)\n\taddiu $sp, $sp, -"+size+"\n";
+                asm += "\tsw $t1, 0($sp)\n\taddiu $sp, $sp, -4" + "\n";
+            }
+        }
+        if (this.clasePadre != null) {
+//            asm +="\tla $a0, ($t1)\n\tjal "+this.clasePadre+"_"+nombre+"\n"; //funciona con mas de un param??
+            if (this.nombre.equals("constructor")) {
+                asm += "\tla $a0, " + this.clasePadre + "_temp\n";
+            }
+            asm += "\tjal " + this.clasePadre + "_" + nombre + "\n"; //funciona con mas de un param??
+        } else {
+            if (this.padre.getNombre().equals("self")) {
+                if (!this.isMetodo()) {
+                    return "\tla $t1, var_" + this.getNombre() + "_" + ts.getClaseActual().getNombre() + "\n";
+                }
+            } else {
+//                asm +="\tla $a0, ($t1)\n\tjal "+this.padre.getTipoImpreso()+"_"+nombre+"\n";
+                asm += "\tjal " + this.padre.getTipoImpreso() + "_" + nombre + "\n";
+            }
+        }*/
+
+        return code.toString();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 import java.util.LinkedList;
 
@@ -48,5 +49,17 @@ public class NodoBloque extends NodoLiteral{
         }
         this.setNodeType(null);
         return true;
+    }
+
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        if(!this.getSentencias().isEmpty()) {
+            for (NodoLiteral s : this.getSentencias()) { // Recorro las sentencias del bloque
+                code.append(s.generateNodeCode(ts));
+            }
+        }
+
+        return code.toString();
     }
 }

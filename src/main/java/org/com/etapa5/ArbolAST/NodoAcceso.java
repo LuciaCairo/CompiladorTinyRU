@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -83,10 +84,30 @@ public class NodoAcceso extends NodoLiteral {
     }
 
     // Funcion para generar el codigo en MIPS de una asignacion
-    public String generateNodeCode(TablaSimbolos ts){
-        // Esta funcion es diferente para cada nodo
-        String nI = this.nodoI.generateNodeCode(ts);
-        String nD = this.nodoD.generateNodeCode(ts);
-        return "";
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para evaluar el nodo izquierdo (nodoI)
+        code.append(this.nodoI.generateNodeCode(ts));
+        int leftReg = CodeGenerator.registerCounter - 1;
+
+        // Obtener la dirección base del nodo izquierdo
+        String structType = this.nodoI.getNodeType();
+        //int attributeOffset = ts.getTableStructs().get(structType).getAttributeOffset(this.nodoD.getName());
+        int attributeOffset =  ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4; // revisar
+        // Generar código para acceder al atributo/método del nodo derecho (nodoD)
+        // Cargar la dirección del atributo en un nuevo registro
+        code.append("addi $t").append(leftReg).append(", $t").append(leftReg).append(", ").append(attributeOffset).append("\n");
+
+        // Si es un atributo, cargar el valor en un registro
+        if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
+            int newReg = CodeGenerator.getNextRegister();
+            code.append("lw $t").append(newReg).append(", 0($t").append(leftReg).append(")\n");
+        } else {
+            // Si es un método, generar el código correspondiente
+            code.append(this.nodoD.generateNodeCode(ts));
+        }
+
+        return code.toString();
     }
 }

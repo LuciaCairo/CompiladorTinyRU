@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -70,6 +71,41 @@ public class NodoIf extends NodoLiteral {
         // Setear el tipo correspondiente una vez que se chequeo
         this.setNodeType(null);
         return true;
+    }
+
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para la expresión de la condición (exp)
+        code.append(this.exp.generateNodeCode(ts));
+        int condReg = CodeGenerator.registerCounter - 1;
+
+        // Generar etiquetas únicas para las secciones del if y else
+        String labelElse = "else";
+        String labelEndIf = "endif";
+
+        // Generar código para la evaluación de la condición y el salto a la sección else si es falso
+        code.append("beq $t").append(condReg).append(", $zero, ").append(labelElse).append("\n");
+
+        // Generar código para las sentencias del if
+        for (NodoLiteral sentencia : this.sentencias) {
+            code.append(sentencia.generateNodeCode(ts));
+        }
+
+        // Generar salto al final del if después de ejecutar las sentencias del if
+        code.append("j ").append(labelEndIf).append("\n");
+
+        // Generar la etiqueta y el código para las sentencias del else
+        code.append(labelElse).append(":\n");
+        if (this.nodoElse != null) {
+            code.append(this.nodoElse.generateNodeCode(ts));
+        }
+
+        // Generar la etiqueta para el final del if
+        code.append(labelEndIf).append(":\n");
+
+        return code.toString();
     }
 
 }

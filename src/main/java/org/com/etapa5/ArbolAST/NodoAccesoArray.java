@@ -1,5 +1,6 @@
 package org.com.etapa5.ArbolAST;
 
+import org.com.etapa5.CodeGenerator;
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
 
@@ -60,5 +61,29 @@ public class NodoAccesoArray extends NodoLiteral {
                             "\" No es de tipo Array.", "NodoAcceso");
         }
         return true;
+    }
+
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar código para evaluar el nodo que representa el arreglo (nodo)
+        code.append(this.nodo.generateNodeCode(ts));
+        int arrayReg = CodeGenerator.registerCounter - 1;
+
+        // Generar código para evaluar la expresión que representa el índice (exp)
+        code.append(this.exp.generateNodeCode(ts));
+        int indexReg = CodeGenerator.registerCounter - 1;
+
+        // Calcular la dirección del elemento del array
+        // Asumimos que cada elemento del array es de 4 bytes (tamaño de una palabra en MIPS)
+        int elementSize = 4; // Tamaño en bytes de cada elemento del array
+        code.append("mul $t").append(indexReg).append(", $t").append(indexReg).append(", ").append(elementSize).append("\n");
+        code.append("add $t").append(arrayReg).append(", $t").append(arrayReg).append(", $t").append(indexReg).append("\n");
+
+        // Cargar el valor del elemento del array en un nuevo registro
+        int newReg = CodeGenerator.getNextRegister();
+        code.append("lw $t").append(newReg).append(", 0($t").append(arrayReg).append(")\n");
+
+        return code.toString();
     }
 }
