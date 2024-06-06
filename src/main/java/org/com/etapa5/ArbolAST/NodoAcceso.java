@@ -87,9 +87,23 @@ public class NodoAcceso extends NodoLiteral {
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
 
-        // Generar código para evaluar el nodo izquierdo (nodoI)
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
-            code.append(this.nodoD.generateNodeCode(ts));
+            // El nodo izquierdo es un struct, entonces yo quiero acceder a su instancia
+            int posInst;
+            if(ts.getCurrentStruct().getName().equals("start")) {
+                posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4;
+            } else {
+                posInst = 0;
+            }
+            code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posInst+"($sp)\n");
+            // va a funcionar porque se instancio en orden pero si movemos el orden ya no
+
+            if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
+                // El nodo derecho es un atributo
+                int reg = CodeGenerator.getBefRegister();
+                int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4;
+                code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posAtr+" ($t"+ reg + ")\n");
+            }
             return code.toString();
         }
 

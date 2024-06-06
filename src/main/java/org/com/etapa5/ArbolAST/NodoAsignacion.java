@@ -108,25 +108,56 @@ public class NodoAsignacion extends NodoLiteral {
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
 
+        // CASO DE NODO LITERAL (n = ...)
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             if(this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){
-                CodeGenerator.lit = nodoI.getName();
                 code.append(this.nodoD.generateNodeCode(ts));
+
             } else {
-                CodeGenerator.lit = nodoI.getName();
                 code.append(this.nodoD.generateNodeCode(ts));
-                int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
-                code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($fp)\n");
+
+                // Ahora vemos si estamos en el constructor
+                if(ts.getCurrentMetod().getName().equals("constructor")){
+
+                    // Voy a ver si lo que quiero asignar es una variable
+                    if(ts.getCurrentMetod().getVariables().containsKey(this.nodoI.getName())){
+                        // Ver caso de que quiera asignar una variable
+                        // Ejemplo a = 1 (que a sea variable del metodo )
+
+
+                    } // Si no, voy a ver si lo que quiero asignarr es un parametro
+                    else if(ts.getCurrentMetod().getParametros().containsKey(this.nodoI.getName())) {
+                        // Ver caso de que quiera asignar un parametro
+                        // Ejemplo a = 1 (que a sea parametro del metodo )
+
+                    } // Si no, voy a ver si lo que quiero modificar es un atributo
+                    else if(ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())){
+                        int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4;
+                        code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t0)\n");
+                    }
+
+                } else {
+                    code.append(this.nodoD.generateNodeCode(ts));
+                    int regD = CodeGenerator.getBefRegister();
+                    // aca deberia guardar lo del lado derecho en lo de lado izquierdo
+                    // si es una variable en la pila por ejemplo
+                    code.append("sw $t" + regD + ", $t" + CodeGenerator.getNextRegister() + "\n");
+                }
             }
-        } else{
+
+        } // CASO DE NODO Acceso (self.n = ... o struct.n = ...)
+        else if(this.nodoI.getClass().getSimpleName().equals("NodoAcceso")){
             code.append(this.nodoD.generateNodeCode(ts));
-            code.append(this.nodoI.generateNodeCode(ts));
-            int leftReg = CodeGenerator.registerCounter - 1;
+            int regD = CodeGenerator.getBefRegister();
+
+            code.append(this.nodoD.generateNodeCode(ts));
+            int regI = CodeGenerator.getBefRegister();
+
+            code.append("sw $t" + regD + ", " + regI + "\n");
+            code.append("sw $t" + regI + ", 0($t0)\n");
+            // COMO CARGO ??
+
         }
-
-
-        // Generar código para almacenar el resultado de nodoD en la dirección de nodoI
-        //code.append("lw $t").append(rightReg).append(", 0($fp)\n");
 
         return code.toString();
     }

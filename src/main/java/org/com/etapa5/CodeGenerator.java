@@ -151,30 +151,25 @@ public class CodeGenerator {
         ts.setCurrentStruct(ts.getStruct(value.getName()));
 
         this.text += "main:\n";
-        //int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4 * (-1);
-        //this.text += "addi $sp, $sp," + numVar +
-        //        "\nsw $fp, " + ((numVar + 4) * -1) + "($sp)" +
-        //        "\nmove $fp, $sp\n";
+        int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4 * (-1);
+        this.text += "addi $sp, $sp," + numVar + "# Reservo espacio en la pila\n" +
+                "la $ra, end_program #Carga en $ra el puntero al espacio de fin de programa\n" +
+                "sw $ra, 0($sp)" + // Es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
+                " # Guardar la dirección de retorno en la pila (end_program)\n";
 
-
-
-        //reservo memoria para el start, calculo la cantidad contando las declaraciones y sumando 4
-        // luego agrego la $ra,end_program para cargar el puntero a la direccion de fin de programa
-        this.text += "addi $sp, $sp,"+(((ts.getCurrentStruct().getVariables().size())+1)*4)*-1+"#reservo espacio en la pila"
-                    +"la $ra,end_program #carga en $ra el puntero al espacio de fin de programa"+
-                    "sw $ra, 0($sp)  # Guardar la dirección de retorno en la pila (end_program)"; //es es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
         // Recorro las sentencias de start
         if (!value.getSentencias().isEmpty()) {
             for (NodoLiteral s : value.getSentencias()) {
                 // Para cada sentencia genero codigo
                 this.text += s.generateNodeCode(ts);
             }
-            this.text +="li $v0, 10\nsyscall\n";
+            //this.text +="li $v0, 10\nsyscall\n"; // CIERRE
         }
 
-        /*this.text += "move $sp, $fp" +
-                "\nlw $fp, " + ((numVar + 4) * -1) + "($sp)" +
-                "\naddi $sp, $sp," + numVar + "\n";*/
+        this.text += "# Restaurar la pila y salir\n" +
+                "lw $ra, 8($sp)       # Restaurar la dirección de retorno\n" +
+                "addi $sp, $sp, 8    # Limpiar el espacio usado en la pila\n" +
+                "jr $ra";
 
 
         // Recorro cada struct
@@ -188,7 +183,7 @@ public class CodeGenerator {
                 for (NodoMetodo m : value.getMetodos().values()) {
                     ts.setCurrentStruct(ts.getStruct(value.getName()));
                     ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
-                    int sizeAtr = ts.getCurrentStruct().getAtributos().size() * 4;
+                    int sizeAtr = (ts.getCurrentStruct().getAtributos().size() * 4 ) + 4;
 
                     if(m.getName().equals("constructor")) {
                         int reg = CodeGenerator.getNextRegister();
@@ -197,8 +192,9 @@ public class CodeGenerator {
                                 + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
                                 //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
-                                + "\tmove $t0" /*+ reg*/ + "$v0 # Guardamos la dirección de la memoria reservada\n";
+                                + "\tmove $t" + reg + ",$v0 # Guardamos la dirección de la memoria reservada\n";
                         int offset = 0;
+                        this.text += "# Primero inicializamos todo por defecto\n";
                         for (EntradaAtributo a : ts.getCurrentStruct().getAtributos().values()) {
                             int reg1 = CodeGenerator.getNextRegister();
                             if(a.getType().equals("Int")){
@@ -223,23 +219,24 @@ public class CodeGenerator {
                             }
                             offset += 4;
                         }
-                        this.text +="move $v0, $t0 # Retornar la dirección base de la estructura en $v0\n" +
-                                "jr $ra# Retornar";
+                        this.text +="\tmove $v0, $t" + reg +"\n";
                     }
 
                     // Recorro las sentencias del metodo
                     if(!m.getSentencias().isEmpty()){
-                        this.text += "\n" +value.getName() + "_" + m.getName() + " :\n";
-                        for (NodoLiteral s : m.getSentencias()) {
 
+                        for (NodoLiteral s : m.getSentencias()) {
+                            this.text += "\tmove $t0, $v0   # Guardamos la dirección de la memoria reservada\n";
                             // Para cada nodo genero codigo
                             this.text += s.generateNodeCode(ts);
-
+                            this.text += "\tmove $v0, $t0     # Retornar la dirección base de la estructura en $v0\n" +
+                                    "\tjr $ra\n";
                         }
                     }
                 }
             }
         }
+        this.text += "\nend_program:";
     }
 
     private void generatePred() {
@@ -332,7 +329,7 @@ public class CodeGenerator {
         // Código MIPS para las funciones predefinidas de Array
 
         // fn length()->Int. length devuelve la longitud del parametro self.
-        text += "\nStr_length:\n";
+        text += "\nArray_length:\n";
 
         // Str
         // Código MIPS para las funciones predefinidas de Str

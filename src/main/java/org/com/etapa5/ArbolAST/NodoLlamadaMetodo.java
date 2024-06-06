@@ -403,15 +403,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-        if(metodo.equals("constructor")){ //NEW
-            //code.append("la $a0, " + CodeGenerator.generateLabel(ts,CodeGenerator.lit) + "\n"); HICIMOS LUNES
+        if(metodo.equals("constructor")){ // NEW
             code.append("jal " + this.getNodeType() + "_constructor\n");
-            int Cmemoria=-8; //HACER EL CALCULO DE LOS ATRIBUTOS DEL STRUCT DEL LA LLAMADA A METODO BUSCANDO EN TS, YO LE PUSE -8 PQ FIBO TIENE 2 ATRIBUTOS
-            code.append("$sp,$sp,"+Cmemoria+"# Reservar espacio en la pila "); //este espacio q se reserva es para el RA del constructor
-            code.append("sw $v0, 0($sp) # Guardar el puntero de la estructura en la pila"); // siempre es cero pq estamos guardando en la pila
-            //code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n"); HICIMOS LUNES
-            // la $a0, nombre de la variable
-            // jal struct_constructor
+            code.append("addi $sp, $sp, -4  # Reservar espacio en la pila\n");
+            code.append("sw $v0, 0($sp)     # Guardar el puntero de la estructura en la pila\n");
+
         } else {
             int cont = 0;
             for (NodoLiteral argumento : argumentos) {
@@ -439,37 +435,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             }
 
         }
-
-        /*String asm = "\tsw $fp, 0($sp)\n\taddiu $sp, $sp, -4\n";
-        if (this.isMetodo()) {
-            for (int i = 0; i < args.size(); i++) {
-                NodoExpresion argAux = args.get(i);
-                int size = argAux.getTipoImpreso().equals("String") ? 32 : 4;
-                //int pos = (i + 1 )* size;
-                asm += argAux.getCodigo(ts);
-                if (!argAux.getNombre().equals("literal")) {
-                    asm += "\tlw $t1, 0($t1)\n";
-                }
-//                asm +="\tsw $t1, 0($sp)\n\taddiu $sp, $sp, -"+size+"\n";
-                asm += "\tsw $t1, 0($sp)\n\taddiu $sp, $sp, -4" + "\n";
-            }
-        }
-        if (this.clasePadre != null) {
-//            asm +="\tla $a0, ($t1)\n\tjal "+this.clasePadre+"_"+nombre+"\n"; //funciona con mas de un param??
-            if (this.nombre.equals("constructor")) {
-                asm += "\tla $a0, " + this.clasePadre + "_temp\n";
-            }
-            asm += "\tjal " + this.clasePadre + "_" + nombre + "\n"; //funciona con mas de un param??
-        } else {
-            if (this.padre.getNombre().equals("self")) {
-                if (!this.isMetodo()) {
-                    return "\tla $t1, var_" + this.getNombre() + "_" + ts.getClaseActual().getNombre() + "\n";
-                }
-            } else {
-//                asm +="\tla $a0, ($t1)\n\tjal "+this.padre.getTipoImpreso()+"_"+nombre+"\n";
-                asm += "\tjal " + this.padre.getTipoImpreso() + "_" + nombre + "\n";
-            }
-        }*/
 
         return code.toString();
     }
