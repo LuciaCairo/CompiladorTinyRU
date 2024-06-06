@@ -108,6 +108,7 @@ public class NodoAcceso extends NodoLiteral {
         // Si es un atributo, cargar el valor en un registro
         if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
             int newReg = CodeGenerator.getNextRegister();
+            code.append("lw $t0,"/*+tengo q calcular la direccion de memoria en la q guarde el puntero*/); //uso t0 siempre, pq cada vez q entre voy a querer guardar en t0 la direccion al puntero del RA del struct
             code.append("lw $t").append(newReg).append(", 0($t").append(leftReg).append(")\n");
         } else {
             // Si es un método, generar el código correspondiente

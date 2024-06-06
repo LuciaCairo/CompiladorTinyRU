@@ -17,9 +17,11 @@ impl Fibonacci {
 
 
 start{
-    Fibonacci fib;
+    Fibonacci fib2,fib1;
     Int n;
-    fib = new Fibonacci();
+    fib1 = new Fibonacci();
+    fib2=new Fibonacci();
+    fib1.count = fib1.count +4;
     /?n = IO.in_int();
     /?(IO.out_int(fib.sucesion_fib(n)));
 }
