@@ -394,8 +394,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                     //si pasa todas las validaciones seteo el tipo (?ESTA BIEN LUU... solo se hace para metodos q no sean constructor?
                     this.setNodeType(ts.getTableStructs().get(this.getParent()).getMetodos().get(metodo).getRet());
                 }
-
-
             }
         }
 
@@ -405,7 +403,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-        if(metodo.equals("constructor")){
+        if(metodo.equals("constructor")){ //NEW
             code.append("la $a0, " + CodeGenerator.generateLabel(ts,CodeGenerator.lit) + "\n");
             code.append("jal " + this.getNodeType() + "_constructor\n");
             code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n");
@@ -426,7 +424,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
             if(ts.getStructsPred().get(this.getParent()) != null) { // Acceso desde un struct predefinido
                 code.append("jal " + this.getParent() +"_" + this.metodo + " # Llamar al método\n");
-                code.append("jr $ra");
+                code.append("jr $ra\n");
             } else {
                 code.append("move $a" + cont + ", $s0 # Pasar la instancia\n");
                 code.append("lw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");

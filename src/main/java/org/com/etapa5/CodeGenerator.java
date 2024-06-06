@@ -4,7 +4,6 @@ import org.com.etapa5.ArbolAST.AST;
 import org.com.etapa5.ArbolAST.NodoLiteral;
 import org.com.etapa5.ArbolAST.NodoMetodo;
 import org.com.etapa5.ArbolAST.NodoStruct;
-import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.*;
 
 import java.util.*;
@@ -12,7 +11,6 @@ import java.util.*;
 public class CodeGenerator {
     TablaSimbolos ts;
     AST ast;
-    //private Hashtable<String,String> data = new Hashtable<>();
     private List<AbstractMap.SimpleEntry<String, String>> data = new ArrayList<>();
     private String text = "";
     String code = "";
@@ -62,54 +60,13 @@ public class CodeGenerator {
         for (Map.Entry<String, EntradaStructPredef> entry : ts.getStructsPred().entrySet()) {
 
             EntradaStructPredef struct = entry.getValue();
-            //this.data.put(struct.getName(), struct.getName()+"_vtable:");
             this.data.add(new AbstractMap.SimpleEntry<>(struct.getName(), struct.getName()+"_vtable:"));
 
-            // Los structs predefinidos no tienen atributos
             // Entonces solo recorro los metodos del struct
             for (EntradaMetodo m : struct.getMetodos().values()) {
                 //this.data.put(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName());
                 this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
 
-                // Recorro los parametros del metodo
-                for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
-
-                    if(p.getType().equals("Int")){
-                        //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                        //        + p.getName() + ": .word 0\n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                "_" + m.getName() + "_" + p.getName() + ": .word 0\n"));
-
-                    }else if(p.getType().equals("Char") || p.getType().equals("Str")){
-                        //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                        //        + p.getName() + ": .asciiz " + " \n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                "_" + m.getName() + "_" + p.getName() + ": .asciiz " + " \n"));
-                    } else if(p.getType().equals("Bool")){
-                        //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                        //        + p.getName() + ": .word 1\n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                "_" + m.getName() + "_" + p.getName() + ": .word 1\n"));
-                    } else if(p.getType().equals("Bool")){
-                        //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                        //        + p.getName() + ": .space 0\n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                "_" + m.getName() + "_" + p.getName() + ": .space 0\n"));
-                    } else {
-                        String[] palabras = p.getType().split(" ");
-                        String isArray = palabras[0];
-                        if (isArray.equals("Array")) {
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .space 0\n");
-                            this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                    "_" + m.getName() + "_" + p.getName() + ": .space 0\n"));
-                        } else {
-                            this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                    "_" + m.getName() + "_" + p.getName() + ": .space 8\n"));
-                        }
-                    }
-
-                }
             }
         }
 
@@ -117,7 +74,6 @@ public class CodeGenerator {
         for (Map.Entry<String, EntradaStruct> entry : ts.getTableStructs().entrySet()) {
 
             EntradaStruct struct = entry.getValue();
-            //this.data.put(struct.getName(), struct.getName()+"_vtable:");
 
             // Primero verifico si el struct es start (ya que es un caso especial de struct)
             if(struct.getName().equals("start")){
@@ -125,26 +81,18 @@ public class CodeGenerator {
                 // Start solo tiene variables
                 for (EntradaVariable v : struct.getVariables().values()) {
                     if(v.getType().equals("Int")) {
-                        //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                        //        + v.getName() + ": .word 0\n");
                         this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
                                 "\n" + struct.getName() + "_" + v.getName() + ": .word 0\n"));
                     } else if(v.getType().equals("Char") || v.getType().equals("Str")) {
-                        //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                        //        + v.getName() + ": .asciiz " + " \n");
                         this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
                                 "\n" + struct.getName() + "_" + v.getName() + ": .asciiz " + " \n"));
                     } else if(v.getType().equals("Bool")){
-                            //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                            //        + v.getName() + ": .word 1\n");
                             this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
                                     "\n" + struct.getName() + "_" + v.getName() + ": .word 1\n"));
                         } else {
                             String[] palabras = v.getType().split(" ");
                             String isArray = palabras[0];
                             if (isArray.equals("Array")) {
-                                //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                                //        + v.getName() + ": .space 0\n");
                                 this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
                                         "\n" + struct.getName() + "_" + v.getName() + ": .space 0\n"));
                             } else {
@@ -162,63 +110,21 @@ public class CodeGenerator {
 
                     this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
 
-                    // Recorro los parametros del metodo
-                    /*for (EntradaParametro p : struct.getMetodos().get(m.getName()).getParametros().values()) {
-                        if(p.getType().equals("Int")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .word 0\n");
-                            this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                    "_" + m.getName() + "_" + p.getName() + ": .word 0\n"));
-
-                        }else if(p.getType().equals("Char") || p.getType().equals("Str")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .asciiz " + " \n");
-                            this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                    "_" + m.getName() + "_" + p.getName() + ": .asciiz " + " \n"));
-                        }else if(p.getType().equals("Bool")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .word 1\n");
-                            this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                    "_" + m.getName() + "_" + p.getName() + ": .word 1\n"));
-                        } else {
-                            String[] palabras = p.getType().split(" ");
-                            String isArray = palabras[0];
-                            if (isArray.equals("Array")) {
-                                //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                                //        + p.getName() + ": .space 0\n");
-                                this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                        "_" + m.getName() + "_" + p.getName() + ": .space 0\n"));
-                            } else {
-                                this.data.add(new AbstractMap.SimpleEntry<>(p.getName(), "\t\t" + struct.getName() +
-                                        "_" + m.getName() + "_" + p.getName() + ": .space 8\n"));
-                            }
-                        }
-                    }*/
-
                     // Recorro las variables del metodo
                     for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
                         if(v.getType().equals("Int")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .word 0\n");
                             this.data.add(new AbstractMap.SimpleEntry<>(v.getName(), "\n" + struct.getName() +
                                     "_" + m.getName() + "_" + v.getName() + ": .word 0\n"));
-
                         } else if(v.getType().equals("Char") || v.getType().equals("Str")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .asciiz " + " \n");
                             this.data.add(new AbstractMap.SimpleEntry<>(v.getName(), "\n" + struct.getName() +
                                     "_" + m.getName() + "_" + v.getName() + ": .asciiz " + " \n"));
                         } else if(v.getType().equals("Bool")){
-                            //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                            //        + p.getName() + ": .word 1\n");
                             this.data.add(new AbstractMap.SimpleEntry<>(v.getName(), "\n" + struct.getName() +
                                     "_" + m.getName() + "_" + v.getName() + ": .word 1\n"));
                         } else {
                             String[] palabras = v.getType().split(" ");
                             String isArray = palabras[0];
                             if (isArray.equals("Array")) {
-                                //this.data.put(p.getName(), "\t\t" + struct.getName() + "_" + m.getName() + "_"
-                                //        + p.getName() + ": .space 0\n");
                                 this.data.add(new AbstractMap.SimpleEntry<>(v.getName(), "\n" + struct.getName() +
                                         "_" + m.getName() + "_" + v.getName() + ": .space 0\n"));
                             } else {
@@ -227,39 +133,6 @@ public class CodeGenerator {
                             }
                         }
                     }
-                }
-
-                // Recorro los atributos del struct
-                for (EntradaAtributo a : struct.getAtributos().values()) {
-                    if(a.getType().equals("Int")) {
-                        //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                        //        + v.getName() + ": .word 0\n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(a.getName(),
-                                "\n" + struct.getName() + "_" + a.getName() + ": .word 0\n"));
-                    } else if(a.getType().equals("Char") || a.getType().equals("Str")) {
-                        //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                        //        + v.getName() + ": .asciiz " + " \n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(a.getName(),
-                                "\n" + struct.getName() + "_" + a.getName() + ": .asciiz " + " \n"));
-                    } else if(a.getType().equals("Bool")){
-                        //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                        //        + v.getName() + ": .word 1\n");
-                        this.data.add(new AbstractMap.SimpleEntry<>(a.getName(),
-                                "\n" + struct.getName() + "_" + a.getName() + ": .word 1\n"));
-                    } else {
-                        String[] palabras = a.getType().split(" ");
-                        String isArray = palabras[0];
-                        if (isArray.equals("Array")) {
-                            //this.data.put(v.getName(), "\t\t" + struct.getName() + "_"
-                            //        + v.getName() + ": .space 0\n");
-                            this.data.add(new AbstractMap.SimpleEntry<>(a.getName(),
-                                    "\n" + struct.getName() + "_" + a.getName() + ": .space 0\n"));
-                        } else {
-                            this.data.add(new AbstractMap.SimpleEntry<>(a.getName(), "\n" + struct.getName() +
-                                    "_" + struct.getName() + "_" + a.getName() + ": .space 8\n"));
-                        }
-                    }
-                    // FALTA CASO DE QUE VENGA ALGO DE TIPO CLASE , guardar como null ?
                 }
             }
 
@@ -309,14 +182,40 @@ public class CodeGenerator {
                 for (NodoMetodo m : value.getMetodos().values()) {
                     ts.setCurrentStruct(ts.getStruct(value.getName()));
                     ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
+                    int sizeAtr = ts.getCurrentStruct().getAtributos().size() * 4;
 
                     if(m.getName().equals("constructor")) {
+                        int reg = CodeGenerator.getNextRegister();
                         this.text += "\n" + value.getName() + "_" + m.getName() + " :\n"
-                                + "addiu $sp, $sp, -8\n"
-                                + "move $v0, $sp\n"
-                                + "la $t0, " + value.getName() + "_vtable\n"
-                                + "sw $t0 ,0($v0)\n"
-                                + "jr $ra\n";
+                                + "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
+                                + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struc\n"
+                                + "\tsyscall\n"
+                                + "\tmove $t" + reg + "$v0 # Guardamos la dirección de la memoria reservada\n";
+                        int offset = 0;
+                        for (EntradaAtributo a : ts.getCurrentStruct().getAtributos().values()) {
+                            int reg1 = CodeGenerator.getNextRegister();
+                            if(a.getType().equals("Int")){
+                                this.text += "\tli $t" + reg1 + ",0\n"
+                                        + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
+                            } else if(a.getType().equals("Char") || v.getType().equals("Str")){
+                                this.text += "\tli $t" + reg1 + ", \"\" \n"
+                                        + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
+                            } else if(a.getType().equals("Bool")){
+                                this.text += "\tli $t" + reg1 + ",0\n"
+                                        + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
+                            } else {
+                                String[] palabras = a.getType().split(" ");
+                                String isArray = palabras[0];
+                                if (isArray.equals("Array")) {
+                                    this.text += "\tli $t" + reg1 + ",space 0\n"
+                                            + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
+                                } else {
+                                    this.text += "\tli $t" + reg1 + ",space 0\n"
+                                            + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
+                                }
+                            }
+                            offset += 4;
+                        }
                     }
 
                     // Recorro las sentencias del metodo
@@ -334,17 +233,107 @@ public class CodeGenerator {
         }
     }
 
-    private void generatePred(){
+    private void generatePred() {
 
         // IO
-        // Código MIPS para la función out_int
-        // st fn out_str(Str s)->void: imprime el argumento
+        // Código MIPS para las funciones predefinidas de IO
 
-        text += "IO_out_int: \n";
-        text += "li $v0, 1 \n syscall\n";
+        // st fn out_int(Int s)->void: imprime el argumento
+        text += "\nIO_out_int:\n";
+        text += "\t# Asumimos que el argumento de la función está en $a0 \n";
+        text += "\tli $v0, 1 \n\tsyscall \n\tjr $ra\n";
 
+        // st fn out_str(Str s)->void: imprime el argumento.
+        text += "\nIO_out_str:\n";
+        text += "\t# Asumimos que el argumento de la función está en $a0 \n";
+        text += "\tli $v0, 4 \n\tsyscall \n\tjr $ra\n";
+
+        // st fn out_bool(Bool b)->void: imprime el argumento
+        text += "\nIO_out_bool:\n";
+        text += "\tbeqz $a0, print_false  # Si $a0 es 0, saltar a print_false\n";
+        text += "\t# Si no, imprimir \"true\"\n";
+        text += "\tli $v0, 4 \n\tla $a0, true_str \n\tsyscall \n\tjr $ra\n";
+
+        text += "\nprint_false:\n";
+        text += "\tli $v0, 4 \n\tla $a0, false_str \n\tsyscall \n\tjr $ra\n";
+
+        text += "\n.data\n";
+        text += "\ttrue_str: .asciiz \"true\"\n";
+        text += "\tfalse_str: .asciiz \"false\"\n";
+
+        // st fn out_char(Char c)->void: imprime el argumento.
+        text += "\nIO_out_char:\n";
+        text += "\t# Asumimos que el argumento de la función está en $a0 \n";
+        text += "\tli $v0, 11 \n\tsyscall \n\tjr $ra\n";
+
+        // st fn out_array_int(Array a)->void: imprime cada elemento del arreglo de tipo Int.
+        // ENTENDER ARRAY Y HACER !!
+        text += "\nIO_out_array_int:\n";
+
+        // st fn out_array_str(Array a)->void: imprime cada elemento del arreglo de tipo Str
+        // ENTENDER ARRAY Y HACER !!
+        text += "\nIO_out_array_str:\n";
+
+        // st fn out_array_bool(Array a)->void: imprime cada elemento del arreglo de tipo Bool.
+        // ENTENDER ARRAY Y HACER !!
+        text += "\nIO_out_array_bool:\n";
+
+        // st fn out_array_char(Array a)->void: imprime cada elemento del arreglo de tipo Char
+        // ENTENDER ARRAY Y HACER !!
+        text += "\nIO_out_array_char:\n";
+
+        // st fn_in_str()->Str: lee una cadena de la entrada estandar, sin incluir un caracter de nueva lınea.
+        text += "\nIO_in_str:\n";
+        text += "\t# Reservar un buffer para almacenar la cadena\n";
+        text += "\tla $a0, buffer       # Cargar la dirección de inicio del buffer en $a0\n";
+        text += "\tla $a1, 100          # Cargar la longuitud del buffer en $a1\n";
+        text += "\tli $v0, 8 \n\tsyscall \n\tjr $ra\n";
+        text += "\n.data\n";
+        text += "\tbuffer: .space 100    # Buffer para almacenar la cadena leída\n";
+
+        // st fn_in_int()->Int: lee un entero de la entrada estandar.
+        text += "\nIO_in_int:\n";
+        text += "\tli $v0, 5 \n\tsyscall \n\tjr $ra\n";
+
+        // st fn_in_bool()->Bool: lee un bool de la entrada estandar.
+        text += "\nIO_in_bool:\n";
+        text += "\tjal IO_in_str # Llamar al método para leer un string\n";
+        text += "\t# Verificar si la cadena es \"true\" o \"false\"\n";
+        text += "\tla $t0, buffer       # Cargar la dirección de inicio de la cadena en $t0\n";
+        text += "\tli $t1, 't'          # Cargar el carácter 't' en $t1\n";
+        text += "\tli $t2, 'f'          # Cargar el carácter 'f' en $t2\n";
+        text += "\tlb $t3, 0($t0)       # Cargar el primer carácter de la cadena en $t3\n";
+        text += "\t# Comparar el primer carácter con 't' para determinar si es \"true\" o \"false\"\n";
+        text += "\tbeq $t3, $t1, true_result  # Si es igual a 't', salta a true_result\n";
+        text += "\tbeq $t3, $t2, false_result # Si es igual a 'f', salta a false_result\n";
+
+        text += "\n\ttrue_result:\n";
+        text += "\tli $v0, 1            # Si la cadena es \"true\", configurar $v0 en 1\n";
+        text += "\tjr $ra               # Retornar a la dirección de retorno\n";
+
+        text += "\n\tfalse_result:\n";
+        text += "\tli $v0, 0            # Si la cadena es \"true\", configurar $v0 en 1\n";
+        text += "\tjr $ra               # Retornar a la dirección de retorno\n";
+
+        // st fn_in_char()->Char: lee un caracter de la entrada estandar.
+        text += "\nIO_in_char:\n";
+        text += "\tli $v0, 12 \n\tsyscall \n\tjr $ra\n";
+
+        // Array
+        // Código MIPS para las funciones predefinidas de Array
+
+        // fn length()->Int. length devuelve la longitud del parametro self.
+        text += "\nStr_length:\n";
+
+        // Str
+        // Código MIPS para las funciones predefinidas de Str
+
+        // fn length()->Int. length devuelve la longitud del parametro self.
+        text += "\nStr_length:\n";
+
+        // fn concat(Str s)->Str. Devuelve la cadena formada al concatenar s despues de self.
+        text += "\nStr_concat:\n";
     }
-
 
     public static int getNextRegister() {
         if(registerCounter == 9){

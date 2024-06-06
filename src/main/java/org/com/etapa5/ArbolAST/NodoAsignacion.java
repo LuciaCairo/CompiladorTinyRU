@@ -63,8 +63,8 @@ public class NodoAsignacion extends NodoLiteral {
 
                     if(!(typeNI.equals("Int")||typeNI.equals("Str")||typeNI.equals("Bool")||typeNI.equals("Char") || typeNI.split(" ")[0].equals("Array"))
                             && !(typeND.equals("Int")||typeND.equals("Str")||typeND.equals("Bool")||typeND.equals("Char") || typeND.split(" ")[0].equals("Array"))){
-                        String hD=typeND;
-                        String hI=typeNI;
+                        String hD = typeND;
+                        String hI = typeNI;
 
                         if (hD.equals("Object") && !(hI.equals("Object"))) {
                             throw new SemantErrorException(this.getLine(), this.getCol(),
