@@ -404,9 +404,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
         if(metodo.equals("constructor")){ //NEW
-            code.append("la $a0, " + CodeGenerator.generateLabel(ts,CodeGenerator.lit) + "\n");
+            //code.append("la $a0, " + CodeGenerator.generateLabel(ts,CodeGenerator.lit) + "\n"); HICIMOS LUNES
             code.append("jal " + this.getNodeType() + "_constructor\n");
-            code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n");
+            int Cmemoria=-8; //HACER EL CALCULO DE LOS ATRIBUTOS DEL STRUCT DEL LA LLAMADA A METODO BUSCANDO EN TS, YO LE PUSE -8 PQ FIBO TIENE 2 ATRIBUTOS
+            code.append("$sp,$sp,"+Cmemoria+"# Reservar espacio en la pila "); //este espacio q se reserva es para el RA del constructor
+            code.append("sw $v0, 0($sp) # Guardar el puntero de la estructura en la pila"); // siempre es cero pq estamos guardando en la pila
+            //code.append("move $s0, $v0  # Guardar la dirección de la instancia en $s0\n"); HICIMOS LUNES
             // la $a0, nombre de la variable
             // jal struct_constructor
         } else {

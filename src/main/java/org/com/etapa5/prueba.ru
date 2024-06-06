@@ -2,15 +2,15 @@
 /? con dos parametros debe mostrar 30
 
 struct Fibonacci {
-    Int suma;
-    Int i,j;
+    Int count;
+    Int i;
 }
 
 impl Fibonacci {
     .(){
-        i=0; /? inicializo i
-        j=0; /? inicializo j
-        suma=0; /? inicializo suma
+        /?i=0; /? inicializo i
+        /?j=0; /? inicializo j
+        /?suma=0; /? inicializo suma
     }
 }
 

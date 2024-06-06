@@ -157,6 +157,12 @@ public class CodeGenerator {
         //        "\nmove $fp, $sp\n";
 
 
+
+        //reservo memoria para el start, calculo la cantidad contando las declaraciones y sumando 4
+        // luego agrego la $ra,end_program para cargar el puntero a la direccion de fin de programa
+        this.text += "addi $sp, $sp,"+(((ts.getCurrentStruct().getVariables().size())+1)*4)*-1+"#reservo espacio en la pila"
+                    +"la $ra,end_program #carga en $ra el puntero al espacio de fin de programa"+
+                    "sw $ra, 0($sp)  # Guardar la dirección de retorno en la pila (end_program)"; //es es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
         // Recorro las sentencias de start
         if (!value.getSentencias().isEmpty()) {
             for (NodoLiteral s : value.getSentencias()) {
@@ -188,16 +194,17 @@ public class CodeGenerator {
                         int reg = CodeGenerator.getNextRegister();
                         this.text += "\n" + value.getName() + "_" + m.getName() + " :\n"
                                 + "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
-                                + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struc\n"
+                                + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
-                                + "\tmove $t" + reg + "$v0 # Guardamos la dirección de la memoria reservada\n";
+                                //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
+                                + "\tmove $t0" /*+ reg*/ + "$v0 # Guardamos la dirección de la memoria reservada\n";
                         int offset = 0;
                         for (EntradaAtributo a : ts.getCurrentStruct().getAtributos().values()) {
                             int reg1 = CodeGenerator.getNextRegister();
                             if(a.getType().equals("Int")){
                                 this.text += "\tli $t" + reg1 + ",0\n"
-                                        + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
-                            } else if(a.getType().equals("Char") || v.getType().equals("Str")){
+                                        + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n"; //hay q ver pq como se guarda en la pila no hace falta ir calculando el offset
+                            } else if(a.getType().equals("Char") || a.getType().equals("Str")){ //nose pq aca decia v
                                 this.text += "\tli $t" + reg1 + ", \"\" \n"
                                         + "\tsw $t" + reg1 + ", " + offset + "($t" + reg +")\n";
                             } else if(a.getType().equals("Bool")){
@@ -216,6 +223,8 @@ public class CodeGenerator {
                             }
                             offset += 4;
                         }
+                        this.text +="move $v0, $t0 # Retornar la dirección base de la estructura en $v0\n" +
+                                "jr $ra# Retornar";
                     }
 
                     // Recorro las sentencias del metodo
