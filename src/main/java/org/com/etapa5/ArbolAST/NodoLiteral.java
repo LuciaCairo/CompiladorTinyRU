@@ -147,12 +147,21 @@ public class NodoLiteral extends Nodo{
         } else if (n.equals("nil")) {
             code = "li $t" + CodeGenerator.registerCounter + ", 0\n";
         } else {
-            if ((ts.getCurrentMetod().getParametros().containsKey(this.getName()))) {
-                code = "move $t" + CodeGenerator.registerCounter +", $a" + ts.getCurrentMetod().getParametros().get(this.getName()).getPos()+
-                        "  # Guarda parametro en un registro temporal\n";
-            } else {
+            if(ts.getCurrentStruct().getName().equals("start")){
                 int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
-                code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($fp)\n";
+                code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+            } else {
+                if ((ts.getCurrentMetod().getParametros().containsKey(this.getName()))) {
+                    code = "move $t" + CodeGenerator.registerCounter + ", $a" + ts.getCurrentMetod().getParametros().get(this.getName()).getPos() +
+                            "  # Guarda parametro en un registro temporal\n";
+                } else if(ts.getCurrentStruct().getVariables().containsKey(this.getName())) {
+                    int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
+                    code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($fp)\n";
+                }
+                else {
+                    int offset = ts.getCurrentStruct().getAtributos().get(this.getName()).getPos() * 4;
+                    code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                }
             }
         }
         CodeGenerator.getNextRegister();

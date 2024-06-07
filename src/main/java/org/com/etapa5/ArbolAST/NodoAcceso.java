@@ -86,6 +86,10 @@ public class NodoAcceso extends NodoLiteral {
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        if(ts.getStructsPred().containsKey(this.nodoI.getName())){
+            code.append(this.nodoD.generateNodeCode(ts));
+            return code.toString();
+        }
 
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             // El nodo izquierdo es un struct, entonces yo quiero acceder a su instancia
@@ -96,13 +100,12 @@ public class NodoAcceso extends NodoLiteral {
                 posInst = 0;
             }
             code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posInst+"($sp)\n");
-            // va a funcionar porque se instancio en orden pero si movemos el orden ya no
 
             if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
                 // El nodo derecho es un atributo
                 int reg = CodeGenerator.getBefRegister();
                 int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4;
-                code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posAtr+" ($t"+ reg + ")\n");
+                code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posAtr +" ($t"+ reg + ")\n");
             }
             return code.toString();
         }

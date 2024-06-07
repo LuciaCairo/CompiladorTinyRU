@@ -108,40 +108,49 @@ public class NodoAsignacion extends NodoLiteral {
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
 
+
         // CASO DE NODO LITERAL (n = ...)
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             if(this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){
                 code.append(this.nodoD.generateNodeCode(ts));
+                if(ts.getCurrentStruct().getName().equals("start")) {
+                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
+                    code.append("sw $v0," + offset  + "($sp)   # Guardar el puntero de la estructura en la pila\n");
+                }
 
             } else {
                 code.append(this.nodoD.generateNodeCode(ts));
 
                 // Ahora vemos si estamos en el constructor
-                if(ts.getCurrentMetod().getName().equals("constructor")){
+                if(ts.getCurrentMetod() != null) {
+                    if (ts.getCurrentMetod().getName().equals("constructor")) {
 
-                    // Voy a ver si lo que quiero asignar es una variable
-                    if(ts.getCurrentMetod().getVariables().containsKey(this.nodoI.getName())){
-                        // Ver caso de que quiera asignar una variable
-                        // Ejemplo a = 1 (que a sea variable del metodo )
+                        // Voy a ver si lo que quiero asignar es una variable
+                        if (ts.getCurrentMetod().getVariables().containsKey(this.nodoI.getName())) {
+                            // Ver caso de que quiera asignar una variable
+                            // Ejemplo a = 1 (que a sea variable del metodo)
 
+                        } // Si no, voy a ver si lo que quiero asignarr es un parametro
+                        else if (ts.getCurrentMetod().getParametros().containsKey(this.nodoI.getName())) {
+                            // Ver caso de que quiera asignar un parametro
+                            // Ejemplo a = 1 (que a sea parametro del metodo )
 
-                    } // Si no, voy a ver si lo que quiero asignarr es un parametro
-                    else if(ts.getCurrentMetod().getParametros().containsKey(this.nodoI.getName())) {
-                        // Ver caso de que quiera asignar un parametro
-                        // Ejemplo a = 1 (que a sea parametro del metodo )
-
-                    } // Si no, voy a ver si lo que quiero modificar es un atributo
-                    else if(ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())){
-                        int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4;
-                        code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t0)\n");
+                        } // Si no, voy a ver si lo que quiero modificar es un atributo
+                        else if (ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())) {
+                            int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4;
+                            code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t0)\n");
+                        }
                     }
+                } else { // Significa que estoy en start
 
-                } else {
-                    code.append(this.nodoD.generateNodeCode(ts));
                     int regD = CodeGenerator.getBefRegister();
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
                     // si es una variable en la pila por ejemplo
-                    code.append("sw $t" + regD + ", $t" + CodeGenerator.getNextRegister() + "\n");
+
+                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
+                    code.append("sw $t" + regD + ", " + offset + "($sp)\n");
+
+
                 }
             }
 

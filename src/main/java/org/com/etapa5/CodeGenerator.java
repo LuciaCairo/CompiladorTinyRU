@@ -75,34 +75,7 @@ public class CodeGenerator {
 
             EntradaStruct struct = entry.getValue();
 
-            // Primero verifico si el struct es start (ya que es un caso especial de struct)
-            if(struct.getName().equals("start")){
-
-                // Start solo tiene variables
-                for (EntradaVariable v : struct.getVariables().values()) {
-                    if(v.getType().equals("Int")) {
-                        this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
-                                "\n" + struct.getName() + "_" + v.getName() + ": .word 0\n"));
-                    } else if(v.getType().equals("Char") || v.getType().equals("Str")) {
-                        this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
-                                "\n" + struct.getName() + "_" + v.getName() + ": .asciiz " + " \n"));
-                    } else if(v.getType().equals("Bool")){
-                            this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
-                                    "\n" + struct.getName() + "_" + v.getName() + ": .word 1\n"));
-                        } else {
-                            String[] palabras = v.getType().split(" ");
-                            String isArray = palabras[0];
-                            if (isArray.equals("Array")) {
-                                this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
-                                        "\n" + struct.getName() + "_" + v.getName() + ": .space 0\n"));
-                            } else {
-                                this.data.add(new AbstractMap.SimpleEntry<>(v.getName(),
-                                        "\n" + struct.getName() + "_" + v.getName() + ": .space 8\n"));
-                            }
-                        }
-                    }
-
-            } else { // Ahora para los demas structs
+            if(!struct.getName().equals("start")){ // Ahora para los demas structs
                 this.data.add(new AbstractMap.SimpleEntry<>(struct.getName(), struct.getName()+"_vtable:"));
 
                 // Recorro los metodos del struct
@@ -139,7 +112,6 @@ public class CodeGenerator {
         }
     }
 
-
     // Funcion para generar el text recorriendo el AST
     public void generateText() {
         // En esta funcion se recorren los nodos del AST y
@@ -149,12 +121,13 @@ public class CodeGenerator {
         NodoStruct value = ast.getStructs().get("start");
         ast.setCurrentStruct(value);
         ts.setCurrentStruct(ts.getStruct(value.getName()));
+        ts.setCurrentMetod(null);
 
-        this.text += "main:\n";
-        int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4 * (-1);
-        this.text += "addi $sp, $sp," + numVar + "# Reservo espacio en la pila\n" +
+        this.text += "\nmain:\n";
+        int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4;
+        this.text += "addi $sp, $sp, -" + numVar + "# Reservo espacio en la pila\n" +
                 "la $ra, end_program #Carga en $ra el puntero al espacio de fin de programa\n" +
-                "sw $ra, 0($sp)" + // Es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
+                "sw $ra," + numVar + "($sp)" + // Es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
                 " # Guardar la dirección de retorno en la pila (end_program)\n";
 
         // Recorro las sentencias de start
@@ -167,8 +140,8 @@ public class CodeGenerator {
         }
 
         this.text += "# Restaurar la pila y salir\n" +
-                "lw $ra, 8($sp)       # Restaurar la dirección de retorno\n" +
-                "addi $sp, $sp, 8    # Limpiar el espacio usado en la pila\n" +
+                "lw $ra," +numVar+  "($sp)       # Restaurar la dirección de retorno\n" +
+                "addi $sp, $sp," +numVar+  "    # Limpiar el espacio usado en la pila\n" +
                 "jr $ra";
 
 
@@ -184,11 +157,10 @@ public class CodeGenerator {
                     ts.setCurrentStruct(ts.getStruct(value.getName()));
                     ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
                     int sizeAtr = (ts.getCurrentStruct().getAtributos().size() * 4 ) + 4;
-
+                    this.text += "\n\n" + value.getName() + "_" + m.getName() + " :\n";
                     if(m.getName().equals("constructor")) {
                         int reg = CodeGenerator.getNextRegister();
-                        this.text += "\n" + value.getName() + "_" + m.getName() + " :\n"
-                                + "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
+                        this.text += "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
                                 + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
                                 //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
@@ -236,7 +208,6 @@ public class CodeGenerator {
                 }
             }
         }
-        this.text += "\nend_program:";
     }
 
     private void generatePred() {
@@ -266,6 +237,7 @@ public class CodeGenerator {
         text += "\n.data\n";
         text += "\ttrue_str: .asciiz \"true\"\n";
         text += "\tfalse_str: .asciiz \"false\"\n";
+        text += "\n.text\n";
 
         // st fn out_char(Char c)->void: imprime el argumento.
         text += "\nIO_out_char:\n";
@@ -296,6 +268,7 @@ public class CodeGenerator {
         text += "\tli $v0, 8 \n\tsyscall \n\tjr $ra\n";
         text += "\n.data\n";
         text += "\tbuffer: .space 100    # Buffer para almacenar la cadena leída\n";
+        text += "\n.text\n";
 
         // st fn_in_int()->Int: lee un entero de la entrada estandar.
         text += "\nIO_in_int:\n";
@@ -339,6 +312,8 @@ public class CodeGenerator {
 
         // fn concat(Str s)->Str. Devuelve la cadena formada al concatenar s despues de self.
         text += "\nStr_concat:\n";
+
+        this.text += "\nend_program:";
     }
 
     public static int getNextRegister() {
@@ -351,19 +326,16 @@ public class CodeGenerator {
     }
 
     public static int getBefRegister() {
-        return registerCounter - 1;
+
+        if(registerCounter == 0){
+            return 9;
+        } else {
+            return registerCounter - 1;
+        }
     }
 
     public static void resetRegisterCounter() {
         registerCounter = 0;
-    }
-
-    public static String generateLabel(TablaSimbolos ts,String value) {
-        // Implementar la generación de etiquetas únicas
-        if(ts.getCurrentStruct().getName().equals("start")){
-            return ts.getCurrentStruct().getName() +"_"+ value;
-        }
-        return ts.getCurrentStruct().getName() +"_"+ ts.getCurrentMetod().getName()+"_"+ value;
     }
 
 }

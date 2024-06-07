@@ -1,19 +1,21 @@
 struct Fibonacci {
-    Int count;
+    Int suma;
+    Int i,j;
 }
 
 impl Fibonacci {
     .(){
-        count = 4;
+        i=9; /? inicializo i
+        j=0; /? inicializo j
+        suma=0; /? inicializo suma
     }
 }
 
 
 start{
-    Fibonacci fib1,fib2;
+    Fibonacci fib;
     Int n;
-    fib1 = new Fibonacci();
-    fib2 = new Fibonacci();
-    n = fib1.count + 4;
-
+    fib = new Fibonacci();
+    n = 3;
+    (IO.out_int(n));
 }

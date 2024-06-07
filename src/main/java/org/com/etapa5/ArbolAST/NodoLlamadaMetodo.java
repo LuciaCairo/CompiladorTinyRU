@@ -405,8 +405,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         StringBuilder code = new StringBuilder();
         if(metodo.equals("constructor")){ // NEW
             code.append("jal " + this.getNodeType() + "_constructor\n");
-            code.append("addi $sp, $sp, -4  # Reservar espacio en la pila\n");
-            code.append("sw $v0, 0($sp)     # Guardar el puntero de la estructura en la pila\n");
+            //code.append("addi $sp, $sp, -4  # Reservar espacio en la pila\n");
+            //code.append("sw $v0,"+ 6+ "0($sp)     # Guardar el puntero de la estructura en la pila\n");
 
         } else {
             int cont = 0;
@@ -423,7 +423,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
             if(ts.getStructsPred().get(this.getParent()) != null) { // Acceso desde un struct predefinido
                 code.append("jal " + this.getParent() +"_" + this.metodo + " # Llamar al método\n");
-                code.append("jr $ra\n");
+                code.append("move $a0, $t" + CodeGenerator.getNextRegister()+ "\n");
+                return code.toString();
             } else {
                 code.append("move $a" + cont + ", $s0 # Pasar la instancia\n");
                 code.append("lw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");

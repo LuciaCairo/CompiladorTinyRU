@@ -2,6 +2,7 @@ package org.com.etapa5.ArbolAST;
 
 import org.com.etapa5.Exceptions.SemantErrorException;
 import org.com.etapa5.TablaDeSimbolos.TablaSimbolos;
+import org.com.etapa5.CodeGenerator;
 
 import java.util.LinkedList;
 
@@ -63,5 +64,38 @@ public class NodoWhile extends NodoLiteral {
         this.setNodeType(null);
         return true;
     }
+
+    @Override
+    public String generateNodeCode(TablaSimbolos ts) {
+        StringBuilder code = new StringBuilder();
+
+        // Generar etiquetas únicas para el comienzo del bucle y la salida del bucle
+        String labelStart = "while_start";
+        String labelEnd = "while_end";
+
+        // Generar la etiqueta para el comienzo del bucle
+        code.append(labelStart).append(":\n");
+
+        // Generar el código para la evaluación de la expresión de la condición
+        code.append(this.exp.generateNodeCode(ts));
+        int condReg = CodeGenerator.registerCounter - 1;
+
+        // Generar el código para el salto a la salida del bucle si la condición es falsa
+        code.append("beq $t").append(condReg).append(", $zero, ").append(labelEnd).append("\n");
+
+        // Generar el código para las sentencias dentro del bucle
+        for (NodoLiteral sentencia : this.sentencias) {
+            code.append(sentencia.generateNodeCode(ts));
+        }
+
+        // Generar el salto al comienzo del bucle para la próxima iteración
+        code.append("j ").append(labelStart).append("\n");
+
+        // Generar la etiqueta para la salida del bucle
+        code.append(labelEnd).append(":\n");
+
+        return code.toString();
+    }
+
 
 }
