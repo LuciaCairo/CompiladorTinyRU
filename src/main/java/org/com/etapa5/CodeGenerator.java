@@ -175,9 +175,11 @@ public class CodeGenerator {
                                 + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
                                 //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
-                                + "\tmove $t" + reg + ",$v0 # Guardamos la dirección de la memoria reservada\n";
+                                + "\tmove $t" + reg + ",$v0 # Guardamos la dirección de la memoria reservada\n"
+                                +"\tla $t" + CodeGenerator.getNextRegister() +", "+value.getName()+"_vtable\n"//agrega agus, hay q ver como son los registros aqui
+                                +"\tsw $t" + CodeGenerator.getBefRegister()+",0($t"+reg+")\n"; //AGREGA AGUS
 
-                        int offset = 0;
+                        int offset = 4;//Agrega Agus
                         this.text += "\t# Primero inicializamos todo por defecto\n";
                         for (EntradaAtributo a : ts.getCurrentStruct().getAtributos().values()) {
                             int reg1 = CodeGenerator.getNextRegister();
@@ -209,7 +211,7 @@ public class CodeGenerator {
 
                     // Recorro las sentencias del metodo
                     if(!m.getSentencias().isEmpty()){
-
+                        this.text += "\t\t\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n"; //esta linea la agregamos para solucionar problema move linea 87
                         for (NodoLiteral s : m.getSentencias()) {
                             this.text += "\t\t\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
                             int reg1 = CodeGenerator.getBefRegister();

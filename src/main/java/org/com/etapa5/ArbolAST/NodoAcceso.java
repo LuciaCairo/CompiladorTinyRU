@@ -110,6 +110,11 @@ public class NodoAcceso extends NodoLiteral {
                 int reg = CodeGenerator.getBefRegister();
                 int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4;
                 code.append("\tlw $t" + CodeGenerator.getNextRegister() +"," + posAtr +" ($t"+ reg + ")\n");
+            }else{ //
+                // El nodo derecho es una llamada metodo
+                code.append("\t # Accedo al metodo "  + "\n"); //al metodo incrementador
+                int reg = CodeGenerator.getBefRegister();
+                int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4;
             }
             return code.toString();
         }

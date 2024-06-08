@@ -140,7 +140,7 @@ public class NodoAsignacion extends NodoLiteral {
                         } // Si no, voy a ver si lo que quiero modificar es un atributo
                         else if (ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())) {
                             code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
-                            int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4;
+                            int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
                             code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t"+ regInst+")\n");
                         }
                     }

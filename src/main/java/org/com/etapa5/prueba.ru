@@ -9,13 +9,15 @@ impl Fibonacci {
         j=c; /? inicializo j
         suma=0; /? inicializo suma
     }
+    fn incrementador(Int k)->Int{
+
+        ret ++k;
+    }
 }
 
 start{
     Fibonacci fib;
     Int n;
-
-    fib = new Fibonacci(15);
-    n=fib.j;
-    (IO.out_int(n));
+    fib = new Fibonacci(8);
+    n=fib.incrementador(5);
 }
