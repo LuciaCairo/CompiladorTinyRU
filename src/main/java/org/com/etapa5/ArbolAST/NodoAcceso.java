@@ -86,6 +86,7 @@ public class NodoAcceso extends NodoLiteral {
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        code.append("\n\t# NODO ACCESO \n");
         if(ts.getStructsPred().containsKey(this.nodoI.getName())){
             code.append(this.nodoD.generateNodeCode(ts));
             return code.toString();
@@ -93,45 +94,25 @@ public class NodoAcceso extends NodoLiteral {
 
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             // El nodo izquierdo es un struct, entonces yo quiero acceder a su instancia
-            int posInst;
+            int posInst; // fib.j
             if(ts.getCurrentStruct().getName().equals("start")) {
-                posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4;
+                posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4 + 4;
+
             } else {
                 posInst = 0;
             }
-            code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posInst+"($sp)\n");
+            code.append("\t # Cargo la instancia " + nodoI.getName() + "\n");
+            code.append("\tlw $t" + CodeGenerator.getNextRegister() +", -" + posInst+"($fp)\n");
 
             if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
                 // El nodo derecho es un atributo
+                code.append("\t # Accedo al atributo " + nodoD.getName() + "\n");
                 int reg = CodeGenerator.getBefRegister();
                 int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4;
-                code.append("lw $t" + CodeGenerator.getNextRegister() +"," + posAtr +" ($t"+ reg + ")\n");
+                code.append("\tlw $t" + CodeGenerator.getNextRegister() +"," + posAtr +" ($t"+ reg + ")\n");
             }
             return code.toString();
         }
-
-        // ++++++++++++++++++++++++++++++
-        code.append(this.nodoI.generateNodeCode(ts)); // x
-        int leftReg = CodeGenerator.registerCounter - 1;
-
-        // Obtener la dirección base del nodo izquierdo
-        String structType = this.nodoI.getNodeType();
-        //int attributeOffset = ts.getTableStructs().get(structType).getAttributeOffset(this.nodoD.getName());
-        int attributeOffset =  ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4; // revisar
-        // Generar código para acceder al atributo/método del nodo derecho (nodoD)
-        // Cargar la dirección del atributo en un nuevo registro
-        code.append("addi $t").append(leftReg).append(", $t").append(leftReg).append(", ").append(attributeOffset).append("\n");
-
-        // Si es un atributo, cargar el valor en un registro
-        if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")) {
-            int newReg = CodeGenerator.getNextRegister();
-            code.append("lw $t0,"/*+tengo q calcular la direccion de memoria en la q guarde el puntero*/); //uso t0 siempre, pq cada vez q entre voy a querer guardar en t0 la direccion al puntero del RA del struct
-            code.append("lw $t").append(newReg).append(", 0($t").append(leftReg).append(")\n");
-        } else {
-            // Si es un método, generar el código correspondiente
-            code.append(this.nodoD.generateNodeCode(ts));
-        }
-
         return code.toString();
     }
 }

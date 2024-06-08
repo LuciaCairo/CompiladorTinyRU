@@ -59,6 +59,7 @@ public class NodoExpUn extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        code.append("\n\t# NODO EXPRESION UNARIA \n");
 
         // Generar código para la expresión
         code.append(this.exp.generateNodeCode(ts));
@@ -69,20 +70,20 @@ public class NodoExpUn extends NodoLiteral {
         switch (op) {
             case "!": // Negación lógica
                 int resultRegister = CodeGenerator.getNextRegister();
-                code.append("li $t").append(resultRegister).append(", 1\n");
-                code.append("xor $t").append(resultRegister).append(", $t").append(exprRegister).append(", $t").append(resultRegister).append("\n");
+                code.append("\tli $t").append(resultRegister).append(", 1\n");
+                code.append("\txor $t").append(resultRegister).append(", $t").append(exprRegister).append(", $t").append(resultRegister).append("\n");
                 break;
             case "++": // Incremento
-                code.append("addi $t").append(exprRegister).append(", $t").append(exprRegister).append(", 1\n");
+                code.append("\taddi $t").append(exprRegister).append(", $t").append(exprRegister).append(", 1\n");
                 break;
             case "--": // Decremento
-                code.append("addi $t").append(exprRegister).append(", $t").append(exprRegister).append(", -1\n");
+                code.append("\taddi $t").append(exprRegister).append(", $t").append(exprRegister).append(", -1\n");
                 break;
             case "+": // Operador unario +
                 // En MIPS, +x es simplemente x, así que no se necesita generar código adicional.
                 break;
             case "-": // Operador unario -
-                code.append("neg $t").append(exprRegister).append(", $t").append(exprRegister).append("\n");
+                code.append("\tneg $t").append(exprRegister).append(", $t").append(exprRegister).append("\n");
                 break;
         }
         CodeGenerator.getNextRegister();

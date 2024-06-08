@@ -403,36 +403,50 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        code.append("\n\t# NODO LLAMADA METODO \n");
         if(metodo.equals("constructor")){ // NEW
-            code.append("jal " + this.getNodeType() + "_constructor\n");
-            //code.append("addi $sp, $sp, -4  # Reservar espacio en la pila\n");
-            //code.append("sw $v0,"+ 6+ "0($sp)     # Guardar el puntero de la estructura en la pila\n");
+            if(this.argumentos != null){
+                code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
+                for (NodoLiteral a : argumentos) {
+                    int pos = 0;
+                    code.append(a.generateNodeCode(ts));
+                    code.append("\tsw $t" + CodeGenerator.getBefRegister() +"," + pos +"($sp)\n");
+                    pos += 4;
+                }
+            }
+            code.append("\tjal " + this.getNodeType() + "_constructor\n");
 
+            code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
         } else {
             int cont = 0;
-            for (NodoLiteral argumento : argumentos) {
-                if(cont <= 2){
-                    code.append(argumento.generateNodeCode(ts)); // li $tn...
-                    int leftReg = CodeGenerator.registerCounter - 1;
-                    code.append("move $a"+ cont + ", $t" + leftReg + "\n");
-                    cont ++;
-                } else {
-                    // Caso de que haya mas parametros que 2 o excepcion
+            if(this.argumentos != null){
+                code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
+                for (NodoLiteral a : argumentos) {
+                    int pos =  0;
+                    if (ts.getStructsPred().containsKey(this.nameStruct)) {
+                        code.append(a.generateNodeCode(ts));
+                        code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
+                    } else {
+                        code.append(a.generateNodeCode(ts));
+                        code.append("\tsw $t" + CodeGenerator.getBefRegister() + "," + pos + "($sp)\n");
+                    }
+                    pos += 4;
                 }
             }
 
             if(ts.getStructsPred().get(this.getParent()) != null) { // Acceso desde un struct predefinido
-                code.append("jal " + this.getParent() +"_" + this.metodo + " # Llamar al método\n");
-                code.append("move $a0, $t" + CodeGenerator.getNextRegister()+ "\n");
+                code.append("\tjal " + this.getParent() +"_" + this.metodo + " # Llamar al método\n");
+                code.append("\tmove $a0, $t" + CodeGenerator.getNextRegister()+ "\n");
                 return code.toString();
+
             } else {
-                code.append("move $a" + cont + ", $s0 # Pasar la instancia\n");
-                code.append("lw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
+                code.append("\tmove $a" + cont + ", $s0 # Pasar la instancia\n");
+                code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
                 int reg = CodeGenerator.registerCounter-1;
-                code.append("lw $t" + CodeGenerator.getNextRegister() + ", " + (ts.getStruct(this.getParent()).getMetodo(this.getMetodo()).getPos()- 1 ) * 4 +
+                code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", " + (ts.getStruct(this.getParent()).getMetodo(this.getMetodo()).getPos()- 1 ) * 4 +
                         "($t" + reg + ") # Cargar la dirección del método\n");
                 reg = CodeGenerator.registerCounter-1;
-                code.append("jalr $t" + reg + " # Llamar al método\n");
+                code.append("\tjalr $t" + reg + " # Llamar al método\n");
             }
 
         }

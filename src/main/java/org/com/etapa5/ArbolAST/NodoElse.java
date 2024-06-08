@@ -61,12 +61,10 @@ public class NodoElse extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-
         // Generar código para las sentencias del else
         for (NodoLiteral sentencia : this.sentencias) {
             code.append(sentencia.generateNodeCode(ts));
         }
-
         return code.toString();
     }
 

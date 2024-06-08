@@ -69,7 +69,7 @@ public class NodoExpBin extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-
+        code.append("\n\t# NODO EXPRESION BINARIA \n");
         // Generar código para el nodo izquierdo
         code.append(this.nodoI.generateNodeCode(ts));
         int leftRegister = CodeGenerator.registerCounter - 1;
@@ -82,40 +82,40 @@ public class NodoExpBin extends NodoLiteral {
 
         switch (op) {
             case "+":
-                code.append("add $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tadd $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "-":
-                code.append("sub $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tsub $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "*":
-                code.append("mul $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tmul $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "/":
-                code.append("div $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tdiv $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "||":
-                code.append("or $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tor $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "&&":
-                code.append("and $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tand $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "==":
-                code.append("seq $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tseq $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "!=":
-                code.append("sne $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tsne $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "<":
-                code.append("slt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tslt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case ">":
-                code.append("sgt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tsgt $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case "<=":
-                code.append("sle $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tsle $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             case ">=":
-                code.append("sge $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
+                code.append("\tsge $t").append(resultRegister).append(", $t").append(leftRegister).append(", $t").append(rightRegister).append("\n");
                 break;
             default:
                 System.out.println("SE ESCAPO UN CASO NODOEXPBIN " + op);

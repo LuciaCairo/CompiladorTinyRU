@@ -65,7 +65,7 @@ public class NodoAccesoArray extends NodoLiteral {
 
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-
+        code.append("\n\t# NODO ACCESO ARRAY \n");
         // Generar código para evaluar el nodo que representa el arreglo (nodo)
         code.append(this.nodo.generateNodeCode(ts));
         int arrayReg = CodeGenerator.registerCounter - 1;

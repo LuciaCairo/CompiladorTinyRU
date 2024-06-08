@@ -10,6 +10,7 @@ public class NodoWhile extends NodoLiteral {
 
     private NodoLiteral exp;
     private LinkedList<NodoLiteral> sentencias;
+    public static int count = -1;
 
     // Constructor
     public NodoWhile(int line, int col, NodoLiteral exp){
@@ -67,21 +68,18 @@ public class NodoWhile extends NodoLiteral {
 
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
+        count = ++count;
         StringBuilder code = new StringBuilder();
-
-        // Generar etiquetas únicas para el comienzo del bucle y la salida del bucle
-        String labelStart = "while_start";
-        String labelEnd = "while_end";
+        code.append("\n\t# NODO WHILE \n");
 
         // Generar la etiqueta para el comienzo del bucle
-        code.append(labelStart).append(":\n");
-
+        code.append("\twhile_start_"+ count +":\n");
         // Generar el código para la evaluación de la expresión de la condición
         code.append(this.exp.generateNodeCode(ts));
-        int condReg = CodeGenerator.registerCounter - 1;
+        int condReg = CodeGenerator.getBefRegister();
 
         // Generar el código para el salto a la salida del bucle si la condición es falsa
-        code.append("beq $t").append(condReg).append(", $zero, ").append(labelEnd).append("\n");
+        code.append("\tbeq $t").append(condReg).append(", $zero, ").append("while_end_"+ count).append("\n");
 
         // Generar el código para las sentencias dentro del bucle
         for (NodoLiteral sentencia : this.sentencias) {
@@ -89,10 +87,10 @@ public class NodoWhile extends NodoLiteral {
         }
 
         // Generar el salto al comienzo del bucle para la próxima iteración
-        code.append("j ").append(labelStart).append("\n");
+        code.append("\tj ").append("while_start_"+ count).append("\n");
 
         // Generar la etiqueta para la salida del bucle
-        code.append(labelEnd).append(":\n");
+        code.append("\twhile_end_"+ count).append(":\n");
 
         return code.toString();
     }

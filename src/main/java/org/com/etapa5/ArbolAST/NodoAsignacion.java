@@ -107,15 +107,17 @@ public class NodoAsignacion extends NodoLiteral {
     // Funcion para generar el codigo en MIPS de una asignacion
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-
+        code.append("\n\t# NODO ASIGNACION \n");
+        int regInst = CodeGenerator.getBefRegister(); // Puntero a la direccion de memoria que me dio el heap
 
         // CASO DE NODO LITERAL (n = ...)
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             if(this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){
                 code.append(this.nodoD.generateNodeCode(ts));
                 if(ts.getCurrentStruct().getName().equals("start")) {
-                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
-                    code.append("sw $v0," + offset  + "($sp)   # Guardar el puntero de la estructura en la pila\n");
+                    code.append("\t # Cargo el resultado de retorno " + nodoI.getName() + "\n");
+                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4 + 4;
+                    code.append("\tsw $v0, -" + offset  + "($fp)   # Guardar el puntero de la estructura en la pila\n");
                 }
 
             } else {
@@ -137,8 +139,9 @@ public class NodoAsignacion extends NodoLiteral {
 
                         } // Si no, voy a ver si lo que quiero modificar es un atributo
                         else if (ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())) {
+                            code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4;
-                            code.append("sw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t0)\n");
+                            code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t"+ regInst+")\n");
                         }
                     }
                 } else { // Significa que estoy en start
@@ -146,9 +149,9 @@ public class NodoAsignacion extends NodoLiteral {
                     int regD = CodeGenerator.getBefRegister();
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
                     // si es una variable en la pila por ejemplo
-
+                    code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
                     int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
-                    code.append("sw $t" + regD + ", " + offset + "($sp)\n");
+                    code.append("\tsw $t" + regD + ", " + offset + "($sp)\n");
 
 
                 }
@@ -162,8 +165,8 @@ public class NodoAsignacion extends NodoLiteral {
             code.append(this.nodoD.generateNodeCode(ts));
             int regI = CodeGenerator.getBefRegister();
 
-            code.append("sw $t" + regD + ", " + regI + "\n");
-            code.append("sw $t" + regI + ", 0($t0)\n");
+            code.append("\tsw $t" + regD + ", " + regI + "\n");
+            code.append("\tsw $t" + regI + ", 0($t0)\n");
             // COMO CARGO ??
 
         }

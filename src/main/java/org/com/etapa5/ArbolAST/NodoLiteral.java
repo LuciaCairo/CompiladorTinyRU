@@ -132,7 +132,7 @@ public class NodoLiteral extends Nodo{
         String value = this.getValue();
         String n = this.getName();
         if (n.equals("literal entero")) {
-            code = "li $t" + CodeGenerator.registerCounter + ", " + value + "\n";
+            code = "\tli $t" + CodeGenerator.registerCounter + ", " + value + "\n";
         } else if (n.equals("literal str")) {
             // Los literales de cadena pueden necesitar una etiqueta en la sección .data
             String label = "str" + CodeGenerator.registerCounter;
@@ -140,27 +140,32 @@ public class NodoLiteral extends Nodo{
             code += ".text\nla $t" + CodeGenerator.registerCounter+ ", " + label + "\n";
         } else if (n.equals("literal char")) {
             int charValue = (int) value.charAt(0); // Obtiene el valor ASCII del caracter
-            code = "li $t" + CodeGenerator.registerCounter + ", " + charValue + "\n";
+            code = "\tli $t" + CodeGenerator.registerCounter + ", " + charValue + "\n";
         } else if (n.equals("literal bool")) {
             int boolValue = value.equals("true") ? 1 : 0;
-            code = "li $t" + CodeGenerator.registerCounter + ", " + boolValue + "\n";
+            code = "\tli $t" + CodeGenerator.registerCounter + ", " + boolValue + "\n";
         } else if (n.equals("nil")) {
-            code = "li $t" + CodeGenerator.registerCounter + ", 0\n";
+            code = "\tli $t" + CodeGenerator.registerCounter + ", 0\n";
         } else {
             if(ts.getCurrentStruct().getName().equals("start")){
                 int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
-                code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
             } else {
-                if ((ts.getCurrentMetod().getParametros().containsKey(this.getName()))) {
-                    code = "move $t" + CodeGenerator.registerCounter + ", $a" + ts.getCurrentMetod().getParametros().get(this.getName()).getPos() +
-                            "  # Guarda parametro en un registro temporal\n";
-                } else if(ts.getCurrentStruct().getVariables().containsKey(this.getName())) {
-                    int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
-                    code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($fp)\n";
-                }
-                else {
-                    int offset = ts.getCurrentStruct().getAtributos().get(this.getName()).getPos() * 4;
-                    code = "lw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                if(ts.getCurrentStruct().getName().equals("start")){
+                    int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
+                    code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                } else {
+                    if ((ts.getCurrentMetod().getParametros().containsKey(this.getName()))) {
+                        int posP = ts.getCurrentMetod().getParametros().get(this.getName()).getPos() * 4 +8;
+                        code = "\tlw $t" + CodeGenerator.registerCounter + "," + posP + "($fp)" +
+                                "# Guarda parametro en un registro temporal\n";
+                    } else if (ts.getCurrentMetod().getVariables().containsKey(this.getName())) {
+                        int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
+                        code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                    } else {
+                        int offset = ts.getCurrentStruct().getAtributos().get(this.getName()).getPos() * 4;
+                        code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                    }
                 }
             }
         }

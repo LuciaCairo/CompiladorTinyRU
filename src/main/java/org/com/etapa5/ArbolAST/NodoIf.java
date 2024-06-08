@@ -10,6 +10,7 @@ public class NodoIf extends NodoLiteral {
     private NodoLiteral exp;
     private LinkedList<NodoLiteral> sentencias;
     private NodoElse nodoElse = null;
+    public static int count = -1;
 
     // Constructor
     public NodoIf(int line, int col, NodoLiteral exp){
@@ -76,34 +77,31 @@ public class NodoIf extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        count = ++ count;
 
         // Generar código para la expresión de la condición (exp)
         code.append(this.exp.generateNodeCode(ts));
-        int condReg = CodeGenerator.registerCounter - 1;
-
-        // Generar etiquetas únicas para las secciones del if y else
-        String labelElse = "else";
-        String labelEndIf = "endif";
+        int condReg = CodeGenerator.getBefRegister();
 
         // Generar código para la evaluación de la condición y el salto a la sección else si es falso
-        code.append("beq $t").append(condReg).append(", $zero, ").append(labelElse).append("\n");
+        code.append("\t # Condicion\n");
+        code.append("\tbeq $t").append(condReg).append(", $zero, ").append("else_"+count).append("\n");
 
         // Generar código para las sentencias del if
+        code.append("\t # Sentencias if\n");
         for (NodoLiteral sentencia : this.sentencias) {
             code.append(sentencia.generateNodeCode(ts));
         }
-
-        // Generar salto al final del if después de ejecutar las sentencias del if
-        code.append("j ").append(labelEndIf).append("\n");
+        code.append("\tj if_end_" + count).append("\n");
 
         // Generar la etiqueta y el código para las sentencias del else
-        code.append(labelElse).append(":\n");
+        code.append("\telse_" + count).append(":\n");
+        code.append("\t # Sentencias else\n");
         if (this.nodoElse != null) {
             code.append(this.nodoElse.generateNodeCode(ts));
         }
-
         // Generar la etiqueta para el final del if
-        code.append(labelEndIf).append(":\n");
+        code.append("\tif_end_" + count).append(":\n");
 
         return code.toString();
     }

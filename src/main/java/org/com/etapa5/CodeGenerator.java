@@ -124,11 +124,14 @@ public class CodeGenerator {
         ts.setCurrentMetod(null);
 
         this.text += "\nmain:\n";
-        int numVar = (ts.getCurrentStruct().getVariables().size() + 1) * 4;
-        this.text += "addi $sp, $sp, -" + numVar + "# Reservo espacio en la pila\n" +
-                "la $ra, end_program #Carga en $ra el puntero al espacio de fin de programa\n" +
-                "sw $ra," + numVar + "($sp)" + // Es siempre 0, porque estamos guardando en ra, lo q acabamos de cargar anteriormente
-                " # Guardar la dirección de retorno en la pila (end_program)\n";
+        int numVar = (ts.getCurrentStruct().getVariables().size()) * 4;
+        this.text += "\taddi $sp, $sp, -8   # Reservo espacio en la pila para el ra y el fp\n" +
+                "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
+                "\tsw $ra, 4($sp)           # Guardar el return address actual en la pila\n" +
+                "\tmove $fp, $sp            # Establecer el nuevo frame pointer\n";
+
+        this.text += "\t# Reservar espacio en la pila para las variables locales\n" +
+                "\taddi $sp, $sp, -" + numVar + "\n";
 
         // Recorro las sentencias de start
         if (!value.getSentencias().isEmpty()) {
@@ -136,13 +139,14 @@ public class CodeGenerator {
                 // Para cada sentencia genero codigo
                 this.text += s.generateNodeCode(ts);
             }
-            //this.text +="li $v0, 10\nsyscall\n"; // CIERRE
         }
 
-        this.text += "# Restaurar la pila y salir\n" +
-                "lw $ra," +numVar+  "($sp)       # Restaurar la dirección de retorno\n" +
-                "addi $sp, $sp," +numVar+  "    # Limpiar el espacio usado en la pila\n" +
-                "jr $ra";
+        this.text += "\t# Restaurar el estado de la pila y terminar el programa\n" +
+                "\tmove $sp, $fp            # Restaurar el puntero de pila\n" +
+                "\tlw $fp, 0($sp)           # Restaurar el frame pointer\n" +
+                "\tlw $ra, 4($sp)           # Restaurar el return address\n" +
+                "\taddi $sp, $sp, 8         # Establecer el nuevo frame pointer\n" +
+                "\tli $v0, 10\nsyscall\n";
 
 
         // Recorro cada struct
@@ -156,17 +160,24 @@ public class CodeGenerator {
                 for (NodoMetodo m : value.getMetodos().values()) {
                     ts.setCurrentStruct(ts.getStruct(value.getName()));
                     ts.setCurrentMetod(ts.getCurrentStruct().getMetodo(m.getName()));
-                    int sizeAtr = (ts.getCurrentStruct().getAtributos().size() * 4 ) + 4;
+                    int sizeAtr = (ts.getCurrentStruct().getAtributos().size() * 4 );
                     this.text += "\n\n" + value.getName() + "_" + m.getName() + " :\n";
                     if(m.getName().equals("constructor")) {
+                        this.text += "\taddi $sp, $sp, -8   # Reservo espacio en la pila para el ra y el fp\n" +
+                                "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
+                                "\tsw $ra, 4($sp)           # Guardar el return address actual en la pila\n" +
+                                "\tmove $fp, $sp            # Establecer el nuevo frame pointer\n";
+
                         int reg = CodeGenerator.getNextRegister();
+                        int regBef = CodeGenerator.getBefRegister();
                         this.text += "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
                                 + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
                                 //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
                                 + "\tmove $t" + reg + ",$v0 # Guardamos la dirección de la memoria reservada\n";
+
                         int offset = 0;
-                        this.text += "# Primero inicializamos todo por defecto\n";
+                        this.text += "\t# Primero inicializamos todo por defecto\n";
                         for (EntradaAtributo a : ts.getCurrentStruct().getAtributos().values()) {
                             int reg1 = CodeGenerator.getNextRegister();
                             if(a.getType().equals("Int")){
@@ -191,6 +202,7 @@ public class CodeGenerator {
                             }
                             offset += 4;
                         }
+
                         this.text +="\tmove $v0, $t" + reg +"\n";
                     }
 
@@ -198,12 +210,20 @@ public class CodeGenerator {
                     if(!m.getSentencias().isEmpty()){
 
                         for (NodoLiteral s : m.getSentencias()) {
-                            this.text += "\tmove $t0, $v0   # Guardamos la dirección de la memoria reservada\n";
+                            this.text += "\t\t\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
+                            int reg1 = CodeGenerator.getBefRegister();
                             // Para cada nodo genero codigo
                             this.text += s.generateNodeCode(ts);
-                            this.text += "\tmove $v0, $t0     # Retornar la dirección base de la estructura en $v0\n" +
-                                    "\tjr $ra\n";
+                            //this.text += "\tmove $v0, $t" + reg1 + "     # Retornar la dirección base de la estructura en $v0\n";
                         }
+                        int reg = CodeGenerator.getBefRegister() - 1;
+                        this.text += "\tmove $v0, $t" + reg+ "     # Retornar la dirección base de la estructura en $v0\n" +
+                                "\t# Restaurar el estado de la pila\n" +
+                                "\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
+                                "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
+                                "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
+                                "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
+                                "\tjr $ra\n";
                     }
                 }
             }
@@ -317,7 +337,7 @@ public class CodeGenerator {
     }
 
     public static int getNextRegister() {
-        if(registerCounter == 9){
+        if(registerCounter == 7){
             resetRegisterCounter();
             return registerCounter;
         } else {
@@ -328,7 +348,7 @@ public class CodeGenerator {
     public static int getBefRegister() {
 
         if(registerCounter == 0){
-            return 9;
+            return 7;
         } else {
             return registerCounter - 1;
         }
