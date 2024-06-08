@@ -150,8 +150,8 @@ public class NodoAsignacion extends NodoLiteral {
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
                     // si es una variable en la pila por ejemplo
                     code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
-                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4;
-                    code.append("\tsw $t" + regD + ", " + offset + "($sp)\n");
+                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4+4;
+                    code.append("\tsw $t" + regD + ", -" + offset + "($fp)\n");
 
 
                 }

@@ -423,6 +423,8 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
                 for (NodoLiteral a : argumentos) {
                     int pos =  0;
+
+
                     if (ts.getStructsPred().containsKey(this.nameStruct)) {
                         code.append(a.generateNodeCode(ts));
                         code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");

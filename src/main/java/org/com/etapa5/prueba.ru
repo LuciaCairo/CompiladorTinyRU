@@ -14,7 +14,8 @@ impl Fibonacci {
 start{
     Fibonacci fib;
     Int n;
-    fib = new Fibonacci(10);
 
-    (IO.out_int(5));
+    fib = new Fibonacci(15);
+    n=fib.j;
+    (IO.out_int(n));
 }

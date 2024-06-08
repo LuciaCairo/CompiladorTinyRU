@@ -125,6 +125,7 @@ public class CodeGenerator {
 
         this.text += "\nmain:\n";
         int numVar = (ts.getCurrentStruct().getVariables().size()) * 4;
+
         this.text += "\taddi $sp, $sp, -8   # Reservo espacio en la pila para el ra y el fp\n" +
                 "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
                 "\tsw $ra, 4($sp)           # Guardar el return address actual en la pila\n" +

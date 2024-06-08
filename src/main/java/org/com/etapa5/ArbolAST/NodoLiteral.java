@@ -148,8 +148,9 @@ public class NodoLiteral extends Nodo{
             code = "\tli $t" + CodeGenerator.registerCounter + ", 0\n";
         } else {
             if(ts.getCurrentStruct().getName().equals("start")){
-                int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4;
-                code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+
+                int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4 +4;
+                code = "\tlw $t" + CodeGenerator.registerCounter + ", -" + offset + "($fp)\n";
             } else {
                 if(ts.getCurrentStruct().getName().equals("start")){
                     int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
