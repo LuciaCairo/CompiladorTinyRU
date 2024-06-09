@@ -140,6 +140,7 @@ public class NodoAsignacion extends NodoLiteral {
                         } // Si no, voy a ver si lo que quiero modificar es un atributo
                         else if (ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())) {
                             code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
+
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
                             code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($t"+ regInst+")\n");
                         }
@@ -149,9 +150,16 @@ public class NodoAsignacion extends NodoLiteral {
                     int regD = CodeGenerator.getBefRegister();
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
                     // si es una variable en la pila por ejemplo
-                    code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
-                    int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4+4;
-                    code.append("\tsw $t" + regD + ", -" + offset + "($fp)\n");
+                    if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
+                        code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
+                        int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4+4;
+                        code.append("\tsw $t0"  + ", -" + offset + "($fp)\n");
+                    }else{
+                        code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
+                        int offset = ts.getCurrentStruct().getVariables().get(nodoI.getName()).getPos() * 4+4;
+                        code.append("\tsw $v0"  + ", -" + offset + "($fp)\n");
+                    }
+
 
 
                 }

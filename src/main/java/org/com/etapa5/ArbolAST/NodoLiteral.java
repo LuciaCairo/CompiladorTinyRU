@@ -131,8 +131,9 @@ public class NodoLiteral extends Nodo{
         String code = "";
         String value = this.getValue();
         String n = this.getName();
+
         if (n.equals("literal entero")) {
-            code = "\tli $t" + CodeGenerator.registerCounter + ", " + value + "\n";
+            code = "\tli $t" + CodeGenerator.getNextRegister() + ", " + value + "\n";
         } else if (n.equals("literal str")) {
             // Los literales de cadena pueden necesitar una etiqueta en la sección .data
             String label = "str" + CodeGenerator.registerCounter;
@@ -161,6 +162,7 @@ public class NodoLiteral extends Nodo{
                         code = "\tlw $t" + CodeGenerator.registerCounter + "," + posP + "($fp)" +
                                 "# Guarda parametro en un registro temporal\n";
                     } else if (ts.getCurrentMetod().getVariables().containsKey(this.getName())) {
+
                         int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
                         code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
                     } else {

@@ -13,11 +13,16 @@ impl Fibonacci {
 
         ret ++k;
     }
+    fn fg()->void{
+    }
 }
 
 start{
     Fibonacci fib;
     Int n;
-    fib = new Fibonacci(8);
-    n=fib.incrementador(5);
+    n=6;
+    fib = new Fibonacci(5);
+
+    n=fib.incrementador(n);
+    (IO.out_int(n));
 }

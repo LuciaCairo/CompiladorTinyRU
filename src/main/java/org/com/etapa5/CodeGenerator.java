@@ -12,6 +12,7 @@ public class CodeGenerator {
     TablaSimbolos ts;
     AST ast;
     private List<AbstractMap.SimpleEntry<String, String>> data = new ArrayList<>();
+
     private String text = "";
     String code = "";
     public static int registerCounter = 0;
@@ -207,27 +208,51 @@ public class CodeGenerator {
                         }
 
                         this.text +="\tmove $v0, $t" + reg +"\n";
+                    }else{ //metodo comun
+                        this.text += "\taddi $sp, $sp, -8   # Reservo espacio en la pila para el ra y el fp\n" +
+                                "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
+                                "\tsw $ra, 4($sp)           # Guardar el return address actual en la pila\n" +
+                                "\tmove $fp, $sp            # Establecer el nuevo frame pointer\n"+
+                                "# Obtener el puntero al objeto\n" +
+                                "lw $a0, 0($a0)# Cargar el puntero al objeto (self)\n";
                     }
 
                     // Recorro las sentencias del metodo
                     if(!m.getSentencias().isEmpty()){
-                        this.text += "\t\t\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n"; //esta linea la agregamos para solucionar problema move linea 87
-                        for (NodoLiteral s : m.getSentencias()) {
-                            this.text += "\t\t\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
-                            int reg1 = CodeGenerator.getBefRegister();
-                            // Para cada nodo genero codigo
-                            this.text += s.generateNodeCode(ts);
-                            //this.text += "\tmove $v0, $t" + reg1 + "     # Retornar la dirección base de la estructura en $v0\n";
+                        if (m.getName().equals("constructor")){
+                            this.text += "\t\t\tmove $s1"  + ", $v0   # Guardamos la dirección de la memoria reservadaa line\n"; //esta linea la agregamos para solucionar problema move linea 87
+                            int reg1=0;
+                            for (NodoLiteral s : m.getSentencias()) {
+                                this.text += "\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
+                                reg1 = CodeGenerator.getBefRegister();
+                                // Para cada nodo genero codigo
+                                this.text += s.generateNodeCode(ts);
+                                //this.text += "\tmove $v0, $t" + reg1 + "     # Retornar la dirección base de la estructura en $v0\n";
+                            }
+                            int reg = CodeGenerator.getBefRegister() - 1;
+
+                            this.text += "\tmove $v0, $t" + reg1+ "     # Retornar la dirección base de la estructura en $v0\n" +
+                                    "\t# Restaurar el estado de la pila\n" +
+                                    "\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
+                                    "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
+                                    "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
+                                    "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
+                                    "\tjr $ra\n";
+                        }else{
+
+                            for (NodoLiteral s : m.getSentencias()) {
+                                // Para cada nodo genero codigo
+                                this.text += s.generateNodeCode(ts);
+                                this.text += "\tmove $v0, $t" +CodeGenerator.getBefRegister()+ "     # Retornar la dirección base de la estructura en $v0\n";
+                                this.text +="\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
+                                        "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
+                                        "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
+                                        "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
+                                        "\tjr $ra\n";
+                            }
                         }
-                        int reg = CodeGenerator.getBefRegister() - 1;
-                        this.text += "\tmove $v0, $t" + reg+ "     # Retornar la dirección base de la estructura en $v0\n" +
-                                "\t# Restaurar el estado de la pila\n" +
-                                "\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
-                                "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
-                                "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
-                                "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
-                                "\tjr $ra\n";
                     }
+
                 }
             }
         }
@@ -355,6 +380,21 @@ public class CodeGenerator {
         } else {
             return registerCounter - 1;
         }
+    }
+    public static int getRest(int n) {
+        int count = registerCounter;
+        System.out.println(count);
+        for (int i = 0; i <= n; i++) {
+            if (count == 0){
+                count  =7;
+            }else{
+                count = count -1;
+            }
+
+
+        }
+        System.out.println(count);
+        return count;
     }
 
     public static void resetRegisterCounter() {

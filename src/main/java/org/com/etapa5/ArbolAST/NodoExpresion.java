@@ -116,7 +116,7 @@ public class NodoExpresion extends NodoLiteral {
 
         // Si es una expresión de retorno, mover el resultado al registro $v0 (que se usa para valores de retorno en MIPS)
         if (this.getName().equals("Retorno")) {
-            code.append("\tmove $v0, $t").append(expRegister).append("\n");
+            //code.append("\tmove $v0, $t").append(expRegister).append("\n");
         }
 
         return code.toString();

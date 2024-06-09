@@ -31,6 +31,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     }
 
     // Getters
+
     public String getNameStruct(){
         return nameStruct;
     }
@@ -424,7 +425,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 for (NodoLiteral a : argumentos) {
                     int pos =  0;
 
-
                     if (ts.getStructsPred().containsKey(this.nameStruct)) {
                         code.append(a.generateNodeCode(ts));
                         code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
@@ -442,13 +442,16 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 return code.toString();
 
             } else {
-                code.append("\tmove $a" + cont + ", $s0 # Pasar la instancia\n");
-                code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
-                int reg = CodeGenerator.registerCounter-1;
-                code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", " + (ts.getStruct(this.getParent()).getMetodo(this.getMetodo()).getPos()- 1 ) * 4 +
-                        "($t" + reg + ") # Cargar la dirección del método\n");
-                reg = CodeGenerator.registerCounter-1;
-                code.append("\tjalr $t" + reg + " # Llamar al método\n");
+                //code.append("\tmove $a" + cont + ", $s0 # Pasar la instancia\n");
+                //code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
+                //int reg = CodeGenerator.registerCounter-1;
+                //code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", " + (ts.getStruct(this.getParent()).getMetodo(this.getMetodo()).getPos()- 1 ) * 4 +
+                //        "($t" + reg + ") # Cargar la dirección del método\n");
+
+
+                code.append("\tjalr $s0 # Llamar al método\n");
+                code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
+
             }
 
         }
