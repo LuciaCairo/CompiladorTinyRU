@@ -9,9 +9,10 @@ impl Fibonacci {
         j=c; /? inicializo j
         suma=0; /? inicializo suma
     }
-    fn incrementador(Int k)->Int{
-
-        ret ++k;
+    fn imprimo_numero(Int num) -> void{
+        (IO.out_str("f_"));
+        (IO.out_int(num));
+        (IO.out_str("="));
     }
     fn fg()->void{
     }
@@ -19,10 +20,9 @@ impl Fibonacci {
 
 start{
     Fibonacci fib;
-    Int n;
-    n=6;
-    fib = new Fibonacci(5);
 
-    n=fib.incrementador(n);
-    (IO.out_int(n));
+
+    fib = new Fibonacci(6);
+
+    (fib.imprimo_numero(6));
 }

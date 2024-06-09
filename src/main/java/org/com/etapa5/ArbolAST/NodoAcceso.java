@@ -101,15 +101,16 @@ public class NodoAcceso extends NodoLiteral {
             } else {
                 posInst = 0;
             }
+            int reg1=CodeGenerator.getNextRegister();
             code.append("\t # Cargo la instancia " + nodoI.getName() + "\n");
-            code.append("\tlw $t" + CodeGenerator.getNextRegister() +", -" + posInst+"($fp) #carga en $t... la direccion de la instancia\n");
+            code.append("\tlw $t" + reg1 +", -" + posInst+"($fp) #carga en $t... la direccion de la instancia\n");
 
             if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
                 // El nodo derecho es un atributo
                 code.append("\t # Accedo al atributo " + nodoD.getName() + "\n");
                 int reg = CodeGenerator.getBefRegister();
                 int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4 +4;
-                code.append("\tlw $t" + CodeGenerator.getNextRegister() +"," + posAtr +" ($t"+ reg + ")\n");
+                code.append("\tlw $t" + reg1 +"," + posAtr +" ($t"+ reg + ")\n");
             }else if (this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){ //
 
                 // El nodo derecho es una llamada metodo

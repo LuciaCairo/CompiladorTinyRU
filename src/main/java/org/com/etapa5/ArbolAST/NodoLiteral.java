@@ -133,7 +133,7 @@ public class NodoLiteral extends Nodo{
         String n = this.getName();
 
         if (n.equals("literal entero")) {
-            code = "\tli $t" + CodeGenerator.getNextRegister() + ", " + value + "\n";
+            code = "\tli $t" + CodeGenerator.registerCounter + ", " + value + "\n";
         } else if (n.equals("literal str")) {
             // Los literales de cadena pueden necesitar una etiqueta en la sección .data
             String label = "str" + CodeGenerator.registerCounter;

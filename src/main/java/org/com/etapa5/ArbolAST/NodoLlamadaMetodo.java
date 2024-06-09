@@ -427,9 +427,11 @@ public class NodoLlamadaMetodo extends NodoLiteral{
 
                     if (ts.getStructsPred().containsKey(this.nameStruct)) {
                         code.append(a.generateNodeCode(ts));
+
                         code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
                     } else {
                         code.append(a.generateNodeCode(ts));
+
                         code.append("\tsw $t" + CodeGenerator.getBefRegister() + "," + pos + "($sp)\n");
                     }
                     pos += 4;

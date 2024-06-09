@@ -207,7 +207,7 @@ public class CodeGenerator {
                             offset += 4;
                         }
 
-                        this.text +="\tmove $v0, $t" + reg +"\n";
+                       // this.text +="\tmove $v0, $t" + reg +"\n";
                     }else{ //metodo comun
                         this.text += "\taddi $sp, $sp, -8   # Reservo espacio en la pila para el ra y el fp\n" +
                                 "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
