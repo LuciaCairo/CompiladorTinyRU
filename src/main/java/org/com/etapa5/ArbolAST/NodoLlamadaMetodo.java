@@ -405,6 +405,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
         code.append("\n\t# NODO LLAMADA METODO \n");
+        code.append("\t# Preparo para realizar la llamada al metodo "+this.metodo+"\n");
         if(metodo.equals("constructor")){ // NEW
             if(this.argumentos != null){
                 code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
@@ -421,6 +422,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         } else {
             int cont = 0;
             if(this.argumentos != null){
+
                 code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
                 for (NodoLiteral a : argumentos) {
                     int pos =  0;
@@ -431,8 +433,10 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                         code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
                     } else {
                         code.append(a.generateNodeCode(ts));
+                        // Voy a ver si lo que quiero asignar es una variable
 
                         code.append("\tsw $t" + CodeGenerator.getBefRegister() + "," + pos + "($sp)\n");
+
                     }
                     pos += 4;
                 }
@@ -444,6 +448,22 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 return code.toString();
 
             } else {
+                if (ts.getCurrentStruct().getName().equals("start")){
+                    code.append("\tjalr $s0 # Llamar al método\n");
+                    code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
+
+                }else{
+
+                    int posMet=ts.getCurrentStruct().getMetodos().get(this.metodo).getPos()*4;
+
+                    int posVtable=CodeGenerator.getNextRegister();
+
+                    //siempre lo busco en s2, pq es donde voy a tener siempre la instancia guardada antes de cambiar de puntero
+                    code.append("\tlw $t"+posVtable+", 0($s1) #cargo en un registro temporal la direccion a la vtable para recuperar el puntero del metodo " +this.metodo+"\n"
+                            +"\tlw $s0, "+posMet+"($t"+posVtable+") #cargar en un registro temporal la direccion al metodo que quiero llamar\n");
+                    code.append("\tjalr $s0 # Llamar al método\n");
+                    code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
+                }
                 //code.append("\tmove $a" + cont + ", $s0 # Pasar la instancia\n");
                 //code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
                 //int reg = CodeGenerator.registerCounter-1;
@@ -451,8 +471,6 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 //        "($t" + reg + ") # Cargar la dirección del método\n");
 
 
-                code.append("\tjalr $s0 # Llamar al método\n");
-                code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
 
             }
 

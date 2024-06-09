@@ -212,8 +212,9 @@ public class CodeGenerator {
                                 "\tsw $fp, 0($sp)           # Guardar el frame pointer actual en la pila\n" +
                                 "\tsw $ra, 4($sp)           # Guardar el return address actual en la pila\n" +
                                 "\tmove $fp, $sp            # Establecer el nuevo frame pointer\n"+
-                                "# Obtener el puntero al objeto\n" +
-                                "lw $a0, 0($a0)# Cargar el puntero al objeto (self)\n";
+                                "\tmove $s1,$a0 #guardo el puntero a la instancia del objeto q se llamo el metodo\n"+
+                                "# Obtener el puntero al objeto\n" ;
+                                //"lw $a0, 0($a0)# Cargar el puntero al objeto (self)\n";
                     }
 
                     // Recorro las sentencias del metodo

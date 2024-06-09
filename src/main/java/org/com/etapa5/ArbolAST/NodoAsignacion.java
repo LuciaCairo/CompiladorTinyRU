@@ -149,9 +149,20 @@ public class NodoAsignacion extends NodoLiteral {
 
                         // Voy a ver si lo que quiero asignar es una variable
                         if (ts.getCurrentMetod().getVariables().containsKey(this.nodoI.getName())) {
-
                             // Ver caso de que quiera asignar una variable
                             // Ejemplo a = 1 (que a sea variable del metodo)
+
+                        } // Si no, voy a ver si lo que quiero asignarr es un parametro
+                        else if (ts.getCurrentMetod().getParametros().containsKey(this.nodoI.getName())) {
+                            // Ver caso de que quiera asignar un parametro
+                            // Ejemplo a = 1 (que a sea parametro del metodo )
+
+                        } // Si no, voy a ver si lo que quiero modificar es un atributo
+                        else if (ts.getCurrentStruct().getAtributos().containsKey(this.nodoI.getName())) {
+                            code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
+
+                            int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
+                            code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
                         }
                     }
                 } else { // Significa que estoy en start
