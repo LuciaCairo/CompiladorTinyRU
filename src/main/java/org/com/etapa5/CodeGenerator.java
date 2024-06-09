@@ -11,12 +11,9 @@ import java.util.*;
 public class CodeGenerator {
     TablaSimbolos ts;
     AST ast;
-    private List<AbstractMap.SimpleEntry<String, String>> data = new ArrayList<>();
-
     private String text = "";
     String code = "";
     public static int registerCounter = 0;
-    public static String lit = "";
 
     // Constructor
     public CodeGenerator(TablaSimbolos ts, AST ast){
@@ -24,16 +21,13 @@ public class CodeGenerator {
         this.ast = ast;
     }
 
-    // Getters
-
-    // Setters
-
     // Functions
 
     // Funcion para genera el codigo recorriendo la TS y luego el AST
     public void generateCode() {
 
         // Generar declaraciones de variables a partir de la TS
+        code += ".data\n";
         generateData();
 
         // Generar codigo a partir del AST
@@ -42,13 +36,7 @@ public class CodeGenerator {
         // Generar codigo a partir de los metodos predefinidos
         generatePred();
 
-        // Ahora genero el codigo MIPS ordenado
-        code += ".data\n";
-        for(AbstractMap.SimpleEntry<String, String> d : data) {
-            code += d.getValue() + "\n";
-        }
-
-        code += ".text\n";
+        code += "\n.text\n";
         code += ".globl main\n";
         code += this.text;
         System.out.println(code);
@@ -61,14 +49,19 @@ public class CodeGenerator {
         for (Map.Entry<String, EntradaStructPredef> entry : ts.getStructsPred().entrySet()) {
 
             EntradaStructPredef struct = entry.getValue();
-            this.data.add(new AbstractMap.SimpleEntry<>(struct.getName(), struct.getName()+"_vtable:"));
+            code += struct.getName() + "_vtable:\n";
 
-            // Entonces solo recorro los metodos del struct
-            for (EntradaMetodo m : struct.getMetodos().values()) {
-                //this.data.put(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName());
-                this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
+            List<EntradaMetodo> listaMetodos = new ArrayList<>((ts.getStructPred(struct.getName()).getMetodos()).values());
 
+            // Ordenar la lista según la posición
+            listaMetodos.sort(Comparator.comparingInt(EntradaMetodo::getPos));
+
+            // Recorro los metodos del struct
+            for (EntradaMetodo m : listaMetodos) {
+
+                code += "\t .word " + struct.getName() + "_" + m.getName() + "\n";
             }
+
         }
 
         // Recorro los structs de la TS
@@ -76,16 +69,22 @@ public class CodeGenerator {
 
             EntradaStruct struct = entry.getValue();
 
-            if(!struct.getName().equals("start")){ // Ahora para los demas structs
-                this.data.add(new AbstractMap.SimpleEntry<>(struct.getName(), struct.getName()+"_vtable:"));
+            if (!struct.getName().equals("start")) { // Ahora para los demas structs
+
+                code += struct.getName() + "_vtable:\n";
+
+                List<EntradaMetodo> listaMetodos = new ArrayList<>((ts.getStruct(struct.getName()).getMetodos()).values());
+
+                // Ordenar la lista según la posición
+                listaMetodos.sort(Comparator.comparingInt(EntradaMetodo::getPos));
 
                 // Recorro los metodos del struct
-                for (EntradaMetodo m : struct.getMetodos().values()) {
+                for (EntradaMetodo m : listaMetodos) {
 
-                    this.data.add(new AbstractMap.SimpleEntry<>(m.getName(), "\t .word "+ struct.getName() + "_" + m.getName()));
+                    code += "\t .word " + struct.getName() + "_" + m.getName() + "\n";
 
                     // Recorro las variables del metodo
-                    for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
+                    /*for (EntradaVariable v : struct.getMetodos().get(m.getName()).getVariables().values()) {
                         if(v.getType().equals("Int")){
                             this.data.add(new AbstractMap.SimpleEntry<>(v.getName(), "\n" + struct.getName() +
                                     "_" + m.getName() + "_" + v.getName() + ": .word 0\n"));
@@ -106,7 +105,7 @@ public class CodeGenerator {
                                         "_" + m.getName() + "_" + v.getName() + ": .space 8\n"));
                             }
                         }
-                    }
+                    } */
                 }
             }
 
