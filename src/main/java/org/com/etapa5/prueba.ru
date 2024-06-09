@@ -9,13 +9,15 @@ impl Fibonacci {
         j=c; /? inicializo j
         suma=0; /? inicializo suma
     }
+
     fn imprimo_numero(Int num) -> void{
+        Int h;
+        h=3;
         (IO.out_str("f_"));
-        (IO.out_int(num));
+        (IO.out_int(h));
         (IO.out_str("="));
     }
-    fn fg()->void{
-    }
+
 }
 
 start{

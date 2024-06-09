@@ -240,15 +240,17 @@ public class CodeGenerator {
                         }else{
 
                             for (NodoLiteral s : m.getSentencias()) {
+
                                 // Para cada nodo genero codigo
                                 this.text += s.generateNodeCode(ts);
-                                this.text += "\tmove $v0, $t" +CodeGenerator.getBefRegister()+ "     # Retornar la dirección base de la estructura en $v0\n";
-                                this.text +="\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
-                                        "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
-                                        "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
-                                        "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
-                                        "\tjr $ra\n";
+
                             }
+                            this.text += "\tmove $v0, $t" +CodeGenerator.getBefRegister()+ "     # Retornar la dirección base de la estructura en $v0\n";
+                            this.text +="\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
+                                    "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
+                                    "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
+                                    "\taddi $sp, $sp, 8      # Ajustar el puntero de pila\n" +
+                                    "\tjr $ra\n";
                         }
                     }
 

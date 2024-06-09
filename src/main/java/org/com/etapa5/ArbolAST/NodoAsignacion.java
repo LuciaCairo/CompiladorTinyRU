@@ -125,6 +125,7 @@ public class NodoAsignacion extends NodoLiteral {
 
                 // Ahora vemos si estamos en el constructor
                 if(ts.getCurrentMetod() != null) {
+
                     if (ts.getCurrentMetod().getName().equals("constructor")) {
 
                         // Voy a ver si lo que quiero asignar es una variable
@@ -144,8 +145,20 @@ public class NodoAsignacion extends NodoLiteral {
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
                             code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
                         }
+                    }else{
+
+                        // Voy a ver si lo que quiero asignar es una variable
+                        if (ts.getCurrentMetod().getVariables().containsKey(this.nodoI.getName())) {
+
+                            // Ver caso de que quiera asignar una variable
+                            // Ejemplo a = 1 (que a sea variable del metodo)
+                        }
                     }
                 } else { // Significa que estoy en start
+
+                    if (ts.getCurrentStruct().equals("start")){
+
+                    }
 
                     int regD = CodeGenerator.getBefRegister();
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
