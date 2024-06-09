@@ -7,6 +7,7 @@ import java.util.LinkedList;
 public class NodoElse extends NodoLiteral {
     private LinkedList<NodoLiteral> sentencias;
     private NodoIf nodoIf;
+    public static int count = -1;
 
     // Constructor
     public NodoElse(int line, int col, NodoIf nodoIf){
@@ -61,10 +62,14 @@ public class NodoElse extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
+        int countR= nodoIf.getCount();
         // Generar código para las sentencias del else
         for (NodoLiteral sentencia : this.sentencias) {
             code.append(sentencia.generateNodeCode(ts));
         }
+
+        code.append("\tj if_end_" + countR).append("\n");
+        code.append("\tif_end_" + countR).append(":\n");
         return code.toString();
     }
 

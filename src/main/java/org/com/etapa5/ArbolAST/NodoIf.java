@@ -25,6 +25,9 @@ public class NodoIf extends NodoLiteral {
     }
 
     // Getters
+    public int getCount(){
+        return count;
+    }
     public LinkedList<NodoLiteral> getSentencias() {
         return sentencias;
     }
@@ -77,7 +80,7 @@ public class NodoIf extends NodoLiteral {
     @Override
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
-        count = ++ count;
+        count =count+1;
 
         // Generar código para la expresión de la condición (exp)
         code.append(this.exp.generateNodeCode(ts));
@@ -86,9 +89,11 @@ public class NodoIf extends NodoLiteral {
         // Generar código para la evaluación de la condición y el salto a la sección else si es falso
         code.append("\t # Condicion\n");
         code.append("\tbeq $t").append(condReg).append(", $zero, ").append("else_"+count).append("\n");
+        code.append("\tbne $t").append(condReg).append(", $zero, ").append("if_"+count).append("\n");
 
         // Generar código para las sentencias del if
         code.append("\t # Sentencias if\n");
+        code.append("\tif_" + count).append(":\n");
         for (NodoLiteral sentencia : this.sentencias) {
             code.append(sentencia.generateNodeCode(ts));
         }
@@ -98,10 +103,13 @@ public class NodoIf extends NodoLiteral {
         code.append("\telse_" + count).append(":\n");
         code.append("\t # Sentencias else\n");
         if (this.nodoElse != null) {
+
             code.append(this.nodoElse.generateNodeCode(ts));
+
         }
+
         // Generar la etiqueta para el final del if
-        code.append("\tif_end_" + count).append(":\n");
+
 
         return code.toString();
     }

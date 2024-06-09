@@ -11,9 +11,25 @@ impl Fibonacci {
     }
     fn sucesion_fib(Int n)-> Int{
         i=0; j=0; suma=10;
-        suma = suma +n;
-        (imprimo_numero(suma));
-        (imprimo_sucesion(suma));
+
+        if (i==0){
+            (imprimo_numero(i));
+            (imprimo_sucesion(suma));
+        }else{
+            if(i==1){
+                (imprimo_numero(i));
+                suma=suma+i;
+                (imprimo_sucesion(suma));
+            }else{
+                (imprimo_numero(i));
+                suma=suma+j;
+                j=suma;
+                (imprimo_sucesion(suma));
+                }
+        }
+
+
+
 
         ret suma;
     }
