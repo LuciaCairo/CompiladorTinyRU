@@ -42,7 +42,6 @@ public class CodeGenerator {
         code += "\n.text\n";
         code += ".globl main\n";
         code += this.text;
-        System.out.println(code);
         return code;
     }
 
