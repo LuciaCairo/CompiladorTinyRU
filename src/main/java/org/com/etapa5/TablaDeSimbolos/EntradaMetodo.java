@@ -13,6 +13,7 @@ public class EntradaMetodo {
     private String ret = "void"; //tipo de retorno
     private boolean hasRet = false;
     private int pos, line, col;
+    private int posReal;
     private Hashtable<String, EntradaParametro> parametros;
     private Hashtable<String, EntradaVariable> variables;
 
@@ -23,6 +24,7 @@ public class EntradaMetodo {
         this.isStatic = isStatic;
         this.ret = null;
         this.pos = pos ;
+        this.posReal = pos;
         this.line = line;
         this.col = col;
         this.parametros = new Hashtable<>();
@@ -34,14 +36,16 @@ public class EntradaMetodo {
         this.isStatic = isStatic;
         this.ret = ret;
         this.pos = pos;
+        this.posReal = pos;
         this.line = line;
         this.col = col;
         this.parametros = new Hashtable<>();
         this.variables = new Hashtable<>();
     }
 
-    public EntradaMetodo(int line, int col){
+    public EntradaMetodo(int line, int col, int p){
         this.nombre = "constructor";
+        this.posReal = p;
         this.line = line;
         this.col = col;
         this.parametros = new Hashtable<>();
@@ -54,6 +58,9 @@ public class EntradaMetodo {
     }
     public int getPos() {
         return pos;
+    }
+    public int getPosR() {
+        return posReal;
     }
     public int getLine() {
         return line;
@@ -87,6 +94,7 @@ public class EntradaMetodo {
     }
     public void setPos(int pos) {
         this.pos = pos;
+        this.posReal = pos;
     }
 
 

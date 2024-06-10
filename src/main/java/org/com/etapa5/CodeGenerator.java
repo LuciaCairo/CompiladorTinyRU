@@ -76,7 +76,7 @@ public class CodeGenerator {
                 List<EntradaMetodo> listaMetodos = new ArrayList<>((ts.getStruct(struct.getName()).getMetodos()).values());
 
                 // Ordenar la lista según la posición
-                listaMetodos.sort(Comparator.comparingInt(EntradaMetodo::getPos));
+                listaMetodos.sort(Comparator.comparingInt(EntradaMetodo::getPosR));
 
                 // Recorro los metodos del struct
                 for (EntradaMetodo m : listaMetodos) {

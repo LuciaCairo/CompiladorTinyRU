@@ -334,7 +334,7 @@ public class AnalizadorSintactico {
         match(".");
 
         // TS
-        EntradaMetodo e = new EntradaMetodo(currentToken.getLine(), currentToken.getCol());
+        EntradaMetodo e = new EntradaMetodo(currentToken.getLine(), currentToken.getCol(),ts.getCurrentStruct().getMetodos().size());
         ts.setCurrentMetod(e);
         ts.getCurrentStruct().insertMetodo("constructor",e);
         ts.getCurrentStruct().setHaveConst(true);
