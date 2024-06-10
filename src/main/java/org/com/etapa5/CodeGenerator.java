@@ -220,9 +220,10 @@ public class CodeGenerator {
                     // Recorro las sentencias del metodo
                     if(!m.getSentencias().isEmpty()){
                         if (m.getName().equals("constructor")){
-                            this.text += "\t\t\tmove $s1"  + ", $v0   # Guardamos la dirección de la memoria reservadaa line\n"; //esta linea la agregamos para solucionar problema move linea 87
+                            this.text += "\tmove $s1"  + ", $v0   # Guardamos la dirección de la memoria reservadaa line\n"; //esta linea la agregamos para solucionar problema move linea 87
                             int reg1=0;
                             for (NodoLiteral s : m.getSentencias()) {
+
                                 this.text += "\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
                                 reg1 = CodeGenerator.getBefRegister();
                                 // Para cada nodo genero codigo

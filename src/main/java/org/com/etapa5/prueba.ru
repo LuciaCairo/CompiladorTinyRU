@@ -10,7 +10,7 @@ impl Fibonacci {
         suma=0; /? inicializo suma
     }
     fn sucesion_fib(Int n)-> Int{
-        i=0; j=0; suma=10;
+        i=4; j=5; suma=10;
 
         if (i==0){
             (imprimo_numero(i));
@@ -27,9 +27,6 @@ impl Fibonacci {
                 (imprimo_sucesion(suma));
                 }
         }
-
-
-
 
         ret suma;
     }
@@ -55,5 +52,5 @@ start{
     h=25;
     fib = new Fibonacci(6);
 
-    (fib.sucesion_fib(h));
+    (IO.out_int(fib.sucesion_fib(h)));
 }

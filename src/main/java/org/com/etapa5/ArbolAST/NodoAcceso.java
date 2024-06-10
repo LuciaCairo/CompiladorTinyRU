@@ -124,6 +124,7 @@ public class NodoAcceso extends NodoLiteral {
                 reg = CodeGenerator.getBefRegister();
                 code.append("\tlw $s0"+", "+posMet+"($t"+reg+") # Cargar el puntero al método desde la vtable\n");
                 code.append(this.nodoD.generateNodeCode(ts));
+
             }
             return code.toString();
         }

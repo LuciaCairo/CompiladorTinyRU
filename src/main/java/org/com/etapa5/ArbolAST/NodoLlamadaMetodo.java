@@ -450,6 +450,10 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             } else {
                 if (ts.getCurrentStruct().getName().equals("start")){
                     code.append("\tjalr $s0 # Llamar al método\n");
+
+                    if(ts.getStruct(this.getParent()).getMetodo(metodo).getRet() != null){
+                        code.append( "\tmove $t"+CodeGenerator.getNextRegister()+", $v0  # Guardamos la dirección de la instancia\n");
+                    }
                     code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
 
                 }else{
@@ -461,8 +465,12 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                     //siempre lo busco en s2, pq es donde voy a tener siempre la instancia guardada antes de cambiar de puntero
                     code.append("\tlw $t"+posVtable+", 0($s1) #cargo en un registro temporal la direccion a la vtable para recuperar el puntero del metodo " +this.metodo+"\n"
                             +"\tlw $s0, "+posMet+"($t"+posVtable+") #cargar en un registro temporal la direccion al metodo que quiero llamar\n");
+                    code.append( "\tmove $s6"  + ", $s1   # Guardamos la dirección de la instancia\n");
                     code.append("\tjalr $s0 # Llamar al método\n");
-                    code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n");
+                    code.append("\taddi $sp, $sp, " + (this.argumentos.size()*4) + "# Liberar el espacio de parámetros\n"+
+                    "\tmove $s1"  + ", $s6   # Guardamos la dirección de la memoria reservadaa line\n");
+
+
                 }
                 //code.append("\tmove $a" + cont + ", $s0 # Pasar la instancia\n");
                 //code.append("\tlw $t" + CodeGenerator.getNextRegister() + ", 0($s0) # Cargar la dirección de la vtable\n");
