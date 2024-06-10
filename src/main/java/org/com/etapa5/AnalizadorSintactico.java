@@ -21,14 +21,13 @@ public class AnalizadorSintactico {
     private static AST ast;
     public static void main(String[] args) {
 
-        /*if (args.length < 1) {
+        if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
             System.out.println("Uso: java -jar etapa3.jar <ARCHIVO_FUENTE> ");
             return;
-        }*/
+        }
 
-        //String input = args[0];
-        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa5\\prueba.ru";
+        String input = args[0];
         String fileName;
 
         // Obtener el nombre del archivo
