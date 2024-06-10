@@ -443,11 +443,13 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             }
 
             if(ts.getStructsPred().get(this.getParent()) != null) { // Acceso desde un struct predefinido
+
                 code.append("\tjal " + this.getParent() +"_" + this.metodo + " # Llamar al método\n");
                 code.append("\tmove $a0, $t" + CodeGenerator.getNextRegister()+ "\n");
                 return code.toString();
 
             } else {
+
                 if (ts.getCurrentStruct().getName().equals("start")){
                     code.append("\tjalr $s0 # Llamar al método\n");
 

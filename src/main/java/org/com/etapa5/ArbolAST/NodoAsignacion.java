@@ -162,7 +162,12 @@ public class NodoAsignacion extends NodoLiteral {
                             code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
 
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
-                            code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
+                            if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
+                                code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
+                            }else{
+                                code.append("\tsw $t" + CodeGenerator.registerCounter + ", " + offset + "($s1)"+"\n");
+                            }
+
                         }
                     }
                 } else { // Significa que estoy en start

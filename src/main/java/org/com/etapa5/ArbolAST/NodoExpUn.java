@@ -86,6 +86,27 @@ public class NodoExpUn extends NodoLiteral {
                 code.append("\tneg $t").append(exprRegister).append(", $t").append(exprRegister).append("\n");
                 break;
         }
+        if(this.exp.getClass().getSimpleName().equals("NodoLiteral")){
+            // Voy a ver si lo que quiero asignar es una variable
+            if (ts.getCurrentMetod().getVariables().containsKey(this.exp.getName())) {
+                // Ver caso de que quiera asignar una variable
+                // Ejemplo a = 1 (que a sea variable del metodo)
+
+            } // Si no, voy a ver si lo que quiero asignarr es un parametro
+            else if (ts.getCurrentMetod().getParametros().containsKey(this.exp.getName())) {
+                // Ver caso de que quiera asignar un parametro
+                // Ejemplo a = 1 (que a sea parametro del metodo )
+
+            } // Si no, voy a ver si lo que quiero modificar es un atributo
+            else if (ts.getCurrentStruct().getAtributos().containsKey(this.exp.getName())) {
+                code.append("\t # Guardo el valor en el atributo\n");
+
+                int offset = ts.getCurrentStruct().getAtributos().get(exp.getName()).getPos() * 4 +4; //AGREGA AGUS
+                code.append("\tsw $t" + exprRegister + ", " + offset + "($s1)"+"\n");
+
+            }
+        }
+
         //CodeGenerator.getNextRegister();
         return code.toString();
     }

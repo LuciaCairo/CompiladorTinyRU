@@ -96,7 +96,11 @@ public class NodoAcceso extends NodoLiteral {
             // El nodo izquierdo es un struct, entonces yo quiero acceder a su instancia
             int posInst; // fib.j
             if(ts.getCurrentStruct().getName().equals("start")) {
-                posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4 + 4;
+                //if(ts.getCurrentStruct().getVariables().containsKey(this.nodoI.getName())){
+                    posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4 + 4;
+                //}
+
+
 
             } else {
                 posInst = 0;
@@ -120,10 +124,12 @@ public class NodoAcceso extends NodoLiteral {
                             +"\tlw $t"+CodeGenerator.getNextRegister()+", 0($a0) #cargo en $t... la direccion a la vtable\n");
                 NodoLlamadaMetodo name = (NodoLlamadaMetodo) this.nodoD;
                 String name1= name.getMetodo();
+
                 int posMet = ts.getStruct(this.nodoI.getNodeType()).getMetodo(name1).getPos()*4;
                 reg = CodeGenerator.getBefRegister();
                 code.append("\tlw $s0"+", "+posMet+"($t"+reg+") # Cargar el puntero al método desde la vtable\n");
                 code.append(this.nodoD.generateNodeCode(ts));
+
 
             }
             return code.toString();
