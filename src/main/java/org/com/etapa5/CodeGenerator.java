@@ -6,6 +6,9 @@ import org.com.etapa5.ArbolAST.NodoMetodo;
 import org.com.etapa5.ArbolAST.NodoStruct;
 import org.com.etapa5.TablaDeSimbolos.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class CodeGenerator {
@@ -24,7 +27,7 @@ public class CodeGenerator {
     // Functions
 
     // Funcion para genera el codigo recorriendo la TS y luego el AST
-    public void generateCode() {
+    public String generateCode() {
 
         // Generar declaraciones de variables a partir de la TS
         code += ".data\n";
@@ -40,6 +43,7 @@ public class CodeGenerator {
         code += ".globl main\n";
         code += this.text;
         System.out.println(code);
+        return code;
     }
 
     // Funcion para generar la data recorriendo la TS
@@ -410,6 +414,21 @@ public class CodeGenerator {
 
     public static void resetRegisterCounter() {
         registerCounter = 0;
+    }
+
+    // Método para guardar el JSON en un archivo
+    public void saveASM(String json, String nombreArchivo) {
+        String rutaActual = System.getProperty("user.dir");
+        File directorioActual = new File(rutaActual);
+        String rutaDirectorioPadre = directorioActual.getParent();
+        String rutaArchivo = rutaActual + "\\" + nombreArchivo;
+        try (FileWriter fileWriter = new FileWriter(rutaArchivo)) {
+            fileWriter.write(json);
+            System.out.println(".asm guardado exitosamente en " + rutaArchivo);
+        } catch (IOException e) {
+            System.out.println("Error al guardar el .asm");
+            e.printStackTrace();
+        }
     }
 
 }
