@@ -72,11 +72,11 @@ public class NodoExpBin extends NodoLiteral {
         code.append("\n\t# NODO EXPRESION BINARIA \n");
         // Generar código para el nodo izquierdo
         code.append(this.nodoI.generateNodeCode(ts));
-        int leftRegister = CodeGenerator.registerCounter - 1;
+        int leftRegister = CodeGenerator.getBefRegister();
 
         // Generar código para el nodo derecho
         code.append(this.nodoD.generateNodeCode(ts));
-        int rightRegister = CodeGenerator.registerCounter - 1;
+        int rightRegister = CodeGenerator.getBefRegister();
 
         int resultRegister = CodeGenerator.getNextRegister();
 

@@ -28,7 +28,7 @@ public class AnalizadorSintactico {
         }*/
 
         //String input = args[0];
-        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa5\\prueba.ru";
+        String input = "C:\\Users\\Luci\\Documents\\Ciencias de la Computacion\\Compiladores\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa5\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -75,7 +75,8 @@ public class AnalizadorSintactico {
             s.checkSent();  // Chequeo de Sentencias
             //String json = ast.printJSON_Arbol(fileName);
             //ast.saveJSON(json, fileName + ".json");
-            g.generateCode();
+            String code = g.generateCode();
+            g.saveASM(code, fileName + ".asm");
             System.out.println("CORRECTO GENERACION DE CODIGO\n");
 
         } catch (LexicalErrorException e) {
