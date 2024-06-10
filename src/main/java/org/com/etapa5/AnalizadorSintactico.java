@@ -23,7 +23,7 @@ public class AnalizadorSintactico {
 
         if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
-            System.out.println("Uso: java -jar etapa3.jar <ARCHIVO_FUENTE> ");
+            System.out.println("Uso: java -jar tinyRU.jar <ARCHIVO_FUENTE> ");
             return;
         }
 
