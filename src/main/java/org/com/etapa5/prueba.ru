@@ -11,21 +11,24 @@ impl Fibonacci {
     }
     fn sucesion_fib(Int n)-> Int{
         i=4; j=5; suma=10;
-
-        if (i==0){
-            (imprimo_numero(i));
-            (imprimo_sucesion(suma));
-        }else{
-            if(i==1){
+        while(i<= n){
+            if (i==0){
                 (imprimo_numero(i));
-                suma=suma+i;
                 (imprimo_sucesion(suma));
             }else{
-                (imprimo_numero(i));
-                suma=suma+j;
-                j=suma;
-                (imprimo_sucesion(suma));
-                }
+                if(i==1){
+                    (imprimo_numero(i));
+                    suma=suma+i;
+                    (imprimo_sucesion(suma));
+                }else{
+                    (imprimo_numero(i));
+                    suma=suma+j;
+                    j=suma;
+                    (imprimo_sucesion(suma));
+                    }
+            }
+
+            (++i);
         }
 
         ret suma;
@@ -38,9 +41,9 @@ impl Fibonacci {
         (IO.out_str("="));
     }
     fn imprimo_sucesion(Int s) -> void{
-           (IO.out_str("f_"));
+           /?El valor es:
            (IO.out_int(s));
-           (IO.out_str("="));
+           (IO.out_str("\n"));
     }
 
 
@@ -49,7 +52,7 @@ impl Fibonacci {
 start{
     Fibonacci fib;
     Int h;
-    h=25;
+    h=4;
     fib = new Fibonacci(6);
 
     (IO.out_int(fib.sucesion_fib(h)));
