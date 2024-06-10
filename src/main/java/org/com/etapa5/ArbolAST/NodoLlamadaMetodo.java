@@ -409,8 +409,9 @@ public class NodoLlamadaMetodo extends NodoLiteral{
         if(metodo.equals("constructor")){ // NEW
             if(this.argumentos != null){
                 code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
+                int pos = 0;
                 for (NodoLiteral a : argumentos) {
-                    int pos = 0;
+
                     code.append(a.generateNodeCode(ts));
                     code.append("\tsw $t" + CodeGenerator.getBefRegister() +"," + pos +"($sp)\n");
                     pos += 4;
@@ -424,13 +425,15 @@ public class NodoLlamadaMetodo extends NodoLiteral{
             if(this.argumentos != null){
 
                 code.append("\taddi $sp, $sp, -" + (this.argumentos.size()*4) + "\n");
+                int pos =  0;
                 for (NodoLiteral a : argumentos) {
-                    int pos =  0;
+
 
                     if (ts.getStructsPred().containsKey(this.nameStruct)) {
                         code.append(a.generateNodeCode(ts));
 
                         code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
+
                     } else {
                         code.append(a.generateNodeCode(ts));
                         // Voy a ver si lo que quiero asignar es una variable

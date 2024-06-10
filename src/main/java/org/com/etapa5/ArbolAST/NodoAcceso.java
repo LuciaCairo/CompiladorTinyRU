@@ -121,6 +121,7 @@ public class NodoAcceso extends NodoLiteral {
                 code.append("\tlw $t" + reg1 +"," + posAtr +" ($t"+ reg + ")\n");
             }else if (this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){ //
 
+
                 // El nodo derecho es una llamada metodo
                 code.append("\t # Accedo al metodo "  + "\n"); //al metodo incrementador
                 int reg = CodeGenerator.getBefRegister();
@@ -130,6 +131,7 @@ public class NodoAcceso extends NodoLiteral {
                 String name1= name.getMetodo();
 
                 int posMet = ts.getStruct(this.nodoI.getNodeType()).getMetodo(name1).getPos()*4;
+
                 reg = CodeGenerator.getBefRegister();
                 code.append("\tlw $s0"+", "+posMet+"($t"+reg+") # Cargar el puntero al método desde la vtable\n");
                 code.append(this.nodoD.generateNodeCode(ts));
