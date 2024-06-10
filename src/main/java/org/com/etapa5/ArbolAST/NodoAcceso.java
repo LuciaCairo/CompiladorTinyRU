@@ -94,11 +94,15 @@ public class NodoAcceso extends NodoLiteral {
 
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
             // El nodo izquierdo es un struct, entonces yo quiero acceder a su instancia
-            int posInst; // fib.j
+            int posInst=0; // fib.j
             if(ts.getCurrentStruct().getName().equals("start")) {
-                //if(ts.getCurrentStruct().getVariables().containsKey(this.nodoI.getName())){
+                if(ts.getCurrentStruct().getVariables().containsKey(this.nodoI.getName())){
                     posInst = ts.getCurrentStruct().getVariables().get(this.nodoI.getName()).getPos() * 4 + 4;
-                //}
+                }else{
+
+                    code.append(this.nodoD.generateNodeCode(ts));
+                    return code.toString();
+                }
 
 
 
