@@ -173,14 +173,14 @@ public class CodeGenerator {
                                 "\tmove $fp, $sp            # Establecer el nuevo frame pointer\n";
 
                         int reg = CodeGenerator.getNextRegister();
-                        int regBef = CodeGenerator.getBefRegister();
+                        int regBef = CodeGenerator.registerCounter;
                         this.text += "\tli $v0, 9 #Reservamos memoria dinamica (heap)\n"
                                 + "\tli $a0," + sizeAtr + "# Reservamos por cada atributo del struct\n"
                                 + "\tsyscall\n"
                                 //modifico esto pq quiero q siempre se guarde en t0 la direccion de memoria
                                 + "\tmove $t" + reg + ",$v0 # Guardamos la dirección de la memoria reservada\n"
                                 +"\tla $t" + CodeGenerator.getNextRegister() +", "+value.getName()+"_vtable\n"//agrega agus, hay q ver como son los registros aqui
-                                +"\tsw $t" + CodeGenerator.getBefRegister()+",0($t"+reg+")\n"; //AGREGA AGUS
+                                +"\tsw $t" + CodeGenerator.registerCounter+",0($t"+reg+")\n"; //AGREGA AGUS
 
                         int offset = 4;//Agrega Agus
                         this.text += "\t# Primero inicializamos todo por defecto\n";
@@ -228,12 +228,12 @@ public class CodeGenerator {
                             for (NodoLiteral s : m.getSentencias()) {
 
                                 this.text += "\tmove $t" + CodeGenerator.getNextRegister() + ", $v0   # Guardamos la dirección de la memoria reservada\n";
-                                reg1 = CodeGenerator.getBefRegister();
+                                reg1 = CodeGenerator.registerCounter;
                                 // Para cada nodo genero codigo
                                 this.text += s.generateNodeCode(ts);
                                 //this.text += "\tmove $v0, $t" + reg1 + "     # Retornar la dirección base de la estructura en $v0\n";
                             }
-                            int reg = CodeGenerator.getBefRegister() - 1;
+                            //int reg = CodeGenerator.registerCounter - 1;
 
                             this.text += "\tmove $v0, $t" + reg1+ "     # Retornar la dirección base de la estructura en $v0\n" +
                                     "\t# Restaurar el estado de la pila\n" +
@@ -250,7 +250,7 @@ public class CodeGenerator {
                                 this.text += s.generateNodeCode(ts);
 
                             }
-                            this.text += "\tmove $v0, $t" +CodeGenerator.getBefRegister()+ "     # Retornar la dirección base de la estructura en $v0\n";
+                            this.text += "\tmove $v0, $t" +CodeGenerator.registerCounter+ "     # Retornar la dirección base de la estructura en $v0\n";
                             this.text +="\tmove $sp, $fp         # Restaurar el puntero de pila\n" +
                                     "\tlw $fp, 0($sp)        # Restaurar el puntero de marco\n" +
                                     "\tlw $ra, 4($sp)        # Restaurar la dirección de retorno\n" +
@@ -383,7 +383,8 @@ public class CodeGenerator {
             resetRegisterCounter();
             return registerCounter;
         } else {
-            return registerCounter++;
+            registerCounter= registerCounter+1;
+            return registerCounter;
         }
     }
 
@@ -404,10 +405,7 @@ public class CodeGenerator {
             }else{
                 count = count -1;
             }
-
-
         }
-        System.out.println(count);
         return count;
     }
 

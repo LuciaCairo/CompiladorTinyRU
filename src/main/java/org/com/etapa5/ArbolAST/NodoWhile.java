@@ -76,7 +76,7 @@ public class NodoWhile extends NodoLiteral {
         code.append("\twhile_start_"+ count +":\n");
         // Generar el código para la evaluación de la expresión de la condición
         code.append(this.exp.generateNodeCode(ts));
-        int condReg = CodeGenerator.getBefRegister();
+        int condReg = CodeGenerator.registerCounter;
 
         // Generar el código para el salto a la salida del bucle si la condición es falsa
         code.append("\tbeq $t").append(condReg).append(", $zero, ").append("while_end_"+ count).append("\n");

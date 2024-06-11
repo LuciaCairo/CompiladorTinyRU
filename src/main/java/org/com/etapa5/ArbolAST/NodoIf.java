@@ -84,7 +84,7 @@ public class NodoIf extends NodoLiteral {
 
         // Generar código para la expresión de la condición (exp)
         code.append(this.exp.generateNodeCode(ts));
-        int condReg = CodeGenerator.getBefRegister();
+        int condReg = CodeGenerator.registerCounter;
 
         // Generar código para la evaluación de la condición y el salto a la sección else si es falso
         code.append("\t # Condicion\n");

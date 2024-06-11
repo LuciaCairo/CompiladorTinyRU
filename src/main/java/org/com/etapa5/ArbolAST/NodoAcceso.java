@@ -114,26 +114,28 @@ public class NodoAcceso extends NodoLiteral {
             code.append("\tlw $t" + reg1 +", -" + posInst+"($fp) #carga en $t... la direccion de la instancia\n");
 
             if(this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
+
                 // El nodo derecho es un atributo
                 code.append("\t # Accedo al atributo " + nodoD.getName() + "\n");
-                int reg = CodeGenerator.getBefRegister();
+                int reg = CodeGenerator.registerCounter;
                 int posAtr = ts.getStruct(this.nodoI.getNodeType()).getAtributo(this.nodoD.getName()).getPos()*4 +4;
                 code.append("\tlw $t" + reg1 +"," + posAtr +" ($t"+ reg + ")\n");
             }else if (this.nodoD.getClass().getSimpleName().equals("NodoLlamadaMetodo")){ //
 
-
                 // El nodo derecho es una llamada metodo
                 code.append("\t # Accedo al metodo "  + "\n"); //al metodo incrementador
-                int reg = CodeGenerator.getBefRegister();
-                code.append("\tmove $a0, $t" +reg+" # mueve a a0 la direccion de la instancia \n"
+                //int reg = CodeGenerator.registerCounter;
+
+                code.append("\tmove $a0, $t" +reg1+" # mueve a a0 la direccion de la instancia \n"
                             +"\tlw $t"+CodeGenerator.getNextRegister()+", 0($a0) #cargo en $t... la direccion a la vtable\n");
+                System.out.println(CodeGenerator.registerCounter);
                 NodoLlamadaMetodo name = (NodoLlamadaMetodo) this.nodoD;
                 String name1= name.getMetodo();
-
+                System.out.println(CodeGenerator.registerCounter);
                 int posMet = ts.getStruct(this.nodoI.getNodeType()).getMetodo(name1).getPos()*4;
 
-                reg = CodeGenerator.getBefRegister();
-                code.append("\tlw $s0"+", "+posMet+"($t"+reg+") # Cargar el puntero al método desde la vtable\n");
+                //reg = CodeGenerator.registerCounter;
+                code.append("\tlw $s0"+", "+posMet+"($t"+CodeGenerator.registerCounter+") # Cargar el puntero al método desde la vtable\n");
                 code.append(this.nodoD.generateNodeCode(ts));
 
 

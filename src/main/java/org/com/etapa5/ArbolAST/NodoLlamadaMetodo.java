@@ -413,7 +413,7 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                 for (NodoLiteral a : argumentos) {
 
                     code.append(a.generateNodeCode(ts));
-                    code.append("\tsw $t" + CodeGenerator.getBefRegister() +"," + pos +"($sp)\n");
+                    code.append("\tsw $t" + CodeGenerator.registerCounter +"," + pos +"($sp)\n");
                     pos += 4;
                 }
             }
@@ -432,13 +432,13 @@ public class NodoLlamadaMetodo extends NodoLiteral{
                     if (ts.getStructsPred().containsKey(this.nameStruct)) {
                         code.append(a.generateNodeCode(ts));
 
-                        code.append("\tmove $a0, $t" + CodeGenerator.getBefRegister() + "\n");
+                        code.append("\tmove $a0, $t" + CodeGenerator.registerCounter + "\n");
 
                     } else {
                         code.append(a.generateNodeCode(ts));
                         // Voy a ver si lo que quiero asignar es una variable
 
-                        code.append("\tsw $t" + CodeGenerator.getBefRegister() + "," + pos + "($sp)\n");
+                        code.append("\tsw $t" + CodeGenerator.registerCounter + "," + pos + "($sp)\n");
 
                     }
                     pos += 4;

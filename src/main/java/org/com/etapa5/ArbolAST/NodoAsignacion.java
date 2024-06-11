@@ -108,7 +108,7 @@ public class NodoAsignacion extends NodoLiteral {
     public String generateNodeCode(TablaSimbolos ts) {
         StringBuilder code = new StringBuilder();
         code.append("\n\t# NODO ASIGNACION \n");
-        int regInst = CodeGenerator.getBefRegister(); // Puntero a la direccion de memoria que me dio el heap
+        int regInst = CodeGenerator.registerCounter; // Puntero a la direccion de memoria que me dio el heap
 
         // CASO DE NODO LITERAL (n = ...)
         if(this.nodoI.getClass().getSimpleName().equals("NodoLiteral")){
@@ -143,7 +143,7 @@ public class NodoAsignacion extends NodoLiteral {
                             code.append("\t # Cargo el resultado en " + nodoI.getName() + "\n");
 
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
-                            code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
+                            code.append("\tsw $t" + CodeGenerator.registerCounter + ", " + offset + "($s1)"+"\n");
                         }
                     }else{
 
@@ -163,7 +163,7 @@ public class NodoAsignacion extends NodoLiteral {
 
                             int offset = ts.getCurrentStruct().getAtributos().get(nodoI.getName()).getPos() * 4 +4; //AGREGA AGUS
                             //if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
-                                code.append("\tsw $t" + CodeGenerator.getBefRegister() + ", " + offset + "($s1)"+"\n");
+                                code.append("\tsw $t" + CodeGenerator.registerCounter + ", " + offset + "($s1)"+"\n");
                             //}else{
                                 //code.append("\tsw $t" + CodeGenerator.registerCounter + ", " + offset + "($s1)"+"\n");
                             //}
@@ -176,7 +176,7 @@ public class NodoAsignacion extends NodoLiteral {
 
                     }
 
-                    int regD = CodeGenerator.getBefRegister();
+                    int regD = CodeGenerator.registerCounter;
                     // aca deberia guardar lo del lado derecho en lo de lado izquierdo
                     // si es una variable en la pila por ejemplo
                     if (this.nodoD.getClass().getSimpleName().equals("NodoLiteral")){
@@ -197,10 +197,10 @@ public class NodoAsignacion extends NodoLiteral {
         } // CASO DE NODO Acceso (self.n = ... o struct.n = ...)
         else if(this.nodoI.getClass().getSimpleName().equals("NodoAcceso")){
             code.append(this.nodoD.generateNodeCode(ts));
-            int regD = CodeGenerator.getBefRegister();
+            int regD = CodeGenerator.registerCounter;
 
             code.append(this.nodoD.generateNodeCode(ts));
-            int regI = CodeGenerator.getBefRegister();
+            int regI = CodeGenerator.registerCounter;
 
             code.append("\tsw $t" + regD + ", " + regI + "\n");
             code.append("\tsw $t" + regI + ", 0($t0)\n");
