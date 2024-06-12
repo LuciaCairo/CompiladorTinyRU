@@ -128,10 +128,8 @@ public class NodoAcceso extends NodoLiteral {
 
                 code.append("\tmove $a0, $t" +reg1+" # mueve a a0 la direccion de la instancia \n"
                             +"\tlw $t"+CodeGenerator.getNextRegister()+", 0($a0) #cargo en $t... la direccion a la vtable\n");
-                System.out.println(CodeGenerator.registerCounter);
                 NodoLlamadaMetodo name = (NodoLlamadaMetodo) this.nodoD;
                 String name1= name.getMetodo();
-                System.out.println(CodeGenerator.registerCounter);
                 int posMet = ts.getStruct(this.nodoI.getNodeType()).getMetodo(name1).getPos()*4;
 
                 //reg = CodeGenerator.registerCounter;
