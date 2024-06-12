@@ -120,6 +120,7 @@ public class NodoExpBin extends NodoLiteral {
             default:
                 System.out.println("SE ESCAPO UN CASO NODOEXPBIN " + op);
         }
+        code.append("\tmove $v0, $t" + CodeGenerator.registerCounter + "\n");
 
         return code.toString();
     }
