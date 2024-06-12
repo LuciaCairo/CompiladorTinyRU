@@ -65,7 +65,7 @@ public class NodoExpUn extends NodoLiteral {
         code.append(this.exp.generateNodeCode(ts));
 
         // Obtener el registro utilizado por la expresión
-        int exprRegister = CodeGenerator.getBefRegister();
+        int exprRegister = CodeGenerator.registerCounter;
 
         switch (op) {
             case "!": // Negación lógica

@@ -133,46 +133,46 @@ public class NodoLiteral extends Nodo{
         String n = this.getName();
 
         if (n.equals("literal entero")) {
-            code = "\tli $t" + CodeGenerator.registerCounter + ", " + value + "\n";
+            code = "\tli $t" + CodeGenerator.getNextRegister() + ", " + value + "\n";
         } else if (n.equals("literal str")) {
             // Los literales de cadena pueden necesitar una etiqueta en la sección .data
-            String label = "str" + CodeGenerator.registerCounter;
+            String label = "str" + CodeGenerator.getNextRegister();
             code = ".data\n" + label + ": .asciiz \"" + value + "\"\n";
-            code += ".text\nla $t" + CodeGenerator.registerCounter+ ", " + label + "\n";
+            code += ".text\nla $t" + CodeGenerator.getNextRegister()+ ", " + label + "\n";
         } else if (n.equals("literal char")) {
             int charValue = (int) value.charAt(0); // Obtiene el valor ASCII del caracter
-            code = "\tli $t" + CodeGenerator.registerCounter + ", " + charValue + "\n";
+            code = "\tli $t" + CodeGenerator.getNextRegister() + ", " + charValue + "\n";
         } else if (n.equals("literal bool")) {
             int boolValue = value.equals("true") ? 1 : 0;
-            code = "\tli $t" + CodeGenerator.registerCounter + ", " + boolValue + "\n";
+            code = "\tli $t" + CodeGenerator.getNextRegister() + ", " + boolValue + "\n";
         } else if (n.equals("nil")) {
-            code = "\tli $t" + CodeGenerator.registerCounter + ", 0\n";
+            code = "\tli $t" + CodeGenerator.getNextRegister() + ", 0\n";
         } else {
             if(ts.getCurrentStruct().getName().equals("start")){
 
                 int offset = ts.getCurrentStruct().getVariables().get(this.getName()).getPos() * 4 +4;
-                code = "\tlw $t" + CodeGenerator.registerCounter + ", -" + offset + "($fp)\n";
+                code = "\tlw $t" + CodeGenerator.getNextRegister() + ", -" + offset + "($fp)\n";
             } else {
                 if(ts.getCurrentStruct().getName().equals("start")){
                     int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
-                    code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                    code = "\tlw $t" + CodeGenerator.getNextRegister() + ", " + offset + "($sp)\n";
                 } else {
                     if ((ts.getCurrentMetod().getParametros().containsKey(this.getName()))) {
                         int posP = ts.getCurrentMetod().getParametros().get(this.getName()).getPos() * 4 +8;
-                        code = "\tlw $t" + CodeGenerator.registerCounter + "," + posP + "($fp)" +
+                        code = "\tlw $t" + CodeGenerator.getNextRegister() + "," + posP + "($fp)" +
                                 "# Guarda parametro en un registro temporal\n";
                     } else if (ts.getCurrentMetod().getVariables().containsKey(this.getName())) {
 
                         int offset = ts.getCurrentMetod().getVariables().get(this.getName()).getPos() * 4;
-                        code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($sp)\n";
+                        code = "\tlw $t" + CodeGenerator.getNextRegister() + ", " + offset + "($sp)\n";
                     } else {
                         int offset = ts.getCurrentStruct().getAtributos().get(this.getName()).getPos() * 4 +4;
-                        code = "\tlw $t" + CodeGenerator.registerCounter + ", " + offset + "($s1)\n";
+                        code = "\tlw $t" + CodeGenerator.getNextRegister() + ", " + offset + "($s1)\n";
                     }
                 }
             }
         }
-        CodeGenerator.getNextRegister();
+        //CodeGenerator.getNextRegister();
         return code;
     }
 

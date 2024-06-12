@@ -20,14 +20,14 @@ public class AnalizadorSintactico {
     private static TablaSimbolos ts;
     private static AST ast;
     public static void main(String[] args) {
-
+        /*
         if (args.length < 1) {
             System.out.println("ERROR: Debe proporcionar el nombre del archivo fuente.ru como argumento");
             System.out.println("Uso: java -jar tinyRU.jar <ARCHIVO_FUENTE> ");
             return;
         }
-
-        String input = args[0];
+        */
+        String input = "C:\\Users\\Agustina\\Desktop\\CompiladorTinyRU\\src\\main\\java\\org\\com\\etapa5\\prueba.ru";
         String fileName;
 
         // Obtener el nombre del archivo
@@ -75,7 +75,8 @@ public class AnalizadorSintactico {
             //String json = ast.printJSON_Arbol(fileName);
             //ast.saveJSON(json, fileName + ".json");
             String asm = g.generateCode();
-            g.saveASM(asm, fileName + ".asm");
+            System.out.println(asm);
+            //g.saveASM(asm, fileName + ".asm");
             System.out.println("CORRECTO GENERACION DE CODIGO\n");
 
         } catch (LexicalErrorException e) {

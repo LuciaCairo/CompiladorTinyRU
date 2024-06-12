@@ -112,7 +112,7 @@ public class NodoExpresion extends NodoLiteral {
         StringBuilder code = new StringBuilder();
         // Generar código para la expresión
         code.append(this.exp.generateNodeCode(ts));
-        int expRegister = CodeGenerator.registerCounter - 1;
+        //int expRegister = CodeGenerator.registerCounter - 1;
 
         // Si es una expresión de retorno, mover el resultado al registro $v0 (que se usa para valores de retorno en MIPS)
         if (this.getName().equals("Retorno")) {

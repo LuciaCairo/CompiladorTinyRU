@@ -68,11 +68,11 @@ public class NodoAccesoArray extends NodoLiteral {
         code.append("\n\t# NODO ACCESO ARRAY \n");
         // Generar código para evaluar el nodo que representa el arreglo (nodo)
         code.append(this.nodo.generateNodeCode(ts));
-        int arrayReg = CodeGenerator.registerCounter - 1;
+        int arrayReg = CodeGenerator.getBefRegister();
 
         // Generar código para evaluar la expresión que representa el índice (exp)
         code.append(this.exp.generateNodeCode(ts));
-        int indexReg = CodeGenerator.registerCounter - 1;
+        int indexReg = CodeGenerator.registerCounter;
 
         // Calcular la dirección del elemento del array
         // Asumimos que cada elemento del array es de 4 bytes (tamaño de una palabra en MIPS)
